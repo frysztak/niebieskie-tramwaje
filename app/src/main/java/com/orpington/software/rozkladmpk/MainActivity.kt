@@ -20,11 +20,13 @@ class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val booksAdapter = GridViewKeyboardAdapter(this, presenter.alphabet)
+        val booksAdapter = GridViewKeyboardAdapter(this, resources.getStringArray(R.array.keyboardKeys))
         gridView.adapter = booksAdapter
         gridView.setOnItemClickListener { parent: AdapterView<*>, view: View, idx: Int, id: Long ->
-            val item = presenter.alphabet[idx]
-            presenter.appendToCurrentSelection(item)
+            val item = parent.getItemAtPosition(idx)
+            if (item is String) {
+                presenter.userEnteredCharacter(item)
+            }
         }
     }
 }

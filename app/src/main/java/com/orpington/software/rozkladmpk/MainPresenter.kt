@@ -6,13 +6,17 @@ import net.grandcentrix.thirtyinch.TiPresenter
 class MainPresenter(interactor: TransportLinesInteractor) : TiPresenter<MainView>() {
     private var transportLinesInteractor = interactor
     private var currentLineName: String = ""
-    public val alphabet: List<String> = listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "C", "D", "K", "N")
 
     companion object: KLogging()
 
-    fun appendToCurrentSelection(str: String) {
-        logger.info("appending $str")
-        currentLineName += str
+    fun userEnteredCharacter(str: String) {
+        logger.info("user entered $str")
+
+        when (str) {
+            "↩" ->  currentLineName = currentLineName.substring(0..currentLineName.length-2) // FIXME: additional checks
+            else -> currentLineName += str
+        }
+
         view?.updateNameEnteredByUser(currentLineName)
         val lines = transportLinesInteractor.getLinesStartingWith(currentLineName)
         logger.info { lines }

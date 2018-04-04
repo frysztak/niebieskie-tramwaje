@@ -12,30 +12,24 @@ import android.widget.TextView
  * Created by sebastian on 3/28/18.
  */
 
-class GridViewKeyboardAdapter(c: Context, i: List<String>) : BaseAdapter() {
+class GridViewKeyboardAdapter(c: Context, i: Array<String>) : BaseAdapter() {
     private var mContext: Context = c
-    private var items: List<String> = i
+    private var items: Array<String> = i
 
-    override fun getView(position: Int, initialConvertView: View?, parentView: ViewGroup?): View? {
-        val item = items[position]
+    override fun getView(position: Int, initialConvertView: View?, parent: ViewGroup?): View? {
         var convertView = initialConvertView
 
         if (initialConvertView == null) {
-            val layoutInflater = LayoutInflater.from(mContext);
-            convertView = layoutInflater.inflate(R.layout.griditemlayout, null)
+            val layoutInflater = LayoutInflater.from(mContext)
+            convertView = layoutInflater.inflate(R.layout.griditemlayout, parent, false)
         }
 
-        convertView?.findViewById<TextView>(R.id.textView)?.text = item
+        convertView?.findViewById<TextView>(R.id.textView)?.text = items[position]
         return convertView
     }
 
-    fun updateItems(newItems: List<String>){
-        items = newItems
-        notifyDataSetChanged()
-    }
-
     override fun getItem(p0: Int): Any? {
-        return null
+        return items[p0]
     }
 
     override fun getItemId(p0: Int): Long {
