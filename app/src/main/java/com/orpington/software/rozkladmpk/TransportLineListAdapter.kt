@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.orpington.software.rozkladmpk.database.TransportLine
+import com.orpington.software.rozkladmpk.database.TransportType
 
 class TransportLineListAdapter(private var context: Context): BaseAdapter() {
     private var lines: List<TransportLine> = emptyList()
@@ -27,7 +28,10 @@ class TransportLineListAdapter(private var context: Context): BaseAdapter() {
         }
 
         if (lines.isNotEmpty()) {
-            convertView?.findViewById<TextView>(R.id.lineName)?.text = formatLineName(lines[position].name)
+            var line = lines[position]
+            convertView?.findViewById<TextView>(R.id.icon)?.text = getIcon(line)
+            convertView?.findViewById<TextView>(R.id.lineName)?.text = formatLineName(line.name)
+            convertView?.findViewById<TextView>(R.id.stops)?.text = getFirstAndLastStop(line)
         }
         return convertView!!
     }
@@ -39,6 +43,14 @@ class TransportLineListAdapter(private var context: Context): BaseAdapter() {
             spannable.setSpan(ForegroundColorSpan(Color.RED), 0, partEnteredByUser.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         return spannable
+    }
+
+    private fun getFirstAndLastStop(line: TransportLine): String {
+        return "${line.stops.first()} —${line.stops.last()}"
+    }
+
+    private fun getIcon(line: TransportLine): String {
+        return if (line.type == TransportType.BUS) "\uD83D\uDE8C" else "\uD83D\uDE8B"
     }
 
     fun updateItems(newLines: List<TransportLine>, newPartEnteredByUser: String) {

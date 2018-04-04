@@ -30,7 +30,7 @@
         android:horizontalSpacing="10dp"
         android:numColumns="auto_fit"
         android:stretchMode="spacingWidth"
-        android:verticalSpacing="24dp"
+        android:verticalSpacing="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
