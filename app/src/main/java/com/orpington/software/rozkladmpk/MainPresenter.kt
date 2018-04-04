@@ -17,8 +17,8 @@ class MainPresenter(interactor: TransportLinesInteractor) : TiPresenter<MainView
             else -> currentLineName += str
         }
 
-        view?.updateNameEnteredByUser(currentLineName)
         val lines = transportLinesInteractor.getLinesStartingWith(currentLineName)
+        view?.updateCurrentLines(lines, currentLineName)
         logger.info { lines }
     }
 
