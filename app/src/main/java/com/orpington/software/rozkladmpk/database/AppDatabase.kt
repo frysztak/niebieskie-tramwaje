@@ -8,6 +8,7 @@ import android.arch.persistence.room.TypeConverters
 import android.content.Context
 import android.util.Log
 import com.orpington.software.rozkladmpk.database.converters.DateTypeConverter
+import com.orpington.software.rozkladmpk.database.converters.ListOfIntTypeConverter
 import com.orpington.software.rozkladmpk.database.converters.ListOfStringTypeConverter
 import com.orpington.software.rozkladmpk.database.converters.TransportTypeConverter
 import java.util.*
@@ -18,10 +19,11 @@ fun ioThread(f: () -> Unit) {
     Executors.newSingleThreadExecutor().execute(f)
 }
 
-@Database(entities = [(TransportLine::class)], version = 1)
-@TypeConverters(DateTypeConverter::class, ListOfStringTypeConverter::class, TransportTypeConverter::class)
+@Database(entities = [(TransportLine::class), (Station::class)], version = 1)
+@TypeConverters(DateTypeConverter::class, ListOfIntTypeConverter::class, TransportTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun transportLineDao(): TransportLineDao
+    abstract fun stationDao(): StationDao
 
     companion object {
         private var INSTANCE: AppDatabase? = null
@@ -31,13 +33,25 @@ abstract class AppDatabase : RoomDatabase() {
                 super.onCreate(db)
 
                 ioThread {
-                    val lines = listOf(
-                            TransportLine("33",  TransportType.TRAM, Date(), listOf("Pilczyce", "Kwiska", "Grunwald")),
-                            TransportLine("3",   TransportType.TRAM, Date(), listOf("Leśnica", "Kwiska", "Grunwald")),
-                            TransportLine("32" , TransportType.TRAM, Date(), listOf("Kaozet", "Kwiska", "Gaj")),
-                            TransportLine("128", TransportType.BUS,  Date(), listOf("Pilczyce", "Grosz", "Zakrzów")),
-                            TransportLine("136", TransportType.BUS,  Date(), listOf("Kaozet", "Grosz", "Tarnogaj"))
+                    val stations = listOf(
+                            Station(0, "Pilczyce"),
+                            Station(1, "Kwiska"),
+                            Station(2, "pl. Grunwaldzki", "brzydko"),
+                            Station(3, "Leśnica"),
+                            Station(4, "Kozanów", "<3"),
+                            Station(5, "Gaj"),
+                            Station(6, "Grosz"),
+                            Station(7, "Tarnogaj"),
+                            Station(8, "Zakrzów")
                     )
+                    val lines = listOf(
+                            TransportLine("33",  TransportType.TRAM, Date(), listOf(0, 1, 2)),
+                            TransportLine("3",   TransportType.TRAM, Date(), listOf(3, 1, 2)),
+                            TransportLine("32" , TransportType.TRAM, Date(), listOf(4, 1, 5)),
+                            TransportLine("128", TransportType.BUS,  Date(), listOf(0, 6, 8)),
+                            TransportLine("136", TransportType.BUS,  Date(), listOf(4, 6, 7))
+                    )
+                    INSTANCE?.stationDao()?.insert(stations)
                     INSTANCE?.transportLineDao()?.insert(lines)
                 }
             }

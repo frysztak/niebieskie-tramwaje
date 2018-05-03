@@ -3,6 +3,7 @@ package com.orpington.software.rozkladmpk
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -14,11 +15,38 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import com.orpington.software.rozkladmpk.database.TransportLine
 import com.orpington.software.rozkladmpk.database.TransportType
+import kotlinx.android.synthetic.main.transport_line_list_layout.view.*
 
-class TransportLineListAdapter(private var context: Context): BaseAdapter() {
-    private var lines: List<TransportLine> = emptyList()
-    private var partEnteredByUser = ""
+class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    val icon = view.icon
+    val mainName = view.mainName
+    val additionalText = view.additionalText
+}
 
+class TransportLineListAdapter(private var context: Context, private var interactor: TransportLinesInteractor): RecyclerView.Adapter<ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+        val layoutInflater = LayoutInflater.from(context)
+        return ViewHolder(layoutInflater.inflate(R.layout.transport_line_list_layout, parent, false))
+    }
+
+    override fun getItemCount(): Int {
+        return stations.size
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        var item = stations[position]
+        holder.icon.setImageResource(R.drawable.traffic_light)
+        holder.mainName.text = item
+    }
+
+    private var stations: List<String> = emptyList()
+
+    fun updateItems(str: String) {
+        stations = interactor.getStationsStartingWith(str)
+        notifyDataSetChanged()
+    }
+
+    /*
     override fun getView(position: Int, initialConvertView: View?, parent: ViewGroup?): View {
         var convertView = initialConvertView
 
@@ -70,5 +98,6 @@ class TransportLineListAdapter(private var context: Context): BaseAdapter() {
     override fun getCount(): Int {
         return lines.size
     }
+    */
 
 }

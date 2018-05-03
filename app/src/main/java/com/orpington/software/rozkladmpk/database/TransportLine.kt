@@ -6,7 +6,7 @@ import android.arch.persistence.room.PrimaryKey
 import android.arch.persistence.room.TypeConverters
 import android.support.annotation.NonNull
 import com.orpington.software.rozkladmpk.database.converters.DateTypeConverter
-import com.orpington.software.rozkladmpk.database.converters.ListOfStringTypeConverter
+import com.orpington.software.rozkladmpk.database.converters.ListOfIntTypeConverter
 import com.orpington.software.rozkladmpk.database.converters.TransportTypeConverter
 import java.util.*
 
@@ -15,11 +15,11 @@ enum class TransportType {
     TRAM
 }
 
-@Entity(tableName = "transport_line")
+@Entity(tableName = "transport_lines")
 data class TransportLine constructor(
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "line_name")
+    @ColumnInfo(name = "name")
     val name: String,
 
     @ColumnInfo(name = "type")
@@ -30,7 +30,7 @@ data class TransportLine constructor(
     @TypeConverters(DateTypeConverter::class)
     val lastUpdated: Date,
 
-    @ColumnInfo(name = "stops")
-    @TypeConverters(ListOfStringTypeConverter::class)
-    val stops: List<String>
+    @ColumnInfo(name = "stations")
+    @TypeConverters(ListOfIntTypeConverter::class)
+    val stops: List<Int>
 )

@@ -9,9 +9,9 @@ interface TransportLineDao {
     @Insert
     fun insert(lines: List<TransportLine>)
 
-    @Query("SELECT * FROM transport_line")
+    @Query("SELECT * FROM transport_lines")
     fun getAll(): List<TransportLine>
 
-    @Query("SELECT * FROM transport_line WHERE line_name LIKE :name || '%' ORDER BY line_name")
+    @Query("SELECT * FROM transport_lines WHERE name LIKE :name || '%' ORDER BY name")
     fun findByName(name: String): List<TransportLine>
 }
