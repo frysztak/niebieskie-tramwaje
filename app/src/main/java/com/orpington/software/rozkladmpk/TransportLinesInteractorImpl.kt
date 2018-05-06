@@ -2,6 +2,7 @@ package com.orpington.software.rozkladmpk
 
 import android.content.Context
 import com.orpington.software.rozkladmpk.database.AppDatabase
+import com.orpington.software.rozkladmpk.database.Station
 import com.orpington.software.rozkladmpk.database.TransportLine
 
 class TransportLinesInteractorImpl(context: Context): TransportLinesInteractor {
@@ -15,7 +16,7 @@ class TransportLinesInteractorImpl(context: Context): TransportLinesInteractor {
         return db.stationDao().getAllStationNames()
     }
 
-    override fun getStationsStartingWith(str: String): List<String> {
+    override fun getStationsStartingWith(str: String): List<Station> {
         return db.stationDao().getStationNamesStartingWith(str)
     }
 }

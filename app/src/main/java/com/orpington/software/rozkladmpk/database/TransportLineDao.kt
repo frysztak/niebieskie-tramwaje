@@ -12,6 +12,6 @@ interface TransportLineDao {
     @Query("SELECT * FROM transport_lines")
     fun getAll(): List<TransportLine>
 
-    @Query("SELECT * FROM transport_lines WHERE name LIKE :name || '%' ORDER BY name")
+    @Query("SELECT * FROM transport_lines WHERE pretty_name LIKE '%' || :name || '%' ORDER BY name")
     fun findByName(name: String): List<TransportLine>
 }

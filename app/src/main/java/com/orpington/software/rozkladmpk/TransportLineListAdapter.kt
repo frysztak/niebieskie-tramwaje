@@ -12,38 +12,53 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ImageView
 import android.widget.TextView
 import com.orpington.software.rozkladmpk.database.TransportLine
 import com.orpington.software.rozkladmpk.database.TransportType
 import kotlinx.android.synthetic.main.transport_line_list_layout.view.*
 
-class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-    val icon = view.icon
-    val mainName = view.mainName
-    val additionalText = view.additionalText
+interface RowView {
+    fun setIcon(resId: Int)
+    fun setName(name: String)
+    fun setAdditionalText(text: String)
 }
 
-class TransportLineListAdapter(private var context: Context, private var interactor: TransportLinesInteractor): RecyclerView.Adapter<ViewHolder>() {
+class ViewHolder(view: View): RecyclerView.ViewHolder(view), RowView {
+    val icon: ImageView = view.icon
+    val mainName: TextView = view.mainName
+    val additionalText: TextView = view.additionalText
+
+    override fun setIcon(resId: Int) {
+        icon.setImageResource(resId)
+    }
+
+    override fun setName(name: String) {
+        mainName.text = name
+    }
+
+    override fun setAdditionalText(text: String) {
+        additionalText.text = text
+    }
+}
+
+class TransportLineListAdapter(private var context: Context, private var presenter: TransportLinesPresenter): RecyclerView.Adapter<ViewHolder>() {
+
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(context)
         return ViewHolder(layoutInflater.inflate(R.layout.transport_line_list_layout, parent, false))
     }
 
     override fun getItemCount(): Int {
-        return stations.size
+        return presenter.getSize()
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        var item = stations[position]
-        holder.icon.setImageResource(R.drawable.traffic_light)
-        holder.mainName.text = item
+        presenter.onBindTransportLineRowViewAtPosition(position, holder)
     }
 
-    private var stations: List<String> = emptyList()
-
-    fun updateItems(str: String) {
-        stations = interactor.getStationsStartingWith(str)
-        notifyDataSetChanged()
+    override fun getItemViewType(position: Int): Int {
+        return presenter.getItemViewType(position)
     }
 
     /*

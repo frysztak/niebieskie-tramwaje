@@ -11,10 +11,8 @@ import net.grandcentrix.thirtyinch.TiActivity
 
 class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
 
-    private lateinit var interactor: TransportLinesInteractor
     override fun providePresenter(): MainPresenter {
-        interactor = TransportLinesInteractorImpl(baseContext)
-        return MainPresenter(interactor)
+        return MainPresenter()
     }
 
     private lateinit var transportLinesAdapter: TransportLineListAdapter
@@ -22,11 +20,16 @@ class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+        var interactor = TransportLinesInteractorImpl(baseContext)
+        var transportLinesPresenter = TransportLinesPresenter(interactor)
+        transportLinesAdapter = TransportLineListAdapter(this, transportLinesPresenter)
         searchView?.queryHint = "Przystanek..."
         searchView?.setOnQueryTextListener(object: android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
-                transportLinesAdapter.updateItems(newText!!)
-                return true
+                var result = transportLinesPresenter.onQueryTextChange(newText)
+                transportLinesAdapter.notifyDataSetChanged()
+                return result
             }
 
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -35,7 +38,6 @@ class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
         })
 
         recyclerView.layoutManager = LinearLayoutManager(this)
-        transportLinesAdapter = TransportLineListAdapter(this, interactor)
         recyclerView.adapter = transportLinesAdapter
     }
 

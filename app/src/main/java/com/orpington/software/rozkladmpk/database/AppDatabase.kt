@@ -45,11 +45,11 @@ abstract class AppDatabase : RoomDatabase() {
                             Station(8, "Zakrzów")
                     )
                     val lines = listOf(
-                            TransportLine("33",  TransportType.TRAM, Date(), listOf(0, 1, 2)),
-                            TransportLine("3",   TransportType.TRAM, Date(), listOf(3, 1, 2)),
-                            TransportLine("32" , TransportType.TRAM, Date(), listOf(4, 1, 5)),
-                            TransportLine("128", TransportType.BUS,  Date(), listOf(0, 6, 8)),
-                            TransportLine("136", TransportType.BUS,  Date(), listOf(4, 6, 7))
+                            TransportLine("33",  "33: Pilczyce -> pl. Grunwaldzki", TransportType.TRAM, Date(), listOf(0, 1, 2)),
+                            TransportLine("3",   "3: Leśnica -> pl. Grunwaldzki", TransportType.TRAM, Date(), listOf(3, 1, 2)),
+                            TransportLine("32" , "32: Kozanów -> Gaj", TransportType.TRAM, Date(), listOf(4, 1, 5)),
+                            TransportLine("128", "128: Pilczyce -> Zakrzów", TransportType.BUS,  Date(), listOf(0, 6, 8)),
+                            TransportLine("136", "136: Kozanów -> Tarnogaj", TransportType.BUS,  Date(), listOf(4, 6, 7))
                     )
                     INSTANCE?.stationDao()?.insert(stations)
                     INSTANCE?.transportLineDao()?.insert(lines)

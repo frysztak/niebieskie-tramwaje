@@ -16,7 +16,8 @@ data class Station constructor(
     val name: String,
 
     @ColumnInfo(name = "info")
-    val info: String? = null
+    @NonNull
+    val info: String = ""
 )
 
 

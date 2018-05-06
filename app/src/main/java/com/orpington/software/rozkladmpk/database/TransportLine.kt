@@ -22,6 +22,10 @@ data class TransportLine constructor(
     @ColumnInfo(name = "name")
     val name: String,
 
+    @NonNull
+    @ColumnInfo(name = "pretty_name")
+    val prettyName: String,
+
     @ColumnInfo(name = "type")
     @TypeConverters(TransportTypeConverter::class)
     val type: TransportType,
