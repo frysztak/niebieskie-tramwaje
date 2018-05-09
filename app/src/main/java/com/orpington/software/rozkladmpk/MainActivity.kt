@@ -1,13 +1,15 @@
 package com.orpington.software.rozkladmpk
 
 import android.os.Bundle
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.view.Menu
 import android.view.View
-import android.widget.AdapterView
+import android.widget.SearchView
+import android.widget.Toast
 import com.orpington.software.rozkladmpk.database.TransportLine
 import kotlinx.android.synthetic.main.activity_main.*
 import net.grandcentrix.thirtyinch.TiActivity
+
 
 class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
 
@@ -20,12 +22,16 @@ class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         var interactor = TransportLinesInteractorImpl(baseContext)
         var transportLinesPresenter = TransportLinesPresenter(interactor)
-        transportLinesAdapter = TransportLineListAdapter(this, transportLinesPresenter)
+        val listener = object: RecyclerViewClickListener {
+            override fun onClick(view: View, position: Int) {
+                Toast.makeText(applicationContext, "Position " + position, Toast.LENGTH_SHORT).show()
+            }
+        }
+        transportLinesAdapter = TransportLineListAdapter(this, transportLinesPresenter, listener)
         searchView?.queryHint = "Przystanek..."
-        searchView?.setOnQueryTextListener(object: android.widget.SearchView.OnQueryTextListener {
+        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
                 var result = transportLinesPresenter.onQueryTextChange(newText)
                 transportLinesAdapter.notifyDataSetChanged()
@@ -37,8 +43,14 @@ class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
             }
         })
 
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        var layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = layoutManager
         recyclerView.adapter = transportLinesAdapter
+        val dividerItemDecoration = DividerItemDecoration(
+                applicationContext,
+                layoutManager.orientation
+        )
+        recyclerView.addItemDecoration(dividerItemDecoration)
     }
 
     override fun updateCurrentLines(lines: List<TransportLine>, enteredByUser: String) {
