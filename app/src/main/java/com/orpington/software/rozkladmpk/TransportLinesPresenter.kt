@@ -9,9 +9,9 @@ class TransportLinesPresenter(private var interactor: TransportLinesInteractor) 
     private var stations: List<Station> = emptyList()
 
     @Suppress("PrivatePropertyName")
-    private var VIEW_TYPE_TRANSPORT_LINE: Int = 0
+    private var VIEW_TYPE_STATION:        Int = 0
     @Suppress("PrivatePropertyName")
-    private var VIEW_TYPE_STATION:        Int = 1
+    private var VIEW_TYPE_TRANSPORT_LINE: Int = 1
 
     fun onBindTransportLineRowViewAtPosition(position: Int, rowView: RowView) {
         var viewType = getItemViewType(position)
@@ -20,15 +20,22 @@ class TransportLinesPresenter(private var interactor: TransportLinesInteractor) 
         when (viewType) {
             VIEW_TYPE_TRANSPORT_LINE -> {
                 var line = transportLines[idx]
-                rowView.setIcon(if (line.type == TransportType.BUS) R.drawable.bus else R.drawable.train)
-                rowView.setName(transportLines[idx].prettyName)
-                rowView.setAdditionalText("")
+                with(rowView) {
+                    setIcon(when (line.type) {
+                        TransportType.BUS -> R.drawable.bus
+                        TransportType.TRAM -> R.drawable.train
+                    })
+                    setName(line.prettyName)
+                    setAdditionalText("")
+                }
             }
             VIEW_TYPE_STATION -> {
                 var station = stations[idx]
-                rowView.setIcon(R.drawable.traffic_light)
-                rowView.setName(station.name)
-                rowView.setAdditionalText(station.info)
+                with(rowView) {
+                    setIcon(R.drawable.traffic_light)
+                    setName(station.name)
+                    setAdditionalText(station.info)
+                }
             }
         }
     }
@@ -38,17 +45,17 @@ class TransportLinesPresenter(private var interactor: TransportLinesInteractor) 
     }
 
     fun getItemViewType(position: Int): Int {
-        return if (position < transportLines.size) {
-            VIEW_TYPE_TRANSPORT_LINE
-        } else {
+        return if (position < stations.size) {
             VIEW_TYPE_STATION
+        } else {
+            VIEW_TYPE_TRANSPORT_LINE
         }
     }
 
     private fun getIdxForType(viewType: Int, idx: Int): Int {
         return when (viewType) {
-            VIEW_TYPE_TRANSPORT_LINE -> idx
-            VIEW_TYPE_STATION -> idx - transportLines.size
+            VIEW_TYPE_STATION -> idx
+            VIEW_TYPE_TRANSPORT_LINE -> idx - stations.size
             else -> -1
         }
     }
