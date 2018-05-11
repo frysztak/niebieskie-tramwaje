@@ -19,11 +19,12 @@ fun ioThread(f: () -> Unit) {
     Executors.newSingleThreadExecutor().execute(f)
 }
 
-@Database(entities = [(TransportLine::class), (Station::class)], version = 1)
+@Database(entities = [(TransportLine::class), (Station::class), (LineStationJoin::class)], version = 1)
 @TypeConverters(DateTypeConverter::class, ListOfIntTypeConverter::class, TransportTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun transportLineDao(): TransportLineDao
     abstract fun stationDao(): StationDao
+    abstract fun lineStationJoinDao(): LineStationJoinDao
 
     companion object {
         private var INSTANCE: AppDatabase? = null
@@ -42,17 +43,39 @@ abstract class AppDatabase : RoomDatabase() {
                             Station(5, "Gaj"),
                             Station(6, "Grosz"),
                             Station(7, "Tarnogaj"),
-                            Station(8, "Zakrzów")
+                            Station(8, "Zakrzów"),
+                            Station(9, "Księże Małe")
                     )
                     val lines = listOf(
-                            TransportLine("33",  "33: Pilczyce -> pl. Grunwaldzki", TransportType.TRAM, Date(), listOf(0, 1, 2)),
-                            TransportLine("3",   "3: Leśnica -> pl. Grunwaldzki", TransportType.TRAM, Date(), listOf(3, 1, 2)),
-                            TransportLine("32" , "32: Kozanów -> Gaj", TransportType.TRAM, Date(), listOf(4, 1, 5)),
-                            TransportLine("128", "128: Pilczyce -> Zakrzów", TransportType.BUS,  Date(), listOf(0, 6, 8)),
-                            TransportLine("136", "136: Kozanów -> Tarnogaj", TransportType.BUS,  Date(), listOf(4, 6, 7))
+                            TransportLine(0, "33",  TransportType.TRAM),
+                            TransportLine(1, "3",   TransportType.TRAM),
+                            TransportLine(2, "32" , TransportType.TRAM),
+                            TransportLine(3, "128", TransportType.BUS),
+                            TransportLine(4, "136", TransportType.BUS)
                     )
                     INSTANCE?.stationDao()?.insert(stations)
                     INSTANCE?.transportLineDao()?.insert(lines)
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(0, 0, 0))
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(0, 1, 1))
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(0, 2, 2))
+
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(1, 3, 0))
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(1, 1, 1))
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(1, 9, 2))
+
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(2, 4, 0))
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(2, 1, 1))
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(2, 5, 2))
+
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(3, 0, 0))
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(3, 6, 1))
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(3, 1, 2))
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(3, 2, 3))
+
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(4, 4, 0))
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(4, 6, 1))
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(4, 5, 2))
+                    INSTANCE?.lineStationJoinDao()?.insert(LineStationJoin(4, 7, 3))
                 }
             }
 

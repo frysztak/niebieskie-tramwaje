@@ -25,7 +25,7 @@ class TransportLinesPresenter(private var interactor: TransportLinesInteractor) 
                         TransportType.BUS -> R.drawable.bus
                         TransportType.TRAM -> R.drawable.train
                     })
-                    setName(line.prettyName)
+                    setName(interactor.getFullLineName(line.id))
                     setAdditionalText("")
                 }
             }

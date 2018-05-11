@@ -7,4 +7,5 @@ interface TransportLinesInteractor {
     fun getLinesStartingWith(str: String): List<TransportLine>
     fun getAllStationNames(): List<String>
     fun getStationsStartingWith(str: String): List<Station>
+    fun getFullLineName(lineId: Int): String
 }

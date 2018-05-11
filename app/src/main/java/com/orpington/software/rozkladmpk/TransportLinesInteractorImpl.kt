@@ -19,4 +19,12 @@ class TransportLinesInteractorImpl(context: Context): TransportLinesInteractor {
     override fun getStationsStartingWith(str: String): List<Station> {
         return db.stationDao().getStationNamesStartingWith(str)
     }
+
+    override fun getFullLineName(lineId: Int): String {
+        var stationNames = db.lineStationJoinDao().getFirstAndLastStationName(lineId)
+        var lineName = db.transportLineDao().getName(lineId)
+        var arrow = "->"
+        return "$lineName: ${stationNames.first()} $arrow ${stationNames.last()}"
+    }
+
 }
