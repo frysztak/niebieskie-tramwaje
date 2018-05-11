@@ -8,4 +8,6 @@ interface TransportLinesInteractor {
     fun getAllStationNames(): List<String>
     fun getStationsStartingWith(str: String): List<Station>
     fun getFullLineName(lineId: Int): String
+    fun getLinesForStation(stationId: Int): List<TransportLine>
+    fun getStationName(stationId: Int): String
 }

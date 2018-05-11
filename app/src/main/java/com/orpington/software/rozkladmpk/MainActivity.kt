@@ -6,12 +6,14 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
-import com.orpington.software.rozkladmpk.database.TransportLine
 import kotlinx.android.synthetic.main.activity_main.*
 import net.grandcentrix.thirtyinch.TiActivity
+import android.content.Intent
 
 
-class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
+
+
+class MainActivity : TiActivity<MainPresenter, NavigatingView>(), NavigatingView {
 
     override fun providePresenter(): MainPresenter {
         return MainPresenter()
@@ -23,9 +25,10 @@ class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
         setContentView(R.layout.activity_main)
 
         var interactor = TransportLinesInteractorImpl(baseContext)
-        var transportLinesPresenter = TransportLinesPresenter(interactor)
+        var transportLinesPresenter = TransportLinesPresenter(interactor, this)
         val listener = object: RecyclerViewClickListener {
             override fun onClick(view: View, position: Int) {
+                transportLinesPresenter.onItemClicked(position)
                 Toast.makeText(applicationContext, "Position " + position, Toast.LENGTH_SHORT).show()
             }
         }
@@ -53,8 +56,11 @@ class MainActivity : TiActivity<MainPresenter, MainView>(), MainView {
         recyclerView.addItemDecoration(dividerItemDecoration)
     }
 
-    override fun updateCurrentLines(lines: List<TransportLine>, enteredByUser: String) {
-        //transportLinesAdapter.updateItems(lines, enteredByUser)
+    override fun navigateToStationActivity(stationId: Int) {
+        val i = Intent(baseContext, StationActivity::class.java)
+        i.putExtra("stationId", stationId)
+        startActivity(i)
     }
+
 
 }

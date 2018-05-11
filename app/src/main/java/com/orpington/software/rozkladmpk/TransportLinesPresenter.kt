@@ -4,7 +4,10 @@ import com.orpington.software.rozkladmpk.database.Station
 import com.orpington.software.rozkladmpk.database.TransportLine
 import com.orpington.software.rozkladmpk.database.TransportType
 
-class TransportLinesPresenter(private var interactor: TransportLinesInteractor) {
+class TransportLinesPresenter(
+    private var interactor: TransportLinesInteractor,
+    private var view: NavigatingView
+) {
     private var transportLines: List<TransportLine> = emptyList()
     private var stations: List<Station> = emptyList()
 
@@ -67,6 +70,19 @@ class TransportLinesPresenter(private var interactor: TransportLinesInteractor) 
             return true
         }
         return false
+    }
+
+    fun onItemClicked(position: Int) {
+        when (getItemViewType(position)) {
+            VIEW_TYPE_STATION -> {
+                var station = stations[getIdxForType(VIEW_TYPE_STATION, position)]
+                view.navigateToStationActivity(station.id)
+            }
+        }
+    }
+
+    fun loadLinesForStation(stationId: Int) {
+        transportLines = interactor.getLinesForStation(stationId)
     }
 }
 

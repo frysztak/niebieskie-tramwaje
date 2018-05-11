@@ -4,7 +4,7 @@ import com.orpington.software.rozkladmpk.database.TransportLine
 import net.grandcentrix.thirtyinch.TiView
 import net.grandcentrix.thirtyinch.callonmainthread.CallOnMainThread
 
-interface MainView: TiView {
+interface NavigatingView: TiView {
     @CallOnMainThread
-    fun updateCurrentLines(lines: List<TransportLine>, enteredByUser: String)
+    fun navigateToStationActivity(stationId: Int)
 }

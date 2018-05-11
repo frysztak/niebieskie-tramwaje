@@ -14,4 +14,7 @@ interface StationDao {
 
     @Query("SELECT DISTINCT * from stations WHERE name LIKE '%' || :name || '%'")
     fun getStationNamesStartingWith(name: String): List<Station>
+
+    @Query("SELECT name from stations WHERE id=:stationId")
+    fun getStationName(stationId: Int): String
 }

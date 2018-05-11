@@ -17,6 +17,14 @@ interface LineStationJoinDao {
     fun getStationsForLine(lineId: Int): List<Station>
 
     @Query("""
+        SELECT * FROM transport_lines
+        INNER JOIN line_station_join ON transport_lines.id=line_station_join.lineId
+        WHERE line_station_join.stationId=:stationId
+        ORDER BY ordinalNumber
+        """)
+    fun getLinesForStation(stationId: Int): List<TransportLine>
+
+    @Query("""
         SELECT name FROM stations
         WHERE id IN
         (

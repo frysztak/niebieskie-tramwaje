@@ -27,4 +27,12 @@ class TransportLinesInteractorImpl(context: Context): TransportLinesInteractor {
         return "$lineName: ${stationNames.first()} $arrow ${stationNames.last()}"
     }
 
+    override fun getLinesForStation(stationId: Int): List<TransportLine> {
+        return db.lineStationJoinDao().getLinesForStation(stationId)
+    }
+
+    override fun getStationName(stationId: Int): String {
+        return db.stationDao().getStationName(stationId)
+    }
+
 }
