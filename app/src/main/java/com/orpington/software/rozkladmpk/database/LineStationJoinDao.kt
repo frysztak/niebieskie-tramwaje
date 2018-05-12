@@ -4,6 +4,7 @@ import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.Query
 
+/*
 @Dao
 interface LineStationJoinDao {
     @Insert
@@ -14,7 +15,7 @@ interface LineStationJoinDao {
         INNER JOIN line_station_join ON stations.id=line_station_join.stationId
         WHERE line_station_join.lineId=:lineId
         ORDER BY ordinalNumber""")
-    fun getStationsForLine(lineId: Int): List<Station>
+    fun getStationsForLine(lineId: Int): List<Stop>
 
     @Query("""
         SELECT * FROM transport_lines
@@ -42,3 +43,4 @@ interface LineStationJoinDao {
     fun getFirstAndLastStationName(lineId: Int): List<String>
 
 }
+    */

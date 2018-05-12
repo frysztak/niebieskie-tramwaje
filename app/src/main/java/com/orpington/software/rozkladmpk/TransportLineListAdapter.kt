@@ -1,21 +1,12 @@
 package com.orpington.software.rozkladmpk
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import com.orpington.software.rozkladmpk.database.TransportLine
-import com.orpington.software.rozkladmpk.database.TransportType
 import kotlinx.android.synthetic.main.transport_line_list_layout.view.*
 
 interface RowView {
