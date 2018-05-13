@@ -5,5 +5,5 @@ import net.grandcentrix.thirtyinch.callonmainthread.CallOnMainThread
 
 interface NavigatingView: TiView {
     @CallOnMainThread
-    fun navigateToStationActivity(stationId: Int)
+    fun navigateToStopActivity(stopName: String)
 }

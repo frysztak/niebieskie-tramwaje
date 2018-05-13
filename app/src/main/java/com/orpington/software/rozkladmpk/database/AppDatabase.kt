@@ -17,12 +17,20 @@ fun ioThread(f: () -> Unit) {
     Executors.newSingleThreadExecutor().execute(f)
 }
 
-@Database(entities = [(Route::class), (Stop::class), (RouteType::class)], version = 1)
+@Database(
+    entities = [(Route::class), (RouteType::class),
+        (Stop::class), (StopTime::class),
+        (Trip::class), VariantStop::class ],
+    version = 1
+)
 @TypeConverters(DateTypeConverter::class, ListOfIntTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun routeDao(): RouteDao
-    abstract fun stationDao(): StopDao
+    abstract fun stopDao(): StopDao
     abstract fun routeTypeDao(): RouteTypeDao
+    abstract fun stopTimeDao(): StopTimeDao
+    abstract fun tripDao(): TripDao
+    abstract fun variantStopDao(): VariantStopDao
     //abstract fun lineStationJoinDao(): LineStationJoinDao
 
     companion object {

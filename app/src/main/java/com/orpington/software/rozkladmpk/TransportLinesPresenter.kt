@@ -1,74 +1,88 @@
 package com.orpington.software.rozkladmpk
 
-import com.orpington.software.rozkladmpk.database.Stop
-import com.orpington.software.rozkladmpk.database.Route
-import com.orpington.software.rozkladmpk.database.RouteTypeEnum
-import com.orpington.software.rozkladmpk.database.getEnumForRouteType
-
-//import com.orpington.software.rozkladmpk.database.TransportType
+import com.orpington.software.rozkladmpk.database.*
 
 class TransportLinesPresenter(
     private var interactor: TransportLinesInteractor,
     private var view: NavigatingView
 ) {
-    private var route: List<Route> = emptyList()
     private var stops: List<String> = emptyList()
+    private var generalRoutes: List<Route> = emptyList()
+    private var specificRoutes: List<VariantStopDao.RouteInfo> = emptyList()
 
     @Suppress("PrivatePropertyName")
-    private var VIEW_TYPE_STATION:        Int = 0
+    private var VIEW_TYPE_STOP:        Int = 0
     @Suppress("PrivatePropertyName")
-    private var VIEW_TYPE_TRANSPORT_LINE: Int = 1
+    private var VIEW_TYPE_GENERAL_ROUTE: Int = 1
+    @Suppress("PrivatePropertyName")
+    private var VIEW_TYPE_SPECIFIC_ROUTE: Int = 2
+
+    private fun getIconIdForRoute(routeTypeId: Int): Int {
+        return when (getEnumForRouteType(routeTypeId)) {
+            RouteTypeEnum.NORMAL_BUS,
+            RouteTypeEnum.SUBURBAN_BUS,
+            RouteTypeEnum.EXPRESS_BUS,
+            RouteTypeEnum.ZONE_BUS,
+            RouteTypeEnum.NIGHT_BUS -> R.drawable.bus
+
+            RouteTypeEnum.NORMAL_TRAM -> R.drawable.train
+            RouteTypeEnum.INVALID -> R.drawable.train // FIXME
+        }
+    }
 
     fun onBindTransportLineRowViewAtPosition(position: Int, rowView: RowView) {
         var viewType = getItemViewType(position)
         var idx = getIdxForType(viewType, position)
 
         when (viewType) {
-            VIEW_TYPE_TRANSPORT_LINE -> {
-                var route = route[idx]
+            VIEW_TYPE_GENERAL_ROUTE -> {
+                var route = generalRoutes[idx]
                 var routeType = interactor.getRouteType(route.id)
                 with(rowView) {
-                    setIcon(when (getEnumForRouteType(routeType)) {
-                        RouteTypeEnum.NORMAL_BUS,
-                        RouteTypeEnum.SUBURBAN_BUS,
-                        RouteTypeEnum.EXPRESS_BUS,
-                        RouteTypeEnum.ZONE_BUS,
-                        RouteTypeEnum.NIGHT_BUS -> R.drawable.bus
-
-                        RouteTypeEnum.NORMAL_TRAM -> R.drawable.train
-                        RouteTypeEnum.INVALID -> R.drawable.train // FIXME
-                    })
+                    setIcon(getIconIdForRoute(routeType.id))
                     setName(route.id)
-                    setAdditionalText("")
+                    setAdditionalText(routeType.name)
                 }
             }
-            VIEW_TYPE_STATION -> {
+
+            VIEW_TYPE_STOP -> {
                 var stop = stops[idx]
                 with(rowView) {
                     setIcon(R.drawable.traffic_light)
                     setName(stop)
-                    //setAdditionalText(station.info)
+                    setAdditionalText("")
+                }
+            }
+
+            VIEW_TYPE_SPECIFIC_ROUTE -> {
+                var route = specificRoutes[idx]
+                var routeType = interactor.getRouteType(route.id)
+                with(rowView) {
+                    setIcon(getIconIdForRoute(routeType.id))
+                    setName("${route.id}: ${route.firstStopName} -> ${route.lastStopName}")
+                    setAdditionalText(routeType.name)
                 }
             }
         }
     }
 
     fun getSize(): Int {
-        return route.size + stops.size
+        return generalRoutes.size + stops.size + specificRoutes.size
     }
 
     fun getItemViewType(position: Int): Int {
-        return if (position < stops.size) {
-            VIEW_TYPE_STATION
-        } else {
-            VIEW_TYPE_TRANSPORT_LINE
+        return when {
+            position < stops.size -> VIEW_TYPE_STOP
+            position < stops.size + generalRoutes.size -> VIEW_TYPE_GENERAL_ROUTE
+            else -> VIEW_TYPE_SPECIFIC_ROUTE
         }
     }
 
     private fun getIdxForType(viewType: Int, idx: Int): Int {
         return when (viewType) {
-            VIEW_TYPE_STATION -> idx
-            VIEW_TYPE_TRANSPORT_LINE -> idx - stops.size
+            VIEW_TYPE_STOP -> idx
+            VIEW_TYPE_GENERAL_ROUTE -> idx - stops.size
+            VIEW_TYPE_SPECIFIC_ROUTE -> idx - stops.size - generalRoutes.size
             else -> -1
         }
     }
@@ -76,7 +90,7 @@ class TransportLinesPresenter(
     fun onQueryTextChange(newText: String?): Boolean {
         if (newText != null) {
             stops = interactor.getStopNamesStartingWith(newText)
-            route = interactor.getLinesStartingWith(newText)
+            generalRoutes = interactor.getLinesStartingWith(newText)
             return true
         }
         return false
@@ -84,15 +98,28 @@ class TransportLinesPresenter(
 
     fun onItemClicked(position: Int) {
         when (getItemViewType(position)) {
-            VIEW_TYPE_STATION -> {
-                var station = stops[getIdxForType(VIEW_TYPE_STATION, position)]
-                view.navigateToStationActivity(0) // FIXME
+            VIEW_TYPE_STOP -> {
+                var stop = stops[getIdxForType(VIEW_TYPE_STOP, position)]
+                view.navigateToStopActivity(stop)
             }
         }
     }
 
-    fun loadLinesForStation(stationId: Int) {
-        route = interactor.getLinesForStation(stationId)
+    fun loadRoutesForStop(stopName: String) {
+        var routes  = interactor.getRouteInfoForStop(stopName)
+        specificRoutes = mergeRoutes(routes)
+    }
+
+    private fun mergeRoutes(routes: List<VariantStopDao.RouteInfo>): List<VariantStopDao.RouteInfo> {
+        var mergedRoutes: List<VariantStopDao.RouteInfo> = emptyList()
+        var groups = routes.groupBy { it.id + it.firstStopName + it.lastStopName }
+        for ((key, items) in groups) {
+            var routeInfo = items.first()
+            routeInfo.variantIds = items.map { it.variantIds.first() }
+            mergedRoutes += routeInfo
+
+        }
+        return mergedRoutes
     }
 }
 

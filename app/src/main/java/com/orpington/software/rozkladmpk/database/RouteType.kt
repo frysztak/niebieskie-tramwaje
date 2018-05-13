@@ -14,13 +14,13 @@ enum class RouteTypeEnum {
     NIGHT_BUS
 }
 
-public fun getEnumForRouteType(routeType: RouteType): RouteTypeEnum {
-    return when (routeType.id) {
+public fun getEnumForRouteType(routeTypeId: Int): RouteTypeEnum {
+    return when (routeTypeId) {
         30 -> RouteTypeEnum.NORMAL_BUS
         31 -> RouteTypeEnum.NORMAL_TRAM
         34 -> RouteTypeEnum.SUBURBAN_BUS
         35 -> RouteTypeEnum.EXPRESS_BUS
-        40 -> RouteTypeEnum.ZONE_BUS
+        39 -> RouteTypeEnum.ZONE_BUS
         40 -> RouteTypeEnum.NIGHT_BUS
         else -> RouteTypeEnum.INVALID
     }

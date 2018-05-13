@@ -56,9 +56,9 @@ class MainActivity : TiActivity<MainPresenter, NavigatingView>(), NavigatingView
         recyclerView.addItemDecoration(dividerItemDecoration)
     }
 
-    override fun navigateToStationActivity(stationId: Int) {
-        val i = Intent(baseContext, StationActivity::class.java)
-        i.putExtra("stationId", stationId)
+    override fun navigateToStopActivity(stopName: String) {
+        val i = Intent(baseContext, StopActivity::class.java)
+        i.putExtra("stopName", stopName)
         startActivity(i)
     }
 

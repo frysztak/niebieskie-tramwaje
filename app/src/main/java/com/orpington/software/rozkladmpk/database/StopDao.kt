@@ -17,4 +17,7 @@ interface StopDao {
 
     @Query("SELECT stop_name from stops WHERE stop_id=:stopId")
     fun getStopName(stopId: Int): String
+
+    @Query("SELECT DISTINCT stop_id FROM stops WHERE stop_name=:stopName")
+    fun getStopIdsGivenName(stopName: String): List<Int>
 }

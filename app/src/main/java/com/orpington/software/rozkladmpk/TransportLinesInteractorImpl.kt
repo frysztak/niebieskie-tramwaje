@@ -1,9 +1,7 @@
 package com.orpington.software.rozkladmpk
 
 import android.content.Context
-import com.orpington.software.rozkladmpk.database.AppDatabase
-import com.orpington.software.rozkladmpk.database.Route
-import com.orpington.software.rozkladmpk.database.RouteType
+import com.orpington.software.rozkladmpk.database.*
 
 class TransportLinesInteractorImpl(context: Context): TransportLinesInteractor {
     private var db: AppDatabase = AppDatabase.getDatabase(context)
@@ -13,11 +11,11 @@ class TransportLinesInteractorImpl(context: Context): TransportLinesInteractor {
     }
 
     override fun getAllStationNames(): List<String> {
-        return db.stationDao().getAllStopNames()
+        return db.stopDao().getAllStopNames()
     }
 
     override fun getStopNamesStartingWith(str: String): List<String> {
-        return db.stationDao().getStopNamesStartingWith(str)
+        return db.stopDao().getStopNamesStartingWith(str)
     }
 
     override fun getFullLineName(lineId: Int): String {
@@ -30,13 +28,12 @@ class TransportLinesInteractorImpl(context: Context): TransportLinesInteractor {
         return "dummy"
     }
 
-    override fun getLinesForStation(stationId: Int): List<Route> {
-        //return db.lineStationJoinDao().getLinesForStation(stationId)
-        return emptyList()
+    override fun getRouteInfoForStop(stopName: String): List<VariantStopDao.RouteInfo> {
+        return db.variantStopDao().getInfoForStopName(stopName)
     }
 
     override fun getStationName(stationId: Int): String {
-        return db.stationDao().getStopName(stationId)
+        return db.stopDao().getStopName(stationId)
     }
 
     override fun getRouteType(routeId: String): RouteType {
