@@ -1,6 +1,7 @@
 package com.orpington.software.rozkladmpk
 
 import com.orpington.software.rozkladmpk.database.*
+import kotlin.Comparator
 
 class TransportLinesPresenter(
     private var interactor: TransportLinesInteractor,
@@ -56,11 +57,10 @@ class TransportLinesPresenter(
 
             VIEW_TYPE_SPECIFIC_ROUTE -> {
                 var route = specificRoutes[idx]
-                var routeType = interactor.getRouteType(route.id)
                 with(rowView) {
-                    setIcon(getIconIdForRoute(routeType.id))
+                    setIcon(getIconIdForRoute(route.typeId))
                     setName("${route.id}: ${route.firstStopName} -> ${route.lastStopName}")
-                    setAdditionalText(routeType.name)
+                    setAdditionalText(route.typeName)
                 }
             }
         }
@@ -107,7 +107,7 @@ class TransportLinesPresenter(
 
     fun loadRoutesForStop(stopName: String) {
         var routes  = interactor.getRouteInfoForStop(stopName)
-        specificRoutes = mergeRoutes(routes)
+        specificRoutes = sortRoutes(mergeRoutes(routes))
     }
 
     private fun mergeRoutes(routes: List<VariantStopDao.RouteInfo>): List<VariantStopDao.RouteInfo> {
@@ -120,6 +120,32 @@ class TransportLinesPresenter(
 
         }
         return mergedRoutes
+    }
+
+    private val routeInfoComparator = Comparator<VariantStopDao.RouteInfo> { p0, p1 ->
+        var intId0 = p0.id.toIntOrNull()
+        var intId1 = p1.id.toIntOrNull()
+        if (intId0 != null && intId1 != null) {
+            intId0.compareTo(intId1)
+        } else {
+            p0.id.compareTo(p1.id)
+        }
+    }
+
+    private fun sortRoutes(routes: List<VariantStopDao.RouteInfo>): List<VariantStopDao.RouteInfo> {
+        var sortedRoutes: List<VariantStopDao.RouteInfo> = emptyList()
+
+        var groups = routes.groupBy { it.typeId }.mapValues { it.value.toMutableList() }
+        groups.forEach { it.value.sortWith(routeInfoComparator)}
+        val order = arrayOf(35, 30, 31, 34, 39, 40)
+
+        order.forEach {
+            if (it in groups) {
+                sortedRoutes += groups[it]!!
+            }
+        }
+
+        return sortedRoutes
     }
 }
 
