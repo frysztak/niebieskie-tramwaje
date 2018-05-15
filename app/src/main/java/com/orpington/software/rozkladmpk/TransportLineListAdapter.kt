@@ -21,7 +21,7 @@ interface RecyclerViewClickListener {
 
 class ViewHolder(
    view: View,
-   private var clickListener: RecyclerViewClickListener
+   private var clickListener: RecyclerViewClickListener?
 ): RecyclerView.ViewHolder(view),
    RowView,
    View.OnClickListener
@@ -47,14 +47,14 @@ class ViewHolder(
     }
 
     override fun onClick(view: View) {
-        clickListener.onClick(view, adapterPosition)
+        clickListener?.onClick(view, adapterPosition)
     }
 }
 
 class TransportLineListAdapter(
    private var context: Context,
    private var presenter: TransportLinesPresenter,
-   private var clickListener: RecyclerViewClickListener
+   private var clickListener: RecyclerViewClickListener?
 ): RecyclerView.Adapter<ViewHolder>()
 {
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
