@@ -13,6 +13,10 @@ import com.orpington.software.rozkladmpk.adapter.StopsAndRoutesRecyclerAdapter
 import com.orpington.software.rozkladmpk.presenter.SpecificRoutesPresenter
 import com.orpington.software.rozkladmpk.view.NavigatingView
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.withContext
 
 
 class StopActivity : AppCompatActivity(), NavigatingView {
@@ -51,8 +55,12 @@ class StopActivity : AppCompatActivity(), NavigatingView {
         recyclerView.addItemDecoration(dividerItemDecoration)
 
         title = stopName
-        presenter.loadRoutesForStop(stopName)
-        recyclerAdapter.notifyDataSetChanged()
+        async(CommonPool) {
+            presenter.loadRoutesForStop(stopName)
+            withContext(UI) {
+                recyclerAdapter.notifyDataSetChanged()
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
