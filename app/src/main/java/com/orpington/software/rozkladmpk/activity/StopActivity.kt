@@ -1,4 +1,4 @@
-package com.orpington.software.rozkladmpk
+package com.orpington.software.rozkladmpk.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -6,13 +6,22 @@ import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
-import kotlinx.android.synthetic.main.activity_station.*
+import com.orpington.software.rozkladmpk.R
+import com.orpington.software.rozkladmpk.TransportLinesInteractorImpl
+import com.orpington.software.rozkladmpk.adapter.RecyclerViewClickListener
+import com.orpington.software.rozkladmpk.adapter.StopsAndRoutesRecyclerAdapter
+import com.orpington.software.rozkladmpk.presenter.SpecificRoutesPresenter
+import com.orpington.software.rozkladmpk.view.NavigatingView
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class StopActivity : AppCompatActivity(), NavigatingView {
     override fun navigateToStopActivity(stationName: String) {
         // remove me
     }
+
+    private lateinit var presenter: SpecificRoutesPresenter
+    private lateinit var recyclerAdapter: StopsAndRoutesRecyclerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,17 +31,19 @@ class StopActivity : AppCompatActivity(), NavigatingView {
         var stopName = intent.getStringExtra("stopName")
 
         var interactor = TransportLinesInteractorImpl(baseContext)
-        var transportLinesPresenter = TransportLinesPresenter(interactor, this)
-        val listener = object: RecyclerViewClickListener {
-            override fun onClick(view: View, position: Int) {
-                transportLinesPresenter.onItemClicked(position)
+        presenter = SpecificRoutesPresenter(interactor, this)
+        recyclerAdapter = StopsAndRoutesRecyclerAdapter(
+            presenter,
+            object : RecyclerViewClickListener {
+                override fun onClick(view: View, position: Int) {
+                    presenter.onItemClicked(position)
+                }
             }
-        }
-        var transportLinesAdapter = TransportLineListAdapter(this, transportLinesPresenter, listener)
+        )
 
         var layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = transportLinesAdapter
+        recyclerView.adapter = recyclerAdapter
         val dividerItemDecoration = DividerItemDecoration(
                 applicationContext,
                 layoutManager.orientation
@@ -40,8 +51,8 @@ class StopActivity : AppCompatActivity(), NavigatingView {
         recyclerView.addItemDecoration(dividerItemDecoration)
 
         title = stopName
-        transportLinesPresenter.loadRoutesForStop(stopName)
-        transportLinesAdapter.notifyDataSetChanged()
+        presenter.loadRoutesForStop(stopName)
+        recyclerAdapter.notifyDataSetChanged()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
