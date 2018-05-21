@@ -8,10 +8,9 @@ import android.view.MenuItem
 import android.view.View
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.TransportLinesInteractorImpl
-import com.orpington.software.rozkladmpk.adapter.RecyclerViewClickListener
-import com.orpington.software.rozkladmpk.adapter.StopsAndRoutesRecyclerAdapter
 import com.orpington.software.rozkladmpk.presenter.SpecificRoutesPresenter
 import com.orpington.software.rozkladmpk.view.NavigatingView
+import com.xwray.groupie.GroupAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
@@ -25,7 +24,7 @@ class StopActivity : AppCompatActivity(), NavigatingView {
     }
 
     private lateinit var presenter: SpecificRoutesPresenter
-    private lateinit var recyclerAdapter: StopsAndRoutesRecyclerAdapter
+    private lateinit var recyclerAdapter: GroupAdapter<com.xwray.groupie.kotlinandroidextensions.ViewHolder>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,14 +35,7 @@ class StopActivity : AppCompatActivity(), NavigatingView {
 
         var interactor = TransportLinesInteractorImpl(baseContext)
         presenter = SpecificRoutesPresenter(interactor, this)
-        recyclerAdapter = StopsAndRoutesRecyclerAdapter(
-            presenter,
-            object : RecyclerViewClickListener {
-                override fun onClick(view: View, position: Int) {
-                    presenter.onItemClicked(position)
-                }
-            }
-        )
+        recyclerAdapter = GroupAdapter()
 
         var layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
@@ -57,8 +49,9 @@ class StopActivity : AppCompatActivity(), NavigatingView {
         title = stopName
         async(CommonPool) {
             presenter.loadRoutesForStop(stopName)
+            val groups = presenter.getGroupedRoutes()
             withContext(UI) {
-                recyclerAdapter.notifyDataSetChanged()
+                recyclerAdapter.addAll(groups)
             }
         }
     }

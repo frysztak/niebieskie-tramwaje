@@ -1,16 +1,13 @@
 package com.orpington.software.rozkladmpk.adapter
 
-import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import com.orpington.software.rozkladmpk.R
-import com.orpington.software.rozkladmpk.presenter.BindingPresenter
-import com.orpington.software.rozkladmpk.presenter.StopsAndRoutesPresenter
-import kotlinx.android.synthetic.main.transport_line_list_layout.view.*
+import com.xwray.groupie.ExpandableGroup
+import com.xwray.groupie.ExpandableItem
+import com.xwray.groupie.kotlinandroidextensions.Item
+import kotlinx.android.synthetic.main.transport_line_list_layout.*
 
+/*
 interface RowView {
     fun setIcon(resId: Int)
     fun setName(name: String)
@@ -52,13 +49,55 @@ class ViewHolder(
         clickListener.onClick(view, adapterPosition)
     }
 }
+*/
 
+open class RouteListItem(
+    private val name: String,
+    private val iconId: Int,
+    private val additionalInfo: String
+): Item() {
+    override fun getLayout() = R.layout.transport_line_list_layout
+
+    override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
+        with(viewHolder) {
+            mainName.text = name
+            icon.setImageResource(iconId)
+            additionalText.text = additionalInfo
+        }
+
+        viewHolder.itemView.setOnClickListener(onClickListener)
+    }
+
+    var onClickListener: View.OnClickListener? = null
+}
+
+class HeaderListItem(
+    private val name: String,
+    private val iconId: Int,
+    private val additionalInfo: String
+): RouteListItem(name, iconId, additionalInfo), ExpandableItem {
+    private lateinit var expandableGroup: ExpandableGroup
+
+    init {
+        onClickListener = View.OnClickListener { expandableGroup.onToggleExpanded() }
+    }
+
+    override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
+        super.bind(viewHolder, position)
+    }
+
+    override fun setExpandableGroup(onToggleListener: ExpandableGroup) {
+        this.expandableGroup = onToggleListener
+    }
+}
+
+/*
 class StopsAndRoutesRecyclerAdapter(
     private var presenter: BindingPresenter,
     private var clickListener: RecyclerViewClickListener
 ): RecyclerView.Adapter<ViewHolder>()
 {
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent?.context)
         return ViewHolder(layoutInflater.inflate(R.layout.transport_line_list_layout, parent, false), clickListener)
     }
@@ -75,3 +114,4 @@ class StopsAndRoutesRecyclerAdapter(
         return presenter.getItemViewType(position)
     }
 }
+    */

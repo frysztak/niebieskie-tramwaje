@@ -1,15 +1,18 @@
 package com.orpington.software.rozkladmpk.presenter
 
+import android.view.View
 import com.orpington.software.rozkladmpk.R
-import com.orpington.software.rozkladmpk.adapter.RowView
 import com.orpington.software.rozkladmpk.TransportLinesInteractor
+import com.orpington.software.rozkladmpk.adapter.RouteListItem
 import com.orpington.software.rozkladmpk.database.*
 import com.orpington.software.rozkladmpk.view.NavigatingView
+import com.xwray.groupie.Group
+import com.xwray.groupie.Section
 
 class StopsAndRoutesPresenter(
     private var interactor: TransportLinesInteractor,
     private var view: NavigatingView
-): BindingPresenter {
+) {
     private var stops: List<String> = emptyList()
     private var generalRoutes: List<Route> = emptyList()
 
@@ -29,6 +32,7 @@ class StopsAndRoutesPresenter(
         }
     }
 
+    /*
     override fun onBindTransportLineRowViewAtPosition(position: Int, rowView: RowView) {
         var viewType = getItemViewType(position)
         var idx = getIdxForType(viewType, position)
@@ -65,6 +69,7 @@ class StopsAndRoutesPresenter(
             else -> VIEW_TYPE_GENERAL_ROUTE
         }
     }
+    */
 
     private fun getIdxForType(viewType: Int, idx: Int): Int {
         return when (viewType) {
@@ -82,12 +87,48 @@ class StopsAndRoutesPresenter(
     }
 
     fun onItemClicked(position: Int) {
+        /*
         when (getItemViewType(position)) {
             VIEW_TYPE_STOP -> {
                 var stop = stops[getIdxForType(VIEW_TYPE_STOP, position)]
                 view.navigateToStopActivity(stop)
             }
         }
+        */
+    }
+
+    private fun buildStopItem(
+        name: String
+    ): RouteListItem {
+        val name = name
+        val icon = R.drawable.traffic_light
+        val additionalText = ""
+        val item = RouteListItem(name, icon, additionalText)
+        item.onClickListener = object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                view.navigateToStopActivity(name)
+            }
+        }
+        return item
+    }
+
+    private fun buildRouteItem(
+        name: String,
+        iconId: Int,
+        additionalText: String
+    ): RouteListItem {
+        return RouteListItem(name, iconId, additionalText)
+    }
+
+    fun getListSection(): Section {
+        val section = Section()
+        section.addAll(stops.map { buildStopItem(it) })
+        //section.addAll(generalRoutes.map { route ->
+        //    val routeType = interactor.getRouteType(route.id)
+        //    buildRouteItem(route.id, getIconIdForRoute(routeType.id), routeType.name)
+        //})
+
+        return section
     }
 
 }
