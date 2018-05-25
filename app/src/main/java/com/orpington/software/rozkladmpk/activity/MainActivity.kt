@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import com.orpington.software.rozkladmpk.*
+import com.orpington.software.rozkladmpk.adapter.RouteListItem
 import com.orpington.software.rozkladmpk.presenter.StopsAndRoutesPresenter
 import com.orpington.software.rozkladmpk.view.MainActivityView
 import com.orpington.software.rozkladmpk.view.NavigatingView
@@ -30,15 +31,12 @@ class MainActivity : AppCompatActivity(), MainActivityView, NavigatingView {
         var interactor = TransportLinesInteractorImpl(baseContext)
         presenter = StopsAndRoutesPresenter(interactor, this)
         recyclerAdapter = GroupAdapter()
-        /*
-            StopsAndRoutesRecyclerAdapter(
-            presenter,
-            object : RecyclerViewClickListener {
-                override fun onClick(view: View, position: Int) {
-                    presenter.onItemClicked(position)
-                }
+        recyclerAdapter.setOnItemClickListener { item, _ ->
+            if (item is RouteListItem) {
+                presenter.onItemClicked(item.name)
             }
-        ) */
+        }
+
         searchView?.queryHint = "Przystanek..."
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
