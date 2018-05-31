@@ -20,7 +20,12 @@ open class RouteListItem(
     override fun bind(viewHolder: com.xwray.groupie.kotlinandroidextensions.ViewHolder, position: Int) {
         with(viewHolder) {
             mainName.text = name
-            icon.setImageResource(iconId)
+            if (iconId != -1) {
+                icon.visibility = View.VISIBLE
+                icon.setImageResource(iconId)
+            } else {
+                icon.visibility = View.GONE
+            }
             additionalText.text = additionalInfo
             expandIcon.visibility = View.GONE
         }

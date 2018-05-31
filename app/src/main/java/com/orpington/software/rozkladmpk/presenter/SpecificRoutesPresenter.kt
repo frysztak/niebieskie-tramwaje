@@ -59,10 +59,9 @@ class SpecificRoutesPresenter(
     private fun buildRouteItem(
         routeInfo: VariantStopDao.RouteInfo
     ): RouteListItem {
-        val name = "${routeInfo.id}: ${routeInfo.firstStopName} -> ${routeInfo.lastStopName}"
-        val icon = getIconIdForRoute(routeInfo.typeId)
-        val additionalText = "${routeInfo.typeName}"
-        return RouteListItem(name, icon, additionalText)
+        val name = "${routeInfo.firstStopName} -> ${routeInfo.lastStopName}"
+        val additionalText = ""
+        return RouteListItem(name, -1, additionalText)
     }
 
     private fun mergeRoutes(routes: List<VariantStopDao.RouteInfo>): List<VariantStopDao.RouteInfo> {
