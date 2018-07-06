@@ -3,7 +3,6 @@ package com.orpington.software.rozkladmpk.activity
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.view.View
 import android.widget.SearchView
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.Intent
@@ -16,12 +15,10 @@ import com.orpington.software.rozkladmpk.data.source.remote.ApiClient
 import com.orpington.software.rozkladmpk.data.source.remote.ApiService
 import com.orpington.software.rozkladmpk.data.source.remote.RemoteDataSource
 import com.orpington.software.rozkladmpk.presenter.StopsAndRoutesPresenter
+import com.orpington.software.rozkladmpk.routeVariants.RouteVariantsActivity
 import com.orpington.software.rozkladmpk.view.MainActivityView
 import com.orpington.software.rozkladmpk.view.NavigatingView
 import com.xwray.groupie.GroupAdapter
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
 
 
 class MainActivity : AppCompatActivity(), MainActivityView, NavigatingView {
@@ -75,7 +72,7 @@ class MainActivity : AppCompatActivity(), MainActivityView, NavigatingView {
     }
 
     override fun navigateToStopActivity(stopName: String) {
-        val i = Intent(baseContext, StopActivity::class.java)
+        val i = Intent(baseContext, RouteVariantsActivity::class.java)
         i.putExtra("stopName", stopName)
         startActivity(i)
     }

@@ -1,6 +1,7 @@
 package com.orpington.software.rozkladmpk.data.source.remote
 
 import android.util.Log
+import com.orpington.software.rozkladmpk.data.model.RouteVariants
 import com.orpington.software.rozkladmpk.data.model.StopNames
 import com.orpington.software.rozkladmpk.data.source.IDataSource
 import retrofit2.Call
@@ -30,8 +31,30 @@ class RemoteDataSource private constructor(private val service: ApiService) : IR
                 Log.e(LOG_TAG, "Error:" + t.message)
             }
         })
-
     }
+
+    override fun getRouteVariantsForStopName(stopName: String, callback: IDataSource.LoadDataCallback<RouteVariants>) {
+        val articleResponseCall = service.getRouteVariantsForStopName(stopName)
+        articleResponseCall.enqueue(object : Callback<RouteVariants> {
+            override fun onResponse(call: Call<RouteVariants>, response: Response<RouteVariants>) {
+                if (response.isSuccessful) {
+                    val stopNames = response.body()
+                    stopNames?.let {
+                        callback.onDataLoaded(it) }
+                    ?: run {
+                        Log.e(LOG_TAG, "Oops, something went wrong!")
+                    }
+                } else {
+                    Log.e(LOG_TAG, "Oops, something went wrong!")
+                }
+            }
+
+            override fun onFailure(call: Call<RouteVariants>, t: Throwable) {
+                Log.e(LOG_TAG, "Error:" + t.message)
+            }
+        })
+    }
+
 
     /*
     fun getArticles(source: String, callback: IDataSource.LoadDataCallback<Article>) {

@@ -1,20 +1,25 @@
-package com.orpington.software.rozkladmpk.presenter
+package com.orpington.software.rozkladmpk.routeVariants
 
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.TransportLinesInteractor
 import com.orpington.software.rozkladmpk.adapter.HeaderListItem
 import com.orpington.software.rozkladmpk.adapter.RouteListItem
+import com.orpington.software.rozkladmpk.data.model.RouteVariant
+import com.orpington.software.rozkladmpk.data.model.RouteVariants
+import com.orpington.software.rozkladmpk.data.source.IDataSource
 import com.orpington.software.rozkladmpk.database.*
 import com.orpington.software.rozkladmpk.view.NavigatingView
 import com.xwray.groupie.ExpandableGroup
 import kotlin.Comparator
+import com.orpington.software.rozkladmpk.data.source.RepositoryDataSource
 
-class SpecificRoutesPresenter(
-    private var interactor: TransportLinesInteractor,
-    private var view: NavigatingView
-) {
+class RouteVariantsPresenter(
+    private val repository: RepositoryDataSource,
+    private val interactor: TransportLinesInteractor,
+    private val view: RouteVariantsContract.View
+): RouteVariantsContract.Presenter {
 
-    private var specificRoutes: List<VariantStopDao.RouteInfo> = emptyList()
+    private var specificRoutes: List<RouteVariant> = emptyList()
 
     private fun getIconIdForRoute(routeTypeId: Int): Int {
         return when (getEnumForRouteType(routeTypeId)) {
@@ -33,13 +38,25 @@ class SpecificRoutesPresenter(
         //view.navigateToStopActivity(stop)
     }
 
-    fun loadRoutesForStop(stopName: String) {
-        var routes  = interactor.getRouteInfoForStop(stopName)
-        specificRoutes = sortRoutes(mergeRoutes(routes))
+    override fun loadVariants(stopName: String) {
+        repository.getRouteVariantsForStopName(stopName, object: IDataSource.LoadDataCallback<RouteVariants> {
+            override fun onDataLoaded(data: RouteVariants) {
+                specificRoutes = data.routeVariants
+                val grouped = getGroupedRoutes()
+                view.showVariants(grouped)
+            }
+
+            override fun onDataNotAvailable() {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+        }, true)
+        //var routes  = interactor.getRouteInfoForStop(stopName)
+        //specificRoutes = sortRoutes(mergeRoutes(routes))
     }
 
     fun getGroupedRoutes(): List<ExpandableGroup> {
-        return specificRoutes.groupBy { it.id }.map { pair ->
+        return specificRoutes.groupBy { it.routeID }.map { pair ->
             val header = buildHeaderItem(pair.key, pair.value)
             val expandableGroup = ExpandableGroup(header)
             expandableGroup.addAll(pair.value.map { buildRouteItem(it) })
@@ -49,32 +66,36 @@ class SpecificRoutesPresenter(
 
     private fun buildHeaderItem(
         routeId: String,
-        variants: Collection<VariantStopDao.RouteInfo>
+        variants: Collection<RouteVariant>
     ): HeaderListItem {
-        val icon = getIconIdForRoute(variants.first().typeId)
-        val additionalText = "${variants.first().typeName}, ${variants.size} wariantów"
+        val icon = when (variants.first().isBus) {
+            true -> R.drawable.bus
+            else -> R.drawable.train
+        }
+        val additionalText = ""//""${variants.first().typeName}, ${variants.size} wariantów"
         return HeaderListItem(routeId, icon, additionalText)
     }
 
     private fun buildRouteItem(
-        routeInfo: VariantStopDao.RouteInfo
+        routeInfo: RouteVariant
     ): RouteListItem {
-        val name = "${routeInfo.firstStopName} -> ${routeInfo.lastStopName}"
+        val name = "${routeInfo.firstStop} -> ${routeInfo.lastStop}"
         val additionalText = ""
         return RouteListItem(name, -1, additionalText)
     }
 
-    private fun mergeRoutes(routes: List<VariantStopDao.RouteInfo>): List<VariantStopDao.RouteInfo> {
+    /*
+    private fun mergeRoutes(routes: List<RouteVariant>): List<RouteVariant> {
         var mergedRoutes: List<VariantStopDao.RouteInfo> = emptyList()
-        var groups = routes.groupBy { it.id + it.firstStopName + it.lastStopName }
+        var groups = routes.groupBy { it.routeID }
         for ((key, items) in groups) {
-            var routeInfo = items.first()
-            routeInfo.variantIds = items.map { it.variantIds.first() }
-            mergedRoutes += routeInfo
+            val routeInfo = items.first()
+            val combinedTripIDs= items.map { it.tripIDs.first() }
+            mergedRoutes += RouteVariant(key, )
 
         }
         return mergedRoutes
-    }
+    }*/
 
     private val routeInfoComparator = Comparator<VariantStopDao.RouteInfo> { p0, p1 ->
         var intId0 = p0.id.toIntOrNull()
