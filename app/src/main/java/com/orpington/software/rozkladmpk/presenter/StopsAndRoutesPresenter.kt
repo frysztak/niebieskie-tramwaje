@@ -3,16 +3,23 @@ package com.orpington.software.rozkladmpk.presenter
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.TransportLinesInteractor
 import com.orpington.software.rozkladmpk.adapter.RouteListItem
+import com.orpington.software.rozkladmpk.data.model.StopNames
+import com.orpington.software.rozkladmpk.data.source.IDataSource
 import com.orpington.software.rozkladmpk.database.Route
 import com.orpington.software.rozkladmpk.database.RouteTypeEnum
 import com.orpington.software.rozkladmpk.database.getEnumForRouteType
 import com.orpington.software.rozkladmpk.view.NavigatingView
 import com.xwray.groupie.Section
+import com.orpington.software.rozkladmpk.data.source.RepositoryDataSource
+
+
 
 class StopsAndRoutesPresenter(
+    private var repository: RepositoryDataSource,
     private var interactor: TransportLinesInteractor,
     private var view: NavigatingView
 ) {
+    private var allStops: List<String> = emptyList()
     private var stops: List<String> = emptyList()
     private var generalRoutes: List<Route> = emptyList()
 
@@ -30,9 +37,21 @@ class StopsAndRoutesPresenter(
     }
 
     fun onQueryTextChange(newText: String?) {
+        if (allStops.isEmpty()) {
+            repository.getAllStopNames(object: IDataSource.LoadDataCallback<StopNames> {
+                override fun onDataLoaded(data: StopNames) {
+                    allStops = data.stopNames
+                }
+
+                override fun onDataNotAvailable() {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                }
+            }, true)
+        }
         if (newText != null) {
-            stops = interactor.getStopNamesStartingWith(newText)
-            generalRoutes = interactor.getLinesStartingWith(newText)
+            //stops = interactor.getStopNamesStartingWith(newText)
+            //generalRoutes = interactor.getLinesStartingWith(newText)
+            stops = allStops.filter { it.startsWith(newText, true) }
         }
     }
 

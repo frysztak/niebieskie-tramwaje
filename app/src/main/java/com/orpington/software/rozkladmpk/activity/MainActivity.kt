@@ -10,6 +10,11 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import com.orpington.software.rozkladmpk.*
 import com.orpington.software.rozkladmpk.adapter.RouteListItem
+import com.orpington.software.rozkladmpk.data.source.Repository
+import com.orpington.software.rozkladmpk.data.source.local.LocalDataSource
+import com.orpington.software.rozkladmpk.data.source.remote.ApiClient
+import com.orpington.software.rozkladmpk.data.source.remote.ApiService
+import com.orpington.software.rozkladmpk.data.source.remote.RemoteDataSource
 import com.orpington.software.rozkladmpk.presenter.StopsAndRoutesPresenter
 import com.orpington.software.rozkladmpk.view.MainActivityView
 import com.orpington.software.rozkladmpk.view.NavigatingView
@@ -29,9 +34,12 @@ class MainActivity : AppCompatActivity(), MainActivityView, NavigatingView {
         setContentView(R.layout.activity_main)
 
         var interactor = TransportLinesInteractorImpl(baseContext)
-        presenter = StopsAndRoutesPresenter(interactor, this)
+        val apiService = ApiClient.client.create(ApiService::class.java)
+        val repository = Repository(RemoteDataSource.getInstance(apiService), LocalDataSource())
+        presenter = StopsAndRoutesPresenter(repository, interactor, this)
         recyclerAdapter = GroupAdapter()
         recyclerAdapter.setOnItemClickListener { item, _ ->
+            item.id
             if (item is RouteListItem) {
                 presenter.onItemClicked(item.name)
             }

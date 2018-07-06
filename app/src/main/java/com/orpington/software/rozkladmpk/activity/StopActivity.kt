@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.TransportLinesInteractorImpl
+import com.orpington.software.rozkladmpk.adapter.RouteListItem
 import com.orpington.software.rozkladmpk.presenter.SpecificRoutesPresenter
 import com.orpington.software.rozkladmpk.view.NavigatingView
 import com.xwray.groupie.GroupAdapter
@@ -45,6 +46,11 @@ class StopActivity : AppCompatActivity(), NavigatingView {
                 layoutManager.orientation
         )
         recyclerView.addItemDecoration(dividerItemDecoration)
+        recyclerAdapter.setOnItemClickListener { item, _ ->
+            if (item is RouteListItem) {
+                //presenter.onItemClicked(item.name)
+            }
+        }
 
         title = stopName
         async(CommonPool) {
