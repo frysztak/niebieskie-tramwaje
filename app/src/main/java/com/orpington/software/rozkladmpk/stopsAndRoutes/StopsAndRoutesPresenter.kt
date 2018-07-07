@@ -3,7 +3,6 @@ package com.orpington.software.rozkladmpk.stopsAndRoutes
 import com.orpington.software.rozkladmpk.data.model.StopNames
 import com.orpington.software.rozkladmpk.data.source.IDataSource
 import com.orpington.software.rozkladmpk.data.source.RepositoryDataSource
-import com.orpington.software.rozkladmpk.database.Route
 
 
 class StopsAndRoutesPresenter(
@@ -12,7 +11,7 @@ class StopsAndRoutesPresenter(
 ) : StopsAndRoutesContract.Presenter {
     private var allStops: List<String> = emptyList()
     private var stops: List<String> = emptyList()
-    private var generalRoutes: List<Route> = emptyList()
+    //private var generalRoutes: List<Route> = emptyList()
 
     override fun queryTextChanged(newText: String) {
         if (allStops.isEmpty()) {

@@ -16,7 +16,7 @@ import com.orpington.software.rozkladmpk.data.source.remote.ApiClient
 import com.orpington.software.rozkladmpk.data.source.remote.ApiService
 import com.orpington.software.rozkladmpk.data.source.remote.RemoteDataSource
 import com.orpington.software.rozkladmpk.utils.GridSpacingItemDecoration
-import kotlinx.android.synthetic.main.activity_station.*
+import kotlinx.android.synthetic.main.activity_route_variants.*
 import kotlinx.android.synthetic.main.route_variant_bottom_sheet.*
 import kotlinx.android.synthetic.main.route_variant_bottom_sheet.view.*
 
@@ -31,7 +31,7 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_station)
+        setContentView(R.layout.activity_route_variants)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         var stopName = intent.getStringExtra("stopName")

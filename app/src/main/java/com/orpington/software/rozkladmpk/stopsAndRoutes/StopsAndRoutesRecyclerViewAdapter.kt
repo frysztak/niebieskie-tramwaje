@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.orpington.software.rozkladmpk.R
-import kotlinx.android.synthetic.main.item_list_layout.view.*
+import kotlinx.android.synthetic.main.stops_and_routes_list_item.view.*
 
 class StopsAndRoutesRecyclerViewAdapter(
     private val context: Context,
@@ -23,7 +23,7 @@ class StopsAndRoutesRecyclerViewAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_list_layout, parent, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_list_item, parent, false)
         return ViewHolder(view, presenter)
     }
 

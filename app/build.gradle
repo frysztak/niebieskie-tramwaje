@@ -24,16 +24,6 @@ android {
     }
 }
 
-ext {
-    roomVersion = '1.0.0'
-}
-
-// IMPORTANT!  Enables view caching in viewholders.
-// See: https://github.com/Kotlin/KEEP/blob/master/proposals/android-extensions-entity-caching.md
-androidExtensions {
-    experimental = true
-}
-
 android.testOptions {
     junitPlatform {
         filters {
@@ -72,10 +62,6 @@ dependencies {
     //    exclude group: 'org.jetbrains.kotlin'
     //}
 
-    implementation 'com.github.daolq3012:AssetSQLiteOpenHelper:1.0'
-    implementation "android.arch.persistence.room:runtime:1.0.0"
-    kapt "android.arch.persistence.room:compiler:1.0.0"
-
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.22.5"
 
     implementation 'io.github.microutils:kotlin-logging:1.4.9'
@@ -84,7 +70,4 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-
-    implementation 'com.xwray:groupie:2.0.3'
-    implementation 'com.xwray:groupie-kotlin-android-extensions:2.0.3'
 }
