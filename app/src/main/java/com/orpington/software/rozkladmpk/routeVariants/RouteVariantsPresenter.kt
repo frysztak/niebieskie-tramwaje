@@ -42,8 +42,8 @@ class RouteVariantsPresenter(
         repository.getRouteVariantsForStopName(stopName, object: IDataSource.LoadDataCallback<RouteVariants> {
             override fun onDataLoaded(data: RouteVariants) {
                 specificRoutes = data.routeVariants
-                val grouped = getGroupedRoutes()
-                view.showVariants(grouped)
+                val sortedDistinct = specificRoutes.distinctBy { it.routeID }.sortedWith(routeInfoComparator)
+                view.showVariants(sortedDistinct)
             }
 
             override fun onDataNotAvailable() {
@@ -97,19 +97,21 @@ class RouteVariantsPresenter(
         return mergedRoutes
     }*/
 
-    private val routeInfoComparator = Comparator<VariantStopDao.RouteInfo> { p0, p1 ->
-        var intId0 = p0.id.toIntOrNull()
-        var intId1 = p1.id.toIntOrNull()
+    private val routeInfoComparator = Comparator<RouteVariant> { p0, p1 ->
+        var intId0 = p0.routeID.toIntOrNull()
+        var intId1 = p1.routeID.toIntOrNull()
         if (intId0 != null && intId1 != null) {
             intId0.compareTo(intId1)
         } else {
-            p0.id.compareTo(p1.id)
+            p0.routeID.compareTo(p1.routeID)
         }
     }
 
-    private fun sortRoutes(routes: List<VariantStopDao.RouteInfo>): List<VariantStopDao.RouteInfo> {
-        var sortedRoutes: List<VariantStopDao.RouteInfo> = emptyList()
+    private fun sortRoutes(routes: List<RouteVariant>): List<RouteVariant> {
+        return routes.sortedWith(routeInfoComparator)
+        var sortedRoutes: List<RouteVariant> = emptyList()
 
+        /*
         var groups = routes.groupBy { it.typeId }.mapValues { it.value.toMutableList() }
         groups.forEach { it.value.sortWith(routeInfoComparator)}
         val order = arrayOf(35, 30, 31, 34, 39, 40)
@@ -119,6 +121,7 @@ class RouteVariantsPresenter(
                 sortedRoutes += groups[it]!!
             }
         }
+        */
 
         return sortedRoutes
     }
