@@ -3,14 +3,13 @@ package com.orpington.software.rozkladmpk.presenter
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.verify
 import com.orpington.software.rozkladmpk.TransportLinesInteractor
+import com.orpington.software.rozkladmpk.stopsAndRoutes.StopsAndRoutesPresenter
 import com.orpington.software.rozkladmpk.view.NavigatingView
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.given
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import org.junit.Assert.*
 
 class StopsAndRoutesPresenterTest: Spek({
     given("test") {
