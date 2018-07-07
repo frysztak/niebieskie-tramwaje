@@ -10,18 +10,15 @@ class RouteVariantsPresenter(
     private val view: RouteVariantsContract.View
 ) : RouteVariantsContract.Presenter {
 
-    private var specificRoutes: List<RouteVariant> = emptyList()
-
-    fun onItemClicked(position: Int) {
-        //view.navigateToStopActivity(stop)
-    }
+    private var routes: List<RouteVariant> = emptyList()
+    private var sortedDistinctRoutes: List<RouteVariant> = emptyList()
 
     override fun loadVariants(stopName: String) {
         repository.getRouteVariantsForStopName(stopName, object : IDataSource.LoadDataCallback<RouteVariants> {
             override fun onDataLoaded(data: RouteVariants) {
-                specificRoutes = data.routeVariants
-                val sortedDistinct = specificRoutes.distinctBy { it.routeID }.sortedWith(routeInfoComparator)
-                view.showVariants(sortedDistinct)
+                routes = data.routeVariants
+                sortedDistinctRoutes = routes.distinctBy { it.routeID }.sortedWith(routeInfoComparator)
+                view.showRoutes(sortedDistinctRoutes)
             }
 
             override fun onDataNotAvailable() {
@@ -39,6 +36,12 @@ class RouteVariantsPresenter(
         } else {
             p0.routeID.compareTo(p1.routeID)
         }
+    }
+
+    override fun routeClicked(position: Int) {
+        val routeID = sortedDistinctRoutes[position].routeID
+        val variants = routes.filter { it.routeID == routeID }
+        view.showVariants(variants)
     }
 }
 

@@ -11,9 +11,10 @@ import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteVariant
 import kotlinx.android.synthetic.main.route_card_view.view.*
 
-class RouteVariantsRecyclerViewAdapter(
-    private val context: Context) :
-    RecyclerView.Adapter<RouteVariantsRecyclerViewAdapter.ViewHolder>() {
+class RoutesRecyclerViewAdapter(
+    private val context: Context,
+    private val presenter: RouteVariantsPresenter) :
+    RecyclerView.Adapter<RoutesRecyclerViewAdapter.ViewHolder>() {
 
     private var items: List<RouteVariant> = emptyList()
 
@@ -24,7 +25,7 @@ class RouteVariantsRecyclerViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.route_card_view, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(view, presenter)
     }
 
     override fun getItemCount(): Int {
@@ -40,8 +41,21 @@ class RouteVariantsRecyclerViewAdapter(
         holder.nameTextView.text = item.routeID
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(
+        view: View,
+        private val presenter: RouteVariantsPresenter
+    ) : RecyclerView.ViewHolder(view),
+        View.OnClickListener {
+
         val nameTextView: TextView = view.name
         val iconImageView: ImageView = view.icon
+
+        init {
+            view.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            presenter.routeClicked(adapterPosition)
+        }
     }
 }
