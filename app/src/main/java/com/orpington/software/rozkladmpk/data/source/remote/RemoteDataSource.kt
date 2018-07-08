@@ -4,6 +4,9 @@ import android.util.Log
 import com.orpington.software.rozkladmpk.data.model.RouteVariants
 import com.orpington.software.rozkladmpk.data.model.StopNames
 import com.orpington.software.rozkladmpk.data.source.IDataSource
+import mu.KLogger
+import mu.KLogging
+import mu.KotlinLogging
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -18,17 +21,18 @@ class RemoteDataSource private constructor(private val service: ApiService) : IR
                 if (response.isSuccessful) {
                     val stopNames = response.body()
                     stopNames?.let {
+                        logger.debug { "getStopNames: success" }
                         callback.onDataLoaded(it) }
                     ?: run {
-                        Log.e(LOG_TAG, "Oops, something went wrong!")
+                        logger.debug { "getStopNames: received null list. code: ${response.code()}" }
                     }
                 } else {
-                    Log.e(LOG_TAG, "Oops, something went wrong!")
+                    logger.debug { "getStopNames: request unsuccessful. code: ${response.code()}" }
                 }
             }
 
             override fun onFailure(call: Call<StopNames>, t: Throwable) {
-                Log.e(LOG_TAG, "Error:" + t.message)
+                logger.debug { "getStopNames: request failed. message: ${t.message}" }
             }
         })
     }
@@ -86,6 +90,8 @@ class RemoteDataSource private constructor(private val service: ApiService) : IR
     */
 
     companion object {
+
+        private val logger = KotlinLogging.logger {}
 
         private val LOG_TAG = RemoteDataSource::class.java.simpleName
 
