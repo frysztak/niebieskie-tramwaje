@@ -10,5 +10,6 @@ interface StopsAndRoutesContract {
     interface View {
         fun navigateToRouteVariants(stopName: String)
         fun displayStops(stops: List<String>)
+        fun reportThatSomethingWentWrong()
     }
 }

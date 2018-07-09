@@ -19,17 +19,20 @@ class RemoteDataSource private constructor(private val service: ApiService) : IR
                     val stopNames = response.body()
                     stopNames?.let {
                         logger.debug { "getStopNames: success" }
-                        callback.onDataLoaded(it) }
-                    ?: run {
+                        callback.onDataLoaded(it)
+                    } ?: run {
                         logger.debug { "getStopNames: received null list. code: ${response.code()}" }
+                        callback.onDataNotAvailable()
                     }
                 } else {
                     logger.debug { "getStopNames: request unsuccessful. code: ${response.code()}" }
+                    callback.onDataNotAvailable()
                 }
             }
 
             override fun onFailure(call: Call<StopNames>, t: Throwable) {
                 logger.debug { "getStopNames: request failed. message: ${t.message}" }
+                callback.onDataNotAvailable()
             }
         })
     }

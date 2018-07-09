@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.SearchView
+import android.widget.Toast
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.routeVariants.RouteVariantsActivity
@@ -57,6 +58,10 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         val i = Intent(baseContext, RouteVariantsActivity::class.java)
         i.putExtra("stopName", stopName)
         startActivity(i)
+    }
+
+    override fun reportThatSomethingWentWrong() {
+        Toast.makeText(applicationContext, "Something went wrong...", Toast.LENGTH_SHORT).show()
     }
 
 }
