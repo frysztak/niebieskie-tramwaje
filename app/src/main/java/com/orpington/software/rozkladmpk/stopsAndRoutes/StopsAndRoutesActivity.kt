@@ -23,6 +23,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
         presenter = StopsAndRoutesPresenter(Injection.provideDataSource(), this)
         recyclerAdapter = StopsAndRoutesRecyclerViewAdapter(this, presenter)
+        presenter.loadStopNames()
 
         searchView?.queryHint = "Przystanek..."
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {

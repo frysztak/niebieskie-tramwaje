@@ -13,18 +13,19 @@ class StopsAndRoutesPresenter(
     private var stops: List<String> = emptyList()
     //private var generalRoutes: List<Route> = emptyList()
 
-    override fun queryTextChanged(newText: String) {
-        if (allStops.isEmpty()) {
-            dataSource.getStopNames(object : IDataSource.LoadDataCallback<StopNames> {
-                override fun onDataLoaded(data: StopNames) {
-                    allStops = data.stopNames
-                }
+    override fun loadStopNames() {
+        dataSource.getStopNames(object : IDataSource.LoadDataCallback<StopNames> {
+            override fun onDataLoaded(data: StopNames) {
+                allStops = data.stopNames
+            }
 
-                override fun onDataNotAvailable() {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                }
-            })
-        }
+            override fun onDataNotAvailable() {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        })
+    }
+
+    override fun queryTextChanged(newText: String) {
         if (newText != null) {
             //stops = interactor.getStopNamesStartingWith(newText)
             //generalRoutes = interactor.getLinesStartingWith(newText)
