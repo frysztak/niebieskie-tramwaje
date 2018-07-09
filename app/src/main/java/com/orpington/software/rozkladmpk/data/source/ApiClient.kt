@@ -1,6 +1,5 @@
-package com.orpington.software.rozkladmpk.data.source.remote
+package com.orpington.software.rozkladmpk.data.source
 
-import com.orpington.software.rozkladmpk.BuildConfig
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient

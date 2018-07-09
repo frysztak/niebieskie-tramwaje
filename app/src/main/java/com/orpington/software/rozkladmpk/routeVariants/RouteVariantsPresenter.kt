@@ -3,10 +3,10 @@ package com.orpington.software.rozkladmpk.routeVariants
 import com.orpington.software.rozkladmpk.data.model.RouteVariant
 import com.orpington.software.rozkladmpk.data.model.RouteVariants
 import com.orpington.software.rozkladmpk.data.source.IDataSource
-import com.orpington.software.rozkladmpk.data.source.RepositoryDataSource
+import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
 
 class RouteVariantsPresenter(
-    private val repository: RepositoryDataSource,
+    private val dataSource: RemoteDataSource,
     private val view: RouteVariantsContract.View
 ) : RouteVariantsContract.Presenter {
 
@@ -14,7 +14,7 @@ class RouteVariantsPresenter(
     private var sortedDistinctRoutes: List<RouteVariant> = emptyList()
 
     override fun loadVariants(stopName: String) {
-        repository.getRouteVariantsForStopName(stopName, object : IDataSource.LoadDataCallback<RouteVariants> {
+        dataSource.getRouteVariantsForStopName(stopName, object : IDataSource.LoadDataCallback<RouteVariants> {
             override fun onDataLoaded(data: RouteVariants) {
                 routes = data.routeVariants
                 sortedDistinctRoutes = routes.distinctBy { it.routeID }.sortedWith(routeInfoComparator)
@@ -25,7 +25,7 @@ class RouteVariantsPresenter(
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
-        }, true)
+        })
     }
 
     private val routeInfoComparator = Comparator<RouteVariant> { p0, p1 ->

@@ -1,4 +1,4 @@
-package com.orpington.software.rozkladmpk.data.source.remote
+package com.orpington.software.rozkladmpk.data.source
 
 import com.orpington.software.rozkladmpk.data.model.RouteVariants
 import com.orpington.software.rozkladmpk.data.model.StopNames

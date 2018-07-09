@@ -1,11 +1,8 @@
-package com.orpington.software.rozkladmpk.data.source.remote
+package com.orpington.software.rozkladmpk.data.source
 
 import android.util.Log
 import com.orpington.software.rozkladmpk.data.model.RouteVariants
 import com.orpington.software.rozkladmpk.data.model.StopNames
-import com.orpington.software.rozkladmpk.data.source.IDataSource
-import mu.KLogger
-import mu.KLogging
 import mu.KotlinLogging
 import retrofit2.Call
 import retrofit2.Callback
@@ -58,36 +55,6 @@ class RemoteDataSource private constructor(private val service: ApiService) : IR
             }
         })
     }
-
-
-    /*
-    fun getArticles(source: String, callback: IDataSource.LoadDataCallback<Article>) {
-        val articleResponseCall = service.getArticle(BuildConfig.API_KEY, source, "top")
-        articleResponseCall.enqueue(object : Callback<ArticleResponse>() {
-            fun onResponse(call: Call<ArticleResponse>, response: Response<ArticleResponse>) {
-                if (response.body() != null) {
-                    if ("ok" == response.body().getStatus()) {
-                        if (!response.body().getArticles().isEmpty()) {
-                            callback.onDataLoaded(response.body().getArticles())
-                        } else {
-                            callback.onDataNotAvailable()
-                            Log.e(LOG_TAG, "Oops, something went wrong!")
-                        }
-                    } else {
-                        callback.onDataNotAvailable()
-                        Log.e(LOG_TAG, "Oops, something went wrong!")
-                    }
-                }
-            }
-
-            fun onFailure(call: Call<ArticleResponse>, t: Throwable) {
-                Log.e(LOG_TAG, "Error:" + t.message)
-                callback.onDataNotAvailable()
-            }
-        })
-
-    }
-    */
 
     companion object {
 

@@ -10,11 +10,9 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteVariant
-import com.orpington.software.rozkladmpk.data.source.Repository
-import com.orpington.software.rozkladmpk.data.source.local.LocalDataSource
-import com.orpington.software.rozkladmpk.data.source.remote.ApiClient
-import com.orpington.software.rozkladmpk.data.source.remote.ApiService
-import com.orpington.software.rozkladmpk.data.source.remote.RemoteDataSource
+import com.orpington.software.rozkladmpk.data.source.ApiClient
+import com.orpington.software.rozkladmpk.data.source.ApiService
+import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
 import com.orpington.software.rozkladmpk.utils.GridSpacingItemDecoration
 import kotlinx.android.synthetic.main.activity_route_variants.*
 import kotlinx.android.synthetic.main.route_variant_bottom_sheet.*
@@ -37,8 +35,8 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
         var stopName = intent.getStringExtra("stopName")
 
         val apiService = ApiClient.client.create(ApiService::class.java)
-        val repository = Repository(RemoteDataSource.getInstance(apiService), LocalDataSource())
-        presenter = RouteVariantsPresenter(repository, this)
+        val dataSource = RemoteDataSource.getInstance(apiService)
+        presenter = RouteVariantsPresenter(dataSource, this)
         recyclerAdapter = RoutesRecyclerViewAdapter(this, presenter)
 
         var layoutManager = GridLayoutManager(this, 2)
