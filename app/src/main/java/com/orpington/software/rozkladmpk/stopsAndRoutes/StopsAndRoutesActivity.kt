@@ -6,10 +6,8 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.SearchView
+import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
-import com.orpington.software.rozkladmpk.data.source.ApiClient
-import com.orpington.software.rozkladmpk.data.source.ApiService
-import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
 import com.orpington.software.rozkladmpk.routeVariants.RouteVariantsActivity
 import kotlinx.android.synthetic.main.activity_stops_and_routes.*
 
@@ -23,9 +21,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stops_and_routes)
 
-        val apiService = ApiClient.client.create(ApiService::class.java)
-        val dataSource = RemoteDataSource.getInstance(apiService)
-        presenter = StopsAndRoutesPresenter(dataSource, this)
+        presenter = StopsAndRoutesPresenter(Injection.provideDataSource(), this)
         recyclerAdapter = StopsAndRoutesRecyclerViewAdapter(this, presenter)
 
         searchView?.queryHint = "Przystanek..."
