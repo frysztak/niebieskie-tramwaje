@@ -8,6 +8,8 @@ interface StopsAndRoutesContract {
     }
 
     interface View {
+        fun showProgressBar()
+        fun hideProgressBar()
         fun navigateToRouteVariants(stopName: String)
         fun displayStops(stops: List<String>)
         fun reportThatSomethingWentWrong()

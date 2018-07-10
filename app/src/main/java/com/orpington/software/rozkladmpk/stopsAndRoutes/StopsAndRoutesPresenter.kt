@@ -14,13 +14,16 @@ class StopsAndRoutesPresenter(
     //private var generalRoutes: List<Route> = emptyList()
 
     override fun loadStopNames() {
+        view.showProgressBar()
         dataSource.getStopNames(object : IDataSource.LoadDataCallback<StopNames> {
             override fun onDataLoaded(data: StopNames) {
                 allStops = data.stopNames
+                view.hideProgressBar()
             }
 
             override fun onDataNotAvailable() {
                 view.reportThatSomethingWentWrong()
+                view.hideProgressBar()
             }
         })
     }

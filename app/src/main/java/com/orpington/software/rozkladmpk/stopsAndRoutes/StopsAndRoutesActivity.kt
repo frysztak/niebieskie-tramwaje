@@ -64,4 +64,11 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         Toast.makeText(applicationContext, "Something went wrong...", Toast.LENGTH_SHORT).show()
     }
 
+    override fun showProgressBar() {
+
+    }
+
+    override fun hideProgressBar() {
+
+    }
 }
