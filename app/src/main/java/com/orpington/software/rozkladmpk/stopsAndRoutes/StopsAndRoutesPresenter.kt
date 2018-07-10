@@ -22,6 +22,7 @@ class StopsAndRoutesPresenter(
     }
 
     override fun loadStopNames() {
+        if (allStops.isNotEmpty()) return
         view.showProgressBar()
         dataSource.getStopNames(object : IDataSource.LoadDataCallback<StopNames> {
             override fun onDataLoaded(data: StopNames) {
@@ -43,7 +44,7 @@ class StopsAndRoutesPresenter(
         if (shownStops.isNotEmpty()) {
             view.displayStops(shownStops)
         } else {
-           view.showStopNotFound()
+            view.showStopNotFound()
         }
     }
 

@@ -98,7 +98,7 @@ class StopsAndRoutesPresenterTest {
     }
 
     @Test
-    fun loadStopNamesFailTest() {
+    fun loadStopNamesTest_404() {
         val mockResponse = MockResponse()
             .setResponseCode(404)
         mockServer.enqueue(mockResponse)
@@ -108,6 +108,16 @@ class StopsAndRoutesPresenterTest {
         inOrder.verify(view, times(1)).showProgressBar()
         inOrder.verify(view, times(1)).reportThatSomethingWentWrong()
         inOrder.verify(view, times(1)).hideProgressBar()
+        verify(view, never()).displayStops(any())
+    }
+
+    @Test
+    fun loadStopNamesTest_AlreadyPopulated() {
+        presenter.setAllStopNames(listOf("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
+        presenter.loadStopNames()
+        verify(view, never()).showProgressBar()
+        verify(view, never()).reportThatSomethingWentWrong()
+        verify(view, never()).hideProgressBar()
         verify(view, never()).displayStops(any())
     }
 
