@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.view.View
 import android.widget.SearchView
 import android.widget.Toast
 import com.orpington.software.rozkladmpk.Injection
@@ -65,10 +66,14 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     }
 
     override fun showProgressBar() {
-
+        progressBar.visibility = View.VISIBLE
     }
 
     override fun hideProgressBar() {
+        progressBar.visibility = View.GONE
+    }
 
+    override fun showStopNotFound() {
+        Toast.makeText(applicationContext, "Stop not found", Toast.LENGTH_SHORT).show()
     }
 }

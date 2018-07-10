@@ -10,14 +10,24 @@ class StopsAndRoutesPresenter(
     private var view: StopsAndRoutesContract.View
 ) : StopsAndRoutesContract.Presenter {
     private var allStops: List<String> = emptyList()
-    private var stops: List<String> = emptyList()
+    private var shownStops: List<String> = emptyList()
     //private var generalRoutes: List<Route> = emptyList()
+
+    override fun setAllStopNames(names: List<String>) {
+        allStops = names
+    }
+
+    override fun setShownStopNames(names: List<String>) {
+        shownStops = names
+    }
 
     override fun loadStopNames() {
         view.showProgressBar()
         dataSource.getStopNames(object : IDataSource.LoadDataCallback<StopNames> {
             override fun onDataLoaded(data: StopNames) {
-                allStops = data.stopNames
+                setAllStopNames(data.stopNames)
+                setShownStopNames(allStops)
+                view.displayStops(shownStops)
                 view.hideProgressBar()
             }
 
@@ -29,16 +39,17 @@ class StopsAndRoutesPresenter(
     }
 
     override fun queryTextChanged(newText: String) {
-        if (newText != null) {
-            //stops = interactor.getStopNamesStartingWith(newText)
-            //generalRoutes = interactor.getLinesStartingWith(newText)
-            stops = allStops.filter { it.startsWith(newText, true) }
-            view.displayStops(stops)
+        setShownStopNames(allStops.filter { it.startsWith(newText, true) })
+        if (shownStops.isNotEmpty()) {
+            view.displayStops(shownStops)
+        } else {
+           view.showStopNotFound()
         }
     }
 
     override fun listItemClicked(position: Int) {
-        val stopName = stops[position]
+        if (position >= shownStops.size) return
+        val stopName = shownStops[position]
         view.navigateToRouteVariants(stopName)
     }
 

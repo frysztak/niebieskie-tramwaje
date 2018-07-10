@@ -23,18 +23,18 @@ import org.slf4j.LoggerFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-@PowerMockIgnore("okhttp3.*")
+@PowerMockIgnore("okhttp3.*", "retrofit2.*")
 @RunWith(PowerMockRunner::class)
 @PrepareForTest(LoggerFactory::class)
 class StopsAndRoutesPresenterTest {
-    lateinit var dataSource: RemoteDataSource
-    lateinit var mockServer: MockWebServer
-    lateinit var apiService: ApiService
-    lateinit var presenter: StopsAndRoutesPresenter
-    lateinit var view: StopsAndRoutesContract.View
+    private lateinit var dataSource: RemoteDataSource
+    private lateinit var mockServer: MockWebServer
+    private lateinit var apiService: ApiService
+    private lateinit var presenter: StopsAndRoutesPresenter
+    private lateinit var view: StopsAndRoutesContract.View
 
     companion object {
-        lateinit var mockLogger: Logger
+        private lateinit var mockLogger: Logger
         @BeforeClass
         @JvmStatic
         fun setup() {
@@ -92,7 +92,9 @@ class StopsAndRoutesPresenterTest {
         val inOrder = inOrder(view)
         presenter.loadStopNames()
         inOrder.verify(view, times(1)).showProgressBar()
+        inOrder.verify(view).displayStops(listOf("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
         inOrder.verify(view, times(1)).hideProgressBar()
+        verify(view, never()).reportThatSomethingWentWrong()
     }
 
     @Test
@@ -103,8 +105,44 @@ class StopsAndRoutesPresenterTest {
 
         val inOrder = inOrder(view)
         presenter.loadStopNames()
-        verify(view, times(1)).reportThatSomethingWentWrong()
         inOrder.verify(view, times(1)).showProgressBar()
+        inOrder.verify(view, times(1)).reportThatSomethingWentWrong()
         inOrder.verify(view, times(1)).hideProgressBar()
+        verify(view, never()).displayStops(any())
+    }
+
+    @Test
+    fun queryTextChangedTest() {
+        presenter.setAllStopNames(listOf("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
+        presenter.queryTextChanged("a")
+        verify(view).displayStops(listOf("AUCHAN", "Adamczewskich", "Adamieckiego"))
+        verify(view, never()).showProgressBar()
+        verify(view, never()).hideProgressBar()
+        verify(view, never()).reportThatSomethingWentWrong()
+    }
+
+    @Test
+    fun queryTextChangedTest_EmptyList() {
+        presenter.setAllStopNames(emptyList())
+        presenter.queryTextChanged("a")
+        verify(view, never()).displayStops(any())
+        verify(view, never()).showProgressBar()
+        verify(view, never()).hideProgressBar()
+        verify(view, never()).reportThatSomethingWentWrong()
+        verify(view, times(1)).showStopNotFound()
+    }
+
+    @Test
+    fun listItemClickedTest() {
+        presenter.setShownStopNames(listOf("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
+        presenter.listItemClicked(0)
+        verify(view, times(1)).navigateToRouteVariants("8 Maja")
+    }
+
+    @Test
+    fun listItemClickedTest_OutOfRange() {
+        presenter.setShownStopNames(emptyList())
+        presenter.listItemClicked(0)
+        verify(view, never()).navigateToRouteVariants(any())
     }
 }
