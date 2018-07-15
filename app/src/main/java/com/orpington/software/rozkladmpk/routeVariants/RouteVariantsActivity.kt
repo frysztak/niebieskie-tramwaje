@@ -8,6 +8,7 @@ import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
+import android.widget.Toast
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteVariant
@@ -60,6 +61,10 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
     override fun showVariants(variants: List<RouteVariant>) {
         variantsRecyclerAdapter.setItems(variants)
         bottomSheetBehaviour.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    override fun reportThatSomethingWentWrong() {
+        Toast.makeText(applicationContext, "Something went wrong...", Toast.LENGTH_SHORT).show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

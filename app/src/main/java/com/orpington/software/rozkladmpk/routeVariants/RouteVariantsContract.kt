@@ -13,5 +13,6 @@ interface RouteVariantsContract {
     interface View: BaseView {
         fun showRoutes(variants: List<RouteVariant>)
         fun showVariants(variants: List<RouteVariant>)
+        fun reportThatSomethingWentWrong()
     }
 }
