@@ -23,7 +23,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stops_and_routes)
 
-        presenter = StopsAndRoutesPresenter(Injection.provideDataSource(), this)
+        presenter = StopsAndRoutesPresenter(Injection.provideDataSource(cacheDir), this)
         recyclerAdapter = StopsAndRoutesRecyclerViewAdapter(this, presenter)
         presenter.loadStopNames()
 

@@ -1,9 +1,12 @@
 package com.orpington.software.rozkladmpk.data.source
 
+import com.orpington.software.rozkladmpk.BuildConfig
+import okhttp3.Cache
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import okhttp3.OkHttpClient
-
+import java.io.File
 
 class ApiClient {
     companion object {
@@ -11,25 +14,31 @@ class ApiClient {
 
         private var sRetrofit: Retrofit? = null
 
-        val client: Retrofit
-            get() {
-                if (sRetrofit == null) {
-                    synchronized(Retrofit::class.java) {
-                        if (sRetrofit == null) {
-                            //val interceptor = HttpLoggingInterceptor()
-                            //interceptor.setLevel(if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE)
-                            //val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
-                            val client = OkHttpClient.Builder().build()
-                            sRetrofit = Retrofit.Builder()
-                                .baseUrl(BASE_API_URL)
-                                .addConverterFactory(GsonConverterFactory.create())
-                                .client(client)
-                                .build()
-                        }
+        fun get(cacheDir: File): Retrofit {
+            if (sRetrofit == null) {
+                synchronized(Retrofit::class.java) {
+                    if (sRetrofit == null) {
+                        val cacheSize: Long = 10 * 1024 * 1024 // 10 MB
+                        val cache = Cache(cacheDir, cacheSize)
+
+                        val interceptor = HttpLoggingInterceptor()
+                        interceptor.level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+
+                        val okHttpClient = OkHttpClient.Builder()
+                            .addInterceptor(interceptor)
+                            .cache(cache)
+                            .build()
+
+                        sRetrofit = Retrofit.Builder()
+                            .baseUrl(BASE_API_URL)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .client(okHttpClient)
+                            .build()
                     }
                 }
-                return sRetrofit!!
             }
+            return sRetrofit!!
+        }
     }
 
 }

@@ -32,7 +32,7 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
 
         var stopName = intent.getStringExtra("stopName")
 
-        presenter = RouteVariantsPresenter(Injection.provideDataSource(), this)
+        presenter = RouteVariantsPresenter(Injection.provideDataSource(cacheDir), this)
         recyclerAdapter = RoutesRecyclerViewAdapter(this, presenter)
 
         var layoutManager = GridLayoutManager(this, 2)
