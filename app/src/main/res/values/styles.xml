@@ -14,13 +14,14 @@
         <item name="android:textSize">24dp</item>
         <item name="android:layout_height">48dp</item>
         <item name="android:layout_width">48dp</item>
-        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
     <style name="TimeTableLeftMostItem" parent="TimeTableItem">
         <item name="android:textStyle">bold</item>
         <item name="android:paddingLeft">8dp</item>
-        <item name="android:paddingRight">12dp</item>
+        <item name="android:paddingRight">16dp</item>
     </style>
 
     <style name="TimeTableHeader" parent="TextAppearance.AppCompat.Headline">
