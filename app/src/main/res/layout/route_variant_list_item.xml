@@ -2,13 +2,18 @@
 <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:scrollbars="none"
-    android:layout_margin="0dp">
+    android:layout_height="64dp"
+    android:layout_margin="0dp"
+    android:fillViewport="true"
+    android:clickable="true"
+    android:scrollbars="none">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/root"
         android:layout_width="wrap_content"
-        android:layout_height="64dp">
+        android:layout_height="match_parent"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true">
 
         <TextView
             android:id="@+id/firstStopName"
@@ -39,13 +44,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:paddingRight="8dp"
             android:fontFamily="sans-serif-light"
+            android:paddingRight="8dp"
             android:text="Tarnogaj"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:textSize="22sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="parent" />
+
     </android.support.constraint.ConstraintLayout>
+
 </HorizontalScrollView>
+

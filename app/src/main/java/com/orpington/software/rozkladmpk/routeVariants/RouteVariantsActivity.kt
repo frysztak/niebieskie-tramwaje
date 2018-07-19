@@ -1,5 +1,6 @@
 package com.orpington.software.rozkladmpk.routeVariants
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.BottomSheetBehavior
@@ -12,6 +13,7 @@ import android.widget.Toast
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteVariant
+import com.orpington.software.rozkladmpk.timetable.TimetableActivity
 import com.orpington.software.rozkladmpk.utils.GridSpacingItemDecoration
 import kotlinx.android.synthetic.main.activity_route_variants.*
 import kotlinx.android.synthetic.main.route_variant_bottom_sheet.*
@@ -65,6 +67,15 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
 
     override fun reportThatSomethingWentWrong() {
         Toast.makeText(applicationContext, "Something went wrong...", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun navigateToTimetable(routeID: String, atStop: String, fromStop: String, toStop: String) {
+        val i = Intent(baseContext, TimetableActivity::class.java)
+        i.putExtra("routeID", routeID)
+        i.putExtra("atStop", atStop)
+        i.putExtra("fromStop", fromStop)
+        i.putExtra("toStop", toStop)
+        startActivity(i)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

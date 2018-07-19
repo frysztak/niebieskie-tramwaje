@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Rozklad MPK</string>
+    <string name="weekdays">weekdays</string>
+    <string name="saturday">saturday</string>
+    <string name="sunday">sunday</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

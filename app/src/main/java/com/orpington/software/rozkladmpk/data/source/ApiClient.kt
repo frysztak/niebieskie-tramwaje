@@ -10,7 +10,7 @@ import java.io.File
 
 class ApiClient {
     companion object {
-        private val BASE_API_URL = "http://192.168.0.21:8080"
+        private val BASE_API_URL = "http://192.168.0.22:8080"
 
         private var sRetrofit: Retrofit? = null
 

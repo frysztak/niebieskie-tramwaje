@@ -10,10 +10,13 @@ class RouteVariantsPresenter(
     private val view: RouteVariantsContract.View
 ) : RouteVariantsContract.Presenter {
 
+    private var currentStopName: String = ""
     private var routes: List<RouteVariant> = emptyList()
     private var sortedDistinctRoutes: List<RouteVariant> = emptyList()
+    private var shownVariants: List<RouteVariant> = emptyList()
 
     override fun loadVariants(stopName: String) {
+        currentStopName = stopName
         dataSource.getRouteVariantsForStopName(stopName, object : IDataSource.LoadDataCallback<RouteVariants> {
             override fun onDataLoaded(data: RouteVariants) {
                 routes = data.routeVariants
@@ -40,8 +43,13 @@ class RouteVariantsPresenter(
 
     override fun routeClicked(position: Int) {
         val routeID = sortedDistinctRoutes[position].routeID
-        val variants = routes.filter { it.routeID == routeID }
-        view.showVariants(variants)
+        shownVariants = routes.filter { it.routeID == routeID }
+        view.showVariants(shownVariants)
+    }
+
+    override fun variantClicked(position: Int) {
+        val variant = shownVariants[position]
+        view.navigateToTimetable(variant.routeID, currentStopName, variant.firstStop, variant.lastStop)
     }
 }
 

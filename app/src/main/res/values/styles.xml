@@ -8,4 +8,31 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Timetable -->
+    <style name="TimeTableItem" parent="TextAppearance.AppCompat.Headline">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">24dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_width">48dp</item>
+        <item name="android:paddingRight">8dp</item>
+    </style>
+
+    <style name="TimeTableLeftMostItem" parent="TimeTableItem">
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+    </style>
+
+    <style name="TimeTableHeader" parent="TextAppearance.AppCompat.Headline">
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">32dp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="TimeTableAdditionalInfo" parent="TextAppearance.AppCompat.Subhead">
+        <item name="android:gravity">left</item>
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
 </resources>

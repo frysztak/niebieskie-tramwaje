@@ -1,6 +1,7 @@
 package com.orpington.software.rozkladmpk.routeVariants
 
 import android.content.Context
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -47,11 +48,11 @@ class VariantsRecyclerViewAdapter(
         val lastTextView: TextView = view.lastStopName
 
         init {
-            view.setOnClickListener(this)
+            view.findViewById<ConstraintLayout>(R.id.root)?.setOnClickListener(this)
         }
 
         override fun onClick(v: View?) {
-            //presenter.routeClicked(adapterPosition)
+            presenter.variantClicked(adapterPosition)
         }
     }
 }
