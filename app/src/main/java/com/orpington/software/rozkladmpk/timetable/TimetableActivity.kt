@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
-import com.orpington.software.rozkladmpk.data.model.TimeTable
 import kotlinx.android.synthetic.main.activity_timetable.*
 
 
@@ -52,10 +51,9 @@ class TimetableActivity : AppCompatActivity(), TimetableContract.View {
 
     }
 
-    override fun showTimeTable(timeTable: TimeTable) {
-        adapter.setTimeTable(timeTable)
+    override fun showTimeTable(items: List<TimetablePresenter.ViewItem>) {
+        adapter.setItems(items)
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {

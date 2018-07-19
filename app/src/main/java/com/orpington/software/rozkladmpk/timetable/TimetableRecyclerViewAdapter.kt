@@ -8,8 +8,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.orpington.software.rozkladmpk.R
-import com.orpington.software.rozkladmpk.data.model.TimeTable
-import com.orpington.software.rozkladmpk.data.model.TimeTableEntry
+import com.orpington.software.rozkladmpk.timetable.TimetablePresenter.*
 import kotlinx.android.synthetic.main.timetable_list_header.view.*
 import kotlinx.android.synthetic.main.timetable_list_row.view.*
 
@@ -19,25 +18,7 @@ class TimetableRecyclerViewAdapter(private val context: Context,
                                    private val presenter: TimetablePresenter)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    enum class ViewType(val code: Int) {
-        HEADER(0),
-        ROW(1)
-    }
-
-    interface ViewItem {
-        val type: ViewType
-    }
-
-    class HeaderItem(val text: String) : ViewItem {
-        override val type: ViewType = ViewType.HEADER
-    }
-
-    class RowItem(val data: Row) : ViewItem {
-        override val type: ViewType = ViewType.ROW
-    }
-
-    private var items: MutableList<ViewItem> = arrayListOf()
-
+    private var items: List<ViewItem> = listOf()
 
     class HeaderViewHolder(view: View) :
         RecyclerView.ViewHolder(view) {
@@ -53,8 +34,8 @@ class TimetableRecyclerViewAdapter(private val context: Context,
         val linearLayout: LinearLayout = view.linearLayout
     }
 
-    fun setTimeTable(tt: TimeTable) {
-        processTimeTable(tt)
+    fun setItems(newItems: List<ViewItem>) {
+        items = newItems
         notifyDataSetChanged()
     }
 
@@ -108,39 +89,6 @@ class TimetableRecyclerViewAdapter(private val context: Context,
         }
     }
 
-    private fun processTimeTable(timeTable: TimeTable) {
-        if (timeTable.weekdays != null) {
-            items.add(HeaderItem("Weekdays"))
-            processSingleTimeTable(timeTable.weekdays)
-        }
-
-        if (timeTable.saturdays != null) {
-            items.add(HeaderItem("Saturday"))
-            processSingleTimeTable(timeTable.saturdays)
-        }
-
-        if (timeTable.sundays != null) {
-            items.add(HeaderItem("Sunday"))
-            processSingleTimeTable(timeTable.sundays)
-        }
-    }
-
-    private fun processSingleTimeTable(data: List<TimeTableEntry>) {
-        val groups = data.groupBy { entry ->
-            entry.arrivalTime.split(":")[0]
-        }.mapValues { (key, value) ->
-            value.map { entry ->
-                entry.arrivalTime.split(":")[1]
-            }
-        }
-
-        for ((key, value) in groups) {
-            var row: Row = arrayListOf()
-            row.add(key)
-            row.addAll(value)
-            items.add(RowItem(row))
-        }
-    }
 
 }
 
