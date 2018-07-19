@@ -49,6 +49,7 @@ class TimetablePagerAdapter(private val context: Context,
     class RowViewHolder(view: View) :
         RecyclerView.ViewHolder(view) {
 
+        val hourTextView: TextView = view.hourTextView
         val linearLayout: LinearLayout = view.linearLayout
     }
 
@@ -75,7 +76,7 @@ class TimetablePagerAdapter(private val context: Context,
             ViewType.ROW.code -> {
                 val viewHolder = holder as RowViewHolder
                 val item = items[position] as RowItem
-                populateRowLayout(item.data, viewHolder.linearLayout)
+                populateRowLayout(item.data, viewHolder.hourTextView, viewHolder.linearLayout)
             }
             else -> throw Exception("Unknown ViewType")
         }
@@ -95,16 +96,14 @@ class TimetablePagerAdapter(private val context: Context,
         }
     }
 
-    private fun populateRowLayout(row: Row, layout: LinearLayout) {
+    private fun populateRowLayout(row: Row, hourTextView: TextView, layout: LinearLayout) {
         layout.removeAllViews()
 
-        for ((index, value) in row.withIndex()) {
-            val view: TextView = when (index) {
-                0 -> LayoutInflater.from(context).inflate(R.layout.timetable_list_leftmost_item, layout, false) as TextView
-                else -> LayoutInflater.from(context).inflate(R.layout.timetable_list_item, layout, false) as TextView
-            }
+        hourTextView.text = row[0]
 
-            view.text = value
+        for (minutes in row.drop(1)) {
+            val view = LayoutInflater.from(context).inflate(R.layout.timetable_list_item, layout, false) as TextView
+            view.text = minutes
             layout.addView(view)
         }
     }
