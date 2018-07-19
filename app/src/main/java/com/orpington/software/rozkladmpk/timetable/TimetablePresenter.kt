@@ -12,9 +12,14 @@ class TimetablePresenter(
 ) : TimetableContract.Presenter {
 
     private lateinit var timeTable: TimeTable
+    private var items: MutableList<ViewItem> = arrayListOf()
+    private var rowToScrollInto: Int = -1
+    private var columnToHighlight: Int = -1
 
     override fun setTimeTable(newTimeTable: TimeTable) {
         timeTable = newTimeTable
+        processTimeTable()
+        calculateRowToScrollInto()
     }
 
     override fun getTimeTable(): TimeTable {
@@ -27,8 +32,7 @@ class TimetablePresenter(
             object : IDataSource.LoadDataCallback<TimeTable> {
                 override fun onDataLoaded(data: TimeTable) {
                     setTimeTable(data)
-                    val (rows, indexToScrollInto) = processTimeTable(timeTable)
-                    view.showTimeTable(rows, indexToScrollInto)
+                    view.showTimeTable(items, rowToScrollInto)
                     view.hideProgressBar()
                 }
 
@@ -62,8 +66,7 @@ class TimetablePresenter(
         Sunday
     }
 
-    private fun processTimeTable(timeTable: TimeTable): Pair<List<ViewItem>, Int> {
-        var items: MutableList<ViewItem> = arrayListOf()
+    private fun processTimeTable() {
         val calendar = Calendar.getInstance()
         val day = calendar.get(Calendar.DAY_OF_WEEK)
 
@@ -77,10 +80,9 @@ class TimetablePresenter(
         addHeaderAndRows(DayType.Weekday, timeTable.weekdays)
         addHeaderAndRows(DayType.Saturday, timeTable.saturdays)
         addHeaderAndRows(DayType.Sunday, timeTable.sundays)
+    }
 
-        // get position of a row corresponding to current day and time,
-        // so that we can scroll into it
-
+    private fun calculateRowToScrollInto() {
         val dayTypeToFind = getCurrentDayType()
         val headerIndex = items.indexOfFirst { item ->
             var result = false
@@ -90,16 +92,15 @@ class TimetablePresenter(
             result
         }
 
+        val calendar = Calendar.getInstance()
         val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
-        val hourIndex = items.drop(headerIndex).indexOfFirst { item ->
+        rowToScrollInto = items.drop(headerIndex).indexOfFirst { item ->
             var result = false
             if (item is RowItem) {
                 result = item.data[0].toInt() == currentHour
             }
             result
         }
-
-        return Pair(items, hourIndex)
     }
 
     private fun processSingleTimeTable(data: List<TimeTableEntry>): List<ViewItem> {
