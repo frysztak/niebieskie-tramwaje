@@ -53,6 +53,9 @@ class TimetableRecyclerViewAdapter(private val context: Context,
                 val viewHolder = holder as HeaderViewHolder
                 val item = items[position] as HeaderItem
                 viewHolder.mainTextView.text = item.text
+                viewHolder.additionalTextView.text = item.additionalText
+                viewHolder.additionalTextView.visibility =
+                    if (item.additionalText.isEmpty()) View.GONE else View.VISIBLE
             }
             ViewType.ROW.code -> {
                 val viewHolder = holder as RowViewHolder
