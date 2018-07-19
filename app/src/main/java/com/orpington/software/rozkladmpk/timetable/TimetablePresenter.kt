@@ -27,7 +27,8 @@ class TimetablePresenter(
             object : IDataSource.LoadDataCallback<TimeTable> {
                 override fun onDataLoaded(data: TimeTable) {
                     setTimeTable(data)
-                    view.showTimeTable(processTimeTable(timeTable))
+                    val (rows, indexToScrollInto) = processTimeTable(timeTable)
+                    view.showTimeTable(rows, indexToScrollInto)
                     view.hideProgressBar()
                 }
 
@@ -47,7 +48,7 @@ class TimetablePresenter(
         val type: ViewType
     }
 
-    class HeaderItem(val text: String, val additionalText: String) : ViewItem {
+    class HeaderItem(val dayType: DayType, val additionalText: String) : ViewItem {
         override val type: ViewType = ViewType.HEADER
     }
 
@@ -61,27 +62,48 @@ class TimetablePresenter(
         Sunday
     }
 
-    private fun processTimeTable(timeTable: TimeTable): List<ViewItem> {
+    private fun processTimeTable(timeTable: TimeTable): Pair<List<ViewItem>, Int> {
         var items: MutableList<ViewItem> = arrayListOf()
         val calendar = Calendar.getInstance()
         val day = calendar.get(Calendar.DAY_OF_WEEK)
 
         if (timeTable.weekdays != null) {
-            items.add(HeaderItem("Weekdays", getHeaderAdditionalInfo(day, DayType.Weekday)))
+            items.add(HeaderItem(DayType.Weekday, getHeaderAdditionalInfo(day, DayType.Weekday)))
             items.addAll(processSingleTimeTable(timeTable.weekdays))
         }
 
         if (timeTable.saturdays != null) {
-            items.add(HeaderItem("Saturday", getHeaderAdditionalInfo(day, DayType.Saturday)))
+            items.add(HeaderItem(DayType.Saturday, getHeaderAdditionalInfo(day, DayType.Saturday)))
             items.addAll(processSingleTimeTable(timeTable.saturdays))
         }
 
         if (timeTable.sundays != null) {
-            items.add(HeaderItem("Sunday", getHeaderAdditionalInfo(day, DayType.Sunday)))
+            items.add(HeaderItem(DayType.Sunday, getHeaderAdditionalInfo(day, DayType.Sunday)))
             items.addAll(processSingleTimeTable(timeTable.sundays))
         }
 
-        return items
+        // get position of a row corresponding to current day and time,
+        // so that we can scroll into it
+
+        val dayTypeToFind = getCurrentDayType()
+        val headerIndex = items.indexOfFirst { item ->
+            var result = false
+            if (item is HeaderItem) {
+                result = item.dayType == dayTypeToFind
+            }
+            result
+        }
+
+        val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val hourIndex = items.drop(headerIndex).indexOfFirst { item ->
+            var result = false
+            if (item is RowItem) {
+                result = item.data[0].toInt() == currentHour
+            }
+            result
+        }
+
+        return Pair(items, hourIndex)
     }
 
     private fun processSingleTimeTable(data: List<TimeTableEntry>): List<ViewItem> {
@@ -101,6 +123,21 @@ class TimetablePresenter(
             items.add(RowItem(row))
         }
         return items
+    }
+
+    private fun getCurrentDayType(): DayType {
+        val calendar = Calendar.getInstance()
+        val currentDay = calendar.get(Calendar.DAY_OF_WEEK)
+
+        val weekdays = listOf(Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY,
+            Calendar.THURSDAY, Calendar.FRIDAY)
+
+        return when {
+            weekdays.contains(currentDay) -> DayType.Weekday
+            currentDay == Calendar.SATURDAY -> DayType.Saturday
+            currentDay == Calendar.SUNDAY -> DayType.Sunday
+            else -> throw Exception("Unknown day: $currentDay")
+        }
     }
 
     private fun getHeaderAdditionalInfo(currentDay: Int, timetableDay: DayType): String {

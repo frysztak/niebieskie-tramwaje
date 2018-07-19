@@ -13,7 +13,7 @@ interface TimetableContract {
         fun showProgressBar()
         fun hideProgressBar()
 
-        fun showTimeTable(items: List<TimetablePresenter.ViewItem>)
+        fun showTimeTable(items: List<TimetablePresenter.ViewItem>, indexToScrollInto: Int)
         fun reportThatSomethingWentWrong()
     }
 }

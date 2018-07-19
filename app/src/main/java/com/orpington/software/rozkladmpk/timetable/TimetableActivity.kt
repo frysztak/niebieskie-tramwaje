@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
+import android.view.ViewTreeObserver
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
+import com.orpington.software.rozkladmpk.utils.RecyclerViewReadyCallback
 import kotlinx.android.synthetic.main.activity_timetable.*
 
 
@@ -13,6 +15,7 @@ class TimetableActivity : AppCompatActivity(), TimetableContract.View {
 
     private lateinit var presenter: TimetablePresenter
     private lateinit var adapter: TimetableRecyclerViewAdapter
+    private lateinit var layoutManager: LinearLayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,7 +24,8 @@ class TimetableActivity : AppCompatActivity(), TimetableContract.View {
 
         presenter = TimetablePresenter(Injection.provideDataSource(cacheDir), this)
         adapter = TimetableRecyclerViewAdapter(this, presenter)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
 
         val routeID = intent.getStringExtra("routeID")
@@ -51,8 +55,22 @@ class TimetableActivity : AppCompatActivity(), TimetableContract.View {
 
     }
 
-    override fun showTimeTable(items: List<TimetablePresenter.ViewItem>) {
+    override fun showTimeTable(items: List<TimetablePresenter.ViewItem>, indexToScrollInto: Int) {
         adapter.setItems(items)
+
+        val recyclerViewReadyCallback = object : RecyclerViewReadyCallback {
+            override fun onLayoutReady() {
+                if (indexToScrollInto >= 0 && adapter.itemCount > indexToScrollInto) {
+                    recyclerView.smoothScrollToPosition(indexToScrollInto)
+                }
+            }
+        }
+        recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                recyclerViewReadyCallback.onLayoutReady()
+                recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
