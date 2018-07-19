@@ -67,20 +67,16 @@ class TimetablePresenter(
         val calendar = Calendar.getInstance()
         val day = calendar.get(Calendar.DAY_OF_WEEK)
 
-        if (timeTable.weekdays != null) {
-            items.add(HeaderItem(DayType.Weekday, getHeaderAdditionalInfo(day, DayType.Weekday)))
-            items.addAll(processSingleTimeTable(timeTable.weekdays))
+        val addHeaderAndRows = { dayType: DayType, timeTableEntries: List<TimeTableEntry>? ->
+            if (timeTableEntries != null) {
+                items.add(HeaderItem(dayType, getHeaderAdditionalInfo(day, dayType)))
+                items.addAll(processSingleTimeTable(timeTableEntries))
+            }
         }
 
-        if (timeTable.saturdays != null) {
-            items.add(HeaderItem(DayType.Saturday, getHeaderAdditionalInfo(day, DayType.Saturday)))
-            items.addAll(processSingleTimeTable(timeTable.saturdays))
-        }
-
-        if (timeTable.sundays != null) {
-            items.add(HeaderItem(DayType.Sunday, getHeaderAdditionalInfo(day, DayType.Sunday)))
-            items.addAll(processSingleTimeTable(timeTable.sundays))
-        }
+        addHeaderAndRows(DayType.Weekday, timeTable.weekdays)
+        addHeaderAndRows(DayType.Saturday, timeTable.saturdays)
+        addHeaderAndRows(DayType.Sunday, timeTable.sundays)
 
         // get position of a row corresponding to current day and time,
         // so that we can scroll into it
