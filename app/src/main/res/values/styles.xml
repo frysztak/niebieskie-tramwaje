@@ -20,7 +20,7 @@
     <style name="TimeTableLeftMostItem" parent="TimeTableItem">
         <item name="android:textStyle">bold</item>
         <item name="android:paddingLeft">8dp</item>
-        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingRight">12dp</item>
     </style>
 
     <style name="TimeTableHeader" parent="TextAppearance.AppCompat.Headline">
