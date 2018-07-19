@@ -12,14 +12,14 @@ import kotlinx.android.synthetic.main.activity_timetable.*
 class TimetableActivity : AppCompatActivity(), TimetableContract.View {
 
     private lateinit var presenter: TimetablePresenter
-    private lateinit var adapter: TimetablePagerAdapter
+    private lateinit var adapter: TimetableRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_timetable)
 
         presenter = TimetablePresenter(Injection.provideDataSource(cacheDir), this)
-        adapter = TimetablePagerAdapter(this, presenter)
+        adapter = TimetableRecyclerViewAdapter(this, presenter)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 

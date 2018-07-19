@@ -15,8 +15,8 @@ import kotlinx.android.synthetic.main.timetable_list_row.view.*
 
 typealias Row = MutableList<String>
 
-class TimetablePagerAdapter(private val context: Context,
-                            private val presenter: TimetablePresenter)
+class TimetableRecyclerViewAdapter(private val context: Context,
+                                   private val presenter: TimetablePresenter)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     enum class ViewType(val code: Int) {
