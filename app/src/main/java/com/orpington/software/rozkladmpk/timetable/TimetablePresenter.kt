@@ -19,7 +19,8 @@ class TimetablePresenter(
     override fun setTimeTable(newTimeTable: TimeTable) {
         timeTable = newTimeTable
         processTimeTable()
-        calculateRowToScrollInto()
+        val helper = TimetableHelper(Calendar.getInstance())
+        rowToScrollInto = helper.calculateRowToScrollInto(items)
     }
 
     override fun getTimeTable(): TimeTable {
@@ -82,26 +83,7 @@ class TimetablePresenter(
         addHeaderAndRows(DayType.Sunday, timeTable.sundays)
     }
 
-    private fun calculateRowToScrollInto() {
-        val dayTypeToFind = getCurrentDayType()
-        val headerIndex = items.indexOfFirst { item ->
-            var result = false
-            if (item is HeaderItem) {
-                result = item.dayType == dayTypeToFind
-            }
-            result
-        }
 
-        val calendar = Calendar.getInstance()
-        val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
-        rowToScrollInto = items.drop(headerIndex).indexOfFirst { item ->
-            var result = false
-            if (item is RowItem) {
-                result = item.data[0].toInt() == currentHour
-            }
-            result
-        }
-    }
 
     private fun processSingleTimeTable(data: List<TimeTableEntry>): List<ViewItem> {
         val groups = data.groupBy { entry ->
@@ -120,21 +102,6 @@ class TimetablePresenter(
             items.add(RowItem(row))
         }
         return items
-    }
-
-    private fun getCurrentDayType(): DayType {
-        val calendar = Calendar.getInstance()
-        val currentDay = calendar.get(Calendar.DAY_OF_WEEK)
-
-        val weekdays = listOf(Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY,
-            Calendar.THURSDAY, Calendar.FRIDAY)
-
-        return when {
-            weekdays.contains(currentDay) -> DayType.Weekday
-            currentDay == Calendar.SATURDAY -> DayType.Saturday
-            currentDay == Calendar.SUNDAY -> DayType.Sunday
-            else -> throw Exception("Unknown day: $currentDay")
-        }
     }
 
     private fun getHeaderAdditionalInfo(currentDay: Int, timetableDay: DayType): String {
