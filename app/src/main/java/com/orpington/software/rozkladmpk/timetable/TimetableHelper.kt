@@ -21,21 +21,13 @@ class TimetableHelper(private val calendar: Calendar) {
     fun calculateRowToScrollInto(items: List<ViewItem>): Int {
         val dayTypeToFind = getCurrentDayType()
         val headerIndex = items.indexOfFirst { item ->
-            var result = false
-            if (item is HeaderItem) {
-                result = item.dayType == dayTypeToFind
-            }
-            result
+            item is HeaderItem && item.dayType == dayTypeToFind
         }
         if (headerIndex == -1) return -1
 
         val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
         return items.drop(headerIndex).indexOfFirst { item ->
-            var result = false
-            if (item is RowItem) {
-                result = item.data[0].toInt() == currentHour
-            }
-            result
+            item is RowItem && item.data[0].toInt() == currentHour
         }
     }
 }
