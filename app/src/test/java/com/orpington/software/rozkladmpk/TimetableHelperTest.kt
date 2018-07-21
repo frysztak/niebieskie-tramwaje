@@ -52,8 +52,10 @@ class TimetableHelperTest {
     class CalculateRowToScrollIntoTest(
         private val currentDay: Int,
         private val currentHour: Int,
+        private val currentMinute: Int,
         private val items: List<ViewItem>,
-        private val expectedIndex: Int
+        private val expectedRowIndex: Int,
+        private val expectedColumnIndex: Int
     ) {
 
         companion object {
@@ -61,29 +63,45 @@ class TimetableHelperTest {
             @Parameterized.Parameters
             fun data(): Collection<Array<Any>> {
                 return listOf(
-                    // Typical situation
-                    arrayOf(Calendar.MONDAY, 12, listOf(
+                    // 0: Typical situation
+                    arrayOf(Calendar.MONDAY, 12, 6, listOf(
                         HeaderItem(DayType.Weekday, ""),
                         RowItem(arrayListOf("10", "07")),
                         RowItem(arrayListOf("11", "07")),
                         RowItem(arrayListOf("12", "07"))
-                    ), 3),
+                    ), 3, 0),
 
-                    // Current hour is past last available one
-                    arrayOf(Calendar.MONDAY, 13, listOf(
+                    // 1: Typical situation
+                    arrayOf(Calendar.MONDAY, 12, 50, listOf(
                         HeaderItem(DayType.Weekday, ""),
                         RowItem(arrayListOf("10", "07")),
                         RowItem(arrayListOf("11", "07")),
-                        RowItem(arrayListOf("12", "07"))
-                    ), -1),
+                        RowItem(arrayListOf("12", "07", "12", "24", "36", "48", "54"))
+                    ), 3, 5),
 
-                    // It's sunday but the route only runs on weekdays
-                    arrayOf(Calendar.SUNDAY, 13, listOf(
+                    // 2: Typical situation
+                    arrayOf(Calendar.MONDAY, 11, 50, listOf(
+                        HeaderItem(DayType.Weekday, ""),
+                        RowItem(arrayListOf("10", "07")),
+                        RowItem(arrayListOf("11", "07")),
+                        RowItem(arrayListOf("12", "07", "12", "24", "36", "48", "54"))
+                    ), 3, 0),
+
+                    // 3: Current hour is past last available one
+                    arrayOf(Calendar.MONDAY, 13, 6, listOf(
                         HeaderItem(DayType.Weekday, ""),
                         RowItem(arrayListOf("10", "07")),
                         RowItem(arrayListOf("11", "07")),
                         RowItem(arrayListOf("12", "07"))
-                    ), -1)
+                    ), -1, -1),
+
+                    // 4: It's sunday but the route only runs on weekdays
+                    arrayOf(Calendar.SUNDAY, 13, 6, listOf(
+                        HeaderItem(DayType.Weekday, ""),
+                        RowItem(arrayListOf("10", "07")),
+                        RowItem(arrayListOf("11", "07")),
+                        RowItem(arrayListOf("12", "07"))
+                    ), -1, -1)
                 )
             }
         }
@@ -93,10 +111,13 @@ class TimetableHelperTest {
             val calendar = mock<Calendar> {
                 on { get(Calendar.DAY_OF_WEEK) } doReturn currentDay
                 on { get(Calendar.HOUR_OF_DAY) } doReturn currentHour
+                on { get(Calendar.MINUTE) } doReturn currentMinute
             }
 
             val helper = TimetableHelper(calendar)
-            Assert.assertEquals(expectedIndex, helper.calculateRowToScrollInto(items))
+            val rowAndColumnIndices = helper.calculateRowAndColumnToScrollInto(items)
+            Assert.assertEquals(expectedRowIndex, rowAndColumnIndices.first)
+            Assert.assertEquals(expectedColumnIndex, rowAndColumnIndices.second)
         }
 
     }

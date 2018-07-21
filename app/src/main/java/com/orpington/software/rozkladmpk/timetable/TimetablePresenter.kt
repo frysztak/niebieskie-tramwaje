@@ -20,7 +20,10 @@ class TimetablePresenter(
         timeTable = newTimeTable
         processTimeTable()
         val helper = TimetableHelper(Calendar.getInstance())
-        rowToScrollInto = helper.calculateRowToScrollInto(items)
+        val rowAndColumnIndex = helper.calculateRowAndColumnToScrollInto(items)
+
+        rowToScrollInto = rowAndColumnIndex.first
+        columnToHighlight = rowAndColumnIndex.second
     }
 
     override fun getTimeTable(): TimeTable {
