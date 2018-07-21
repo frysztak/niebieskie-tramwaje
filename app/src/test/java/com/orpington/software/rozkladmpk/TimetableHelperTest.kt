@@ -115,9 +115,9 @@ class TimetableHelperTest {
             }
 
             val helper = TimetableHelper(calendar)
-            val rowAndColumnIndices = helper.calculateRowAndColumnToScrollInto(items)
-            Assert.assertEquals(expectedRowIndex, rowAndColumnIndices.first)
-            Assert.assertEquals(expectedColumnIndex, rowAndColumnIndices.second)
+            val timeIndices = helper.calculateRowAndColumnToScrollInto(items)
+            Assert.assertEquals(expectedRowIndex, timeIndices.hourIdx)
+            Assert.assertEquals(expectedColumnIndex, timeIndices.minuteIdx)
         }
 
     }

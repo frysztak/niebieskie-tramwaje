@@ -13,17 +13,13 @@ class TimetablePresenter(
 
     private lateinit var timeTable: TimeTable
     private var items: MutableList<ViewItem> = arrayListOf()
-    private var rowToScrollInto: Int = -1
-    private var columnToHighlight: Int = -1
+    private var timeToScrollInto = TimeIndices(-1, -1)
 
     override fun setTimeTable(newTimeTable: TimeTable) {
         timeTable = newTimeTable
         processTimeTable()
         val helper = TimetableHelper(Calendar.getInstance())
-        val rowAndColumnIndex = helper.calculateRowAndColumnToScrollInto(items)
-
-        rowToScrollInto = rowAndColumnIndex.first
-        columnToHighlight = rowAndColumnIndex.second
+        timeToScrollInto = helper.calculateRowAndColumnToScrollInto(items)
     }
 
     override fun getTimeTable(): TimeTable {
@@ -36,7 +32,7 @@ class TimetablePresenter(
             object : IDataSource.LoadDataCallback<TimeTable> {
                 override fun onDataLoaded(data: TimeTable) {
                     setTimeTable(data)
-                    view.showTimeTable(items, rowToScrollInto)
+                    view.showTimeTable(items, timeToScrollInto.hourIdx)
                     view.hideProgressBar()
                 }
 

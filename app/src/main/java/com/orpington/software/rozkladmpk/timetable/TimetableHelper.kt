@@ -3,6 +3,8 @@ package com.orpington.software.rozkladmpk.timetable
 import com.orpington.software.rozkladmpk.timetable.TimetablePresenter.*
 import java.util.*
 
+data class TimeIndices(val hourIdx: Int, val minuteIdx: Int)
+
 class TimetableHelper(private val calendar: Calendar) {
     private data class Time(val hour: Int, val minute: Int)
 
@@ -20,13 +22,13 @@ class TimetableHelper(private val calendar: Calendar) {
         }
     }
 
-    fun calculateRowAndColumnToScrollInto(items: List<ViewItem>): Pair<Int, Int> {
+    fun calculateRowAndColumnToScrollInto(items: List<ViewItem>): TimeIndices {
         val dayTypeToFind = getCurrentDayType()
         val headerIndex = items.indexOfFirst { item ->
             item is HeaderItem && item.dayType == dayTypeToFind
         }
 
-        if (headerIndex == -1) return Pair(-1, -1)
+        if (headerIndex == -1) return TimeIndices(-1, -1)
 
         val currentTime = Time(
             calendar.get(Calendar.HOUR_OF_DAY),
@@ -56,11 +58,11 @@ class TimetableHelper(private val calendar: Calendar) {
                 val minute = rowItem.data[minuteIdx].toInt()
                 val time = Time(hour, minute)
                 if (timeComparer(time, currentTime)) {
-                    return Pair(hourIdx, minuteIdx - 1)
+                    return TimeIndices(hourIdx, minuteIdx - 1)
                 }
             }
         }
 
-        return Pair(-1, -1)
+        return TimeIndices(-1, -1)
     }
 }
