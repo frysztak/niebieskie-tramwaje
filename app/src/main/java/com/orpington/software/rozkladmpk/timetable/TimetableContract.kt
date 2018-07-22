@@ -11,9 +11,8 @@ interface TimetableContract {
 
     interface View {
         fun showProgressBar()
-        fun hideProgressBar()
+        fun reportThatSomethingWentWrong()
 
         fun showTimeTable(items: List<TimetablePresenter.ViewItem>, timeToScrollInto: TimeIndices)
-        fun reportThatSomethingWentWrong()
     }
 }

@@ -33,12 +33,10 @@ class TimetablePresenter(
                 override fun onDataLoaded(data: TimeTable) {
                     setTimeTable(data)
                     view.showTimeTable(items, timeToScrollInto)
-                    view.hideProgressBar()
                 }
 
                 override fun onDataNotAvailable() {
                     view.reportThatSomethingWentWrong()
-                    view.hideProgressBar()
                 }
             })
     }

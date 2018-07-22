@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
+import android.widget.Button
+import com.kennyc.view.MultiStateView
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.utils.afterMeasured
@@ -44,22 +46,30 @@ class TimetableActivity : AppCompatActivity(), TimetableContract.View {
         )
 
         title = "$fromStop - $toStop"
-    }
 
-    override fun hideProgressBar() {
-
+        multiStateView.getView(MultiStateView.VIEW_STATE_ERROR)
+            ?.findViewById<Button>(R.id.tryAgainButton)
+            ?.setOnClickListener {
+                presenter.loadTimeTable(
+                    routeID,
+                    atStop,
+                    fromStop,
+                    toStop
+                )
+            }
     }
 
     override fun showProgressBar() {
-
+        multiStateView.viewState = MultiStateView.VIEW_STATE_LOADING
     }
 
     override fun reportThatSomethingWentWrong() {
-
+        multiStateView.viewState = MultiStateView.VIEW_STATE_ERROR
     }
 
     override fun showTimeTable(items: List<TimetablePresenter.ViewItem>, timeToScrollInto: TimeIndices) {
         adapter.setItems(items)
+        multiStateView.viewState = MultiStateView.VIEW_STATE_CONTENT
 
         recyclerView.afterMeasured {
             logger.debug { "RecyclerView ready" }
