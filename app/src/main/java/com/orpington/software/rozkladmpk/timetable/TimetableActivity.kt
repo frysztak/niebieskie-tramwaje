@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
-import android.widget.TextView
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.utils.afterMeasured

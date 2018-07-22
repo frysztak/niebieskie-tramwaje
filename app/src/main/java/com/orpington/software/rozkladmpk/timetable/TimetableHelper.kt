@@ -35,14 +35,14 @@ class TimetableHelper(private val calendar: Calendar) {
             calendar.get(Calendar.MINUTE)
         )
 
-        val timeComparer = { time: Time, currentTime: Time ->
+        val timeComparer = { time1: Time, time2: Time ->
             val cal1 = Calendar.getInstance()
-            cal1.set(Calendar.HOUR_OF_DAY, time.hour)
-            cal1.set(Calendar.MINUTE, time.minute)
+            cal1.set(Calendar.HOUR_OF_DAY, time1.hour)
+            cal1.set(Calendar.MINUTE, time1.minute)
 
             val cal2 = Calendar.getInstance()
-            cal2.set(Calendar.HOUR_OF_DAY, currentTime.hour)
-            cal2.set(Calendar.MINUTE, currentTime.minute)
+            cal2.set(Calendar.HOUR_OF_DAY, time2.hour)
+            cal2.set(Calendar.MINUTE, time2.minute)
 
             cal1.after(cal2)
         }

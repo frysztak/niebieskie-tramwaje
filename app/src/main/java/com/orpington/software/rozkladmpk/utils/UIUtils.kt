@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 
 // https://stackoverflow.com/a/32301440
-inline fun View.forceRippleAnimation() {
+fun View.forceRippleAnimation() {
     if (Build.VERSION.SDK_INT >= 21 && background is RippleDrawable) {
         val rippleDrawable = background as RippleDrawable
 
