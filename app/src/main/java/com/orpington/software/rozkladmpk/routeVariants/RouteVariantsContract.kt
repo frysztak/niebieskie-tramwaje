@@ -12,9 +12,11 @@ interface RouteVariantsContract {
     }
 
     interface View: BaseView {
+        fun showProgressBar()
+        fun reportThatSomethingWentWrong()
+
         fun showRoutes(variants: List<RouteVariant>)
         fun showVariants(variants: List<RouteVariant>)
-        fun reportThatSomethingWentWrong()
 
         fun navigateToTimetable(routeID: String, atStop: String, fromStop: String, toStop: String)
     }

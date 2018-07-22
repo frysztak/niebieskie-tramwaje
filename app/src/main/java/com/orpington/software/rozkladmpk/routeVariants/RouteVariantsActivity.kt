@@ -9,7 +9,8 @@ import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
-import android.widget.Toast
+import android.widget.Button
+import com.kennyc.view.MultiStateView
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteVariant
@@ -54,9 +55,16 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
 
         title = stopName
         presenter.loadVariants(stopName)
+
+        multiStateView.getView(MultiStateView.VIEW_STATE_ERROR)
+            ?.findViewById<Button>(R.id.tryAgainButton)
+            ?.setOnClickListener {
+                presenter.loadVariants(stopName)
+            }
     }
 
     override fun showRoutes(variants: List<RouteVariant>) {
+        multiStateView.viewState = MultiStateView.VIEW_STATE_CONTENT
         recyclerAdapter.setItems(variants)
     }
 
@@ -65,8 +73,12 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
         bottomSheetBehaviour.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
+    override fun showProgressBar() {
+        multiStateView.viewState = MultiStateView.VIEW_STATE_LOADING
+    }
+
     override fun reportThatSomethingWentWrong() {
-        Toast.makeText(applicationContext, "Something went wrong...", Toast.LENGTH_SHORT).show()
+        multiStateView.viewState = MultiStateView.VIEW_STATE_ERROR
     }
 
     override fun navigateToTimetable(routeID: String, atStop: String, fromStop: String, toStop: String) {

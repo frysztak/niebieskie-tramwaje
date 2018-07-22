@@ -17,6 +17,7 @@ class RouteVariantsPresenter(
 
     override fun loadVariants(stopName: String) {
         currentStopName = stopName
+        view.showProgressBar()
         dataSource.getRouteVariantsForStopName(stopName, object : IDataSource.LoadDataCallback<RouteVariants> {
             override fun onDataLoaded(data: RouteVariants) {
                 routes = data.routeVariants
