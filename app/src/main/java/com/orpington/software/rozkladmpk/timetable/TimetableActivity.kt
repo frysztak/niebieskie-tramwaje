@@ -69,9 +69,8 @@ class TimetableActivity : AppCompatActivity(), TimetableContract.View {
                 this.whenScrollStateIdle {
                     val vh = this.findViewHolderForAdapterPosition(timeToScrollInto.hourIdx)
                     if (vh is TimetableRecyclerViewAdapter.RowViewHolder && vh.linearLayout.childCount > timeToScrollInto.minuteIdx) {
-                        val textView = vh.linearLayout.getChildAt(timeToScrollInto.minuteIdx) as TextView
-                        logger.debug { "found textview. forcing ripple animation." }
-                        textView.forceRippleAnimation()
+                        logger.debug { "found minute view. forcing ripple animation." }
+                        vh.linearLayout.getChildAt(timeToScrollInto.minuteIdx).forceRippleAnimation()
                     }
                 }
 
