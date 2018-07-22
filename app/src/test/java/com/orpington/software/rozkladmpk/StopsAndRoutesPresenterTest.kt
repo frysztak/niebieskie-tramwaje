@@ -92,8 +92,8 @@ class StopsAndRoutesPresenterTest {
         val inOrder = inOrder(view)
         presenter.loadStopNames()
         inOrder.verify(view, times(1)).showProgressBar()
-        inOrder.verify(view).displayStops(listOf("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
         inOrder.verify(view, times(1)).hideProgressBar()
+        inOrder.verify(view).displayStops(listOf("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
         verify(view, never()).reportThatSomethingWentWrong()
     }
 
@@ -106,8 +106,8 @@ class StopsAndRoutesPresenterTest {
         val inOrder = inOrder(view)
         presenter.loadStopNames()
         inOrder.verify(view, times(1)).showProgressBar()
-        inOrder.verify(view, times(1)).reportThatSomethingWentWrong()
         inOrder.verify(view, times(1)).hideProgressBar()
+        inOrder.verify(view, times(1)).reportThatSomethingWentWrong()
         verify(view, never()).displayStops(any())
     }
 

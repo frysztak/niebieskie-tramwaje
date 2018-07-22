@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="StateViewProgressBarSize">50dp</dimen>
+    <dimen name="StateViewIconSize">100dp</dimen>
+
     <dimen name="TimeTableRowHeight">48dp</dimen>
     <dimen name="TimeTableColumnWidth">48dp</dimen>
 </resources>

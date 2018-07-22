@@ -28,13 +28,13 @@ class StopsAndRoutesPresenter(
             override fun onDataLoaded(data: StopNames) {
                 setAllStopNames(data.stopNames)
                 setShownStopNames(allStops)
-                view.displayStops(shownStops)
                 view.hideProgressBar()
+                view.displayStops(shownStops)
             }
 
             override fun onDataNotAvailable() {
-                view.reportThatSomethingWentWrong()
                 view.hideProgressBar()
+                view.reportThatSomethingWentWrong()
             }
         })
     }

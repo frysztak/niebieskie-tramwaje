@@ -6,8 +6,9 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import android.widget.Button
 import android.widget.SearchView
-import android.widget.Toast
+import com.kennyc.view.MultiStateView
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.routeVariants.RouteVariantsActivity
@@ -27,7 +28,6 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         recyclerAdapter = StopsAndRoutesRecyclerViewAdapter(this, presenter)
         presenter.loadStopNames()
 
-        searchView?.queryHint = "Przystanek..."
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
@@ -49,9 +49,19 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
             layoutManager.orientation
         )
         recyclerView.addItemDecoration(dividerItemDecoration)
+
+        multiStateView.getView(MultiStateView.VIEW_STATE_ERROR)
+            ?.findViewById<Button>(R.id.tryAgainButton)
+            ?.setOnClickListener {
+                presenter.loadStopNames()
+            }
     }
 
     override fun displayStops(stops: List<String>) {
+        multiStateView.viewState = MultiStateView.VIEW_STATE_CONTENT
+        recyclerView.visibility = View.VISIBLE
+        notFoundLayout.visibility = View.GONE
+
         recyclerAdapter.setStops(stops)
     }
 
@@ -62,18 +72,19 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     }
 
     override fun reportThatSomethingWentWrong() {
-        Toast.makeText(applicationContext, "Something went wrong...", Toast.LENGTH_SHORT).show()
+        multiStateView.viewState = MultiStateView.VIEW_STATE_ERROR
     }
 
     override fun showProgressBar() {
-        progressBar.visibility = View.VISIBLE
+        multiStateView.viewState = MultiStateView.VIEW_STATE_LOADING
     }
 
     override fun hideProgressBar() {
-        progressBar.visibility = View.GONE
+        multiStateView.viewState = MultiStateView.VIEW_STATE_CONTENT
     }
 
     override fun showStopNotFound() {
-        Toast.makeText(applicationContext, "Stop not found", Toast.LENGTH_SHORT).show()
+        notFoundLayout.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
     }
 }
