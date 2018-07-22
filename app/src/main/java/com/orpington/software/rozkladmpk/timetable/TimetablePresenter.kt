@@ -32,7 +32,7 @@ class TimetablePresenter(
             object : IDataSource.LoadDataCallback<TimeTable> {
                 override fun onDataLoaded(data: TimeTable) {
                     setTimeTable(data)
-                    view.showTimeTable(items, timeToScrollInto.hourIdx)
+                    view.showTimeTable(items, timeToScrollInto)
                     view.hideProgressBar()
                 }
 
