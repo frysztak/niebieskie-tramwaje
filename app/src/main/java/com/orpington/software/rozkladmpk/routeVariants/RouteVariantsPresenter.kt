@@ -43,7 +43,12 @@ class RouteVariantsPresenter(
 
     override fun routeClicked(position: Int) {
         val routeID = sortedDistinctRoutes[position].routeID
-        shownVariants = routes.filter { it.routeID == routeID }
+        shownVariants = routes
+            .filter { route ->
+                route.routeID == routeID
+            }.sortedByDescending { route ->
+                route.tripIDs.size
+            }
         view.showVariants(shownVariants)
     }
 
