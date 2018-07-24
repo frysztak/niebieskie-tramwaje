@@ -21,9 +21,9 @@
             android:layout_height="?android:attr/actionBarSize"
             android:background="?android:attr/colorPrimary"
             android:elevation="4dp"
-            android:theme="@style/HeaderBar"
+            android:theme="@style/ToolbarStyle"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            tools:title="dd" />
+            tools:title="Toolbar" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"

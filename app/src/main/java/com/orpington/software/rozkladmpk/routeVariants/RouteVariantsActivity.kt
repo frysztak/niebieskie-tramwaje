@@ -32,6 +32,7 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_route_variants)
+        setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         var stopName = intent.getStringExtra("stopName")

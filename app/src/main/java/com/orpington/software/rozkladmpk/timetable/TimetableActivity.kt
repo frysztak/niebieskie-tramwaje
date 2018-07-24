@@ -25,6 +25,7 @@ class TimetableActivity : AppCompatActivity(), TimetableContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_timetable)
+        setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         presenter = TimetablePresenter(Injection.provideDataSource(cacheDir), this)
