@@ -33,7 +33,7 @@ class StopsAndRoutesRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = stops[position]
-        holder.iconImageView.setImageResource(R.drawable.traffic_light)
+        holder.iconImageView.setImageResource(R.drawable.bus_stop)
         holder.mainNameTextView.text = item
     }
 

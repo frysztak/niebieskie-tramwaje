@@ -19,15 +19,16 @@
             android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:queryHint="@string/searchHint"
             android:layout_marginTop="8dp"
             android:iconifiedByDefault="false"
+            android:queryHint="@string/searchHint"
             android:searchIcon="@null" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/stops_and_routes_list_item" />
 
         <LinearLayout
             android:id="@+id/notFoundLayout"

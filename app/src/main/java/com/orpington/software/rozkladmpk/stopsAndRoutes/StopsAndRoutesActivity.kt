@@ -44,11 +44,6 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         var layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = recyclerAdapter
-        val dividerItemDecoration = DividerItemDecoration(
-            applicationContext,
-            layoutManager.orientation
-        )
-        recyclerView.addItemDecoration(dividerItemDecoration)
 
         multiStateView.getView(MultiStateView.VIEW_STATE_ERROR)
             ?.findViewById<Button>(R.id.tryAgainButton)
