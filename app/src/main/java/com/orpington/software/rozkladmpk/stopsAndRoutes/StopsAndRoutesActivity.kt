@@ -3,11 +3,11 @@ package com.orpington.software.rozkladmpk.stopsAndRoutes
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.SearchView
+import android.view.Menu
 import android.view.View
 import android.widget.Button
-import android.widget.SearchView
 import com.kennyc.view.MultiStateView
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
@@ -23,23 +23,11 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stops_and_routes)
+        setSupportActionBar(findViewById(R.id.toolbar))
 
         presenter = StopsAndRoutesPresenter(Injection.provideDataSource(cacheDir), this)
         recyclerAdapter = StopsAndRoutesRecyclerViewAdapter(this, presenter)
         presenter.loadStopNames()
-
-        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText != null) {
-                    presenter.queryTextChanged(newText)
-                }
-                return true
-            }
-
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return true
-            }
-        })
 
         var layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
@@ -50,6 +38,28 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
             ?.setOnClickListener {
                 presenter.loadStopNames()
             }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.stops_and_routes_menu, menu)
+        val searchItem = menu?.findItem(R.id.action_search)
+        val searchView = searchItem?.actionView as SearchView
+        searchView.setOnQueryTextListener(
+            object : SearchView.OnQueryTextListener {
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    if (newText != null) {
+                        presenter.queryTextChanged(newText)
+                    }
+                    return true
+                }
+
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return true
+                }
+            }
+        )
+
+        return true
     }
 
     override fun displayStops(stops: List<String>) {

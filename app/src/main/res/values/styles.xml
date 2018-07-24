@@ -1,11 +1,31 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+    </style>
+
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="drawableSize">40dp</item>
+        <item name="spinBars">true</item>
+        <item name="color">@color/icons</item>
+    </style>
+
+    <style name="ActionButtonOverflowStyle" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:foreground">@color/icons</item>
+    </style>
+
+    <style name="HeaderBar">
+        <item name="android:textColorPrimary">@color/icons</item>
+        <item name="android:textColorSecondary">@color/icons</item>
+        <item name="android:editTextColor">@color/icons</item>
+        <item name="android:textColorHint">@color/icons</item>
+        <item name="actionMenuTextColor">@color/icons</item>
+        <item name="actionOverflowButtonStyle">@style/ActionButtonOverflowStyle</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
     </style>
 
     <!-- Stops and routes -->
@@ -41,7 +61,7 @@
 
     <style name="TimeTableAdditionalInfo" parent="TextAppearance.AppCompat.Subhead">
         <item name="android:gravity">left</item>
-        <item name="android:textColor">@color/grey</item>
+        <item name="android:textColor">@color/secondary_text</item>
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
