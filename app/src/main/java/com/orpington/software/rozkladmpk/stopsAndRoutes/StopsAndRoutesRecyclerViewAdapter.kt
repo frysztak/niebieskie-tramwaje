@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.orpington.software.rozkladmpk.R
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import kotlinx.android.synthetic.main.stops_and_routes_list_item.view.*
 
 class StopsAndRoutesRecyclerViewAdapter(
     private val context: Context,
     private val presenter: StopsAndRoutesPresenter) :
-    RecyclerView.Adapter<StopsAndRoutesRecyclerViewAdapter.ViewHolder>() {
+    RecyclerView.Adapter<StopsAndRoutesRecyclerViewAdapter.ViewHolder>(),
+    FastScrollRecyclerView.SectionedAdapter {
 
     private var stops: List<String> = emptyList()
 
@@ -35,6 +37,10 @@ class StopsAndRoutesRecyclerViewAdapter(
         val item = stops[position]
         holder.iconImageView.setImageResource(R.drawable.bus_stop)
         holder.mainNameTextView.text = item
+    }
+
+    override fun getSectionName(position: Int): String {
+        return stops[position].first().toString()
     }
 
     class ViewHolder(view: View, private val presenter: StopsAndRoutesPresenter) :
