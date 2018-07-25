@@ -11,8 +11,8 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="@dimen/StopIconSize"
+        android:layout_height="@dimen/StopIconSize"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"

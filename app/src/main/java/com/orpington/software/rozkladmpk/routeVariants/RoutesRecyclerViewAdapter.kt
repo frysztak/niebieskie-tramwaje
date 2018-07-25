@@ -36,7 +36,7 @@ class RoutesRecyclerViewAdapter(
         val item = items[position]
         holder.iconImageView.setImageResource(when (item.isBus) {
             true -> R.drawable.bus
-            else -> R.drawable.train
+            else -> R.drawable.tram
         })
         holder.nameTextView.text = item.routeID
     }
