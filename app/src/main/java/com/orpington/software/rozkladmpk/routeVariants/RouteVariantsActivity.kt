@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
@@ -51,8 +50,6 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
         bottomSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
         bottomSheet.variantsRecyclerView.layoutManager = LinearLayoutManager(this)
         bottomSheet.variantsRecyclerView.adapter = variantsRecyclerAdapter
-        val itemDecor = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-        bottomSheet.variantsRecyclerView.addItemDecoration(itemDecor)
 
         title = stopName
         presenter.loadVariants(stopName)
