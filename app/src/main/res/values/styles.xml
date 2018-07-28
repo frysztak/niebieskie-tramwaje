@@ -64,6 +64,7 @@
     <style name="TimeTableHeader" parent="TextAppearance.AppCompat.Headline">
         <item name="android:gravity">left</item>
         <item name="android:textSize">32dp</item>
+        <item name="android:textColor">@color/primary_text</item>
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
 

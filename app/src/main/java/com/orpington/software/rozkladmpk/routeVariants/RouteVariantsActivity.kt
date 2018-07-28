@@ -13,6 +13,7 @@ import com.kennyc.view.MultiStateView
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteVariant
+import com.orpington.software.rozkladmpk.routeDetails.RouteDetailsActivity
 import com.orpington.software.rozkladmpk.timetable.TimetableActivity
 import com.orpington.software.rozkladmpk.utils.GridSpacingItemDecoration
 import kotlinx.android.synthetic.main.activity_route_variants.*
@@ -85,6 +86,13 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
         i.putExtra("atStop", atStop)
         i.putExtra("fromStop", fromStop)
         i.putExtra("toStop", toStop)
+        startActivity(i)
+    }
+
+    override fun navigateToRouteDetails(routeID: String, stopName: String) {
+        val i = Intent(baseContext, RouteDetailsActivity::class.java)
+        i.putExtra("routeID", routeID)
+        i.putExtra("stopName", stopName)
         startActivity(i)
     }
 

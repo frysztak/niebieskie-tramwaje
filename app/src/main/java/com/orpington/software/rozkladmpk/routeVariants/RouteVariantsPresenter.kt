@@ -50,7 +50,8 @@ class RouteVariantsPresenter(
             }.sortedByDescending { route ->
                 route.tripIDs.size
             }
-        view.showVariants(shownVariants)
+        view.navigateToRouteDetails(routeID, currentStopName)
+        //view.showVariants(shownVariants)
     }
 
     override fun variantClicked(position: Int) {

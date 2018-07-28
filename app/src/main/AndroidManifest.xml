@@ -22,10 +22,11 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".stopsAndRoutes.StopsAndRoutesActivity" />
-                -->
+            -->
         </activity>
         <activity android:name=".routeVariants.RouteVariantsActivity" />
-        <activity android:name=".timetable.TimetableActivity"></activity>
+        <activity android:name=".timetable.TimetableActivity" />
+        <activity android:name=".routeDetails.RouteDetailsActivity"></activity>
     </application>
 
 </manifest>

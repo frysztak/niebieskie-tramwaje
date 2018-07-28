@@ -11,8 +11,18 @@
     <string name="stopNotFound">Stop not found</string>
     <string name="fetchingData">Fetching latest data, just for you…</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search">Search</string>
     <string name="variants">VARIANTS</string>
+    <string name="direction">Direction</string>
+    <string name="timetable">Timetable</string>
+    <string name="stops">Stops</string>
+    <string name="route">Route</string>
+
+    <string name="normalBus">Normal bus</string>
+    <string name="normalTram">Normal tram</string>
+    <string name="suburbanBus">Suburban bus</string>
+    <string name="expressBus">Express bus</string>
+    <string name="zoneBus">Zone bus</string>
+    <string name="nightBus">Night bus</string>
+    <string name="unknown">Unknown</string>
 </resources>

@@ -18,6 +18,7 @@ interface RouteVariantsContract {
         fun showRoutes(variants: List<RouteVariant>)
         fun showVariants(variants: List<RouteVariant>)
 
+        fun navigateToRouteDetails(routeID: String, stopName: String)
         fun navigateToTimetable(routeID: String, atStop: String, fromStop: String, toStop: String)
     }
 }

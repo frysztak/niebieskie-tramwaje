@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/headerLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:showIn="@layout/activity_route_details">
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="32dp"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/icon.imageview"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:padding="8dp"
+        app:layout_constraintStart_toEndOf="@id/space"
+        tools:srcCompat="@drawable/tram" />
+
+    <TextView
+        android:id="@+id/route.textview"
+        style="@style/TimeTableHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:paddingTop="16dp"
+        android:text="@string/route"
+        android:textColor="@color/icons"
+        android:textSize="36dp"
+        tools:text="Route 900P"
+        app:layout_constraintStart_toEndOf="@id/icon.imageview" />
+
+    <TextView
+        android:id="@+id/routeType.textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/primary_light"
+        android:textSize="18dp"
+        app:layout_constraintStart_toEndOf="@id/icon.imageview"
+        app:layout_constraintTop_toBottomOf="@id/route.textview"
+        tools:text="tramwaj normalny" />
+
+    <TextView
+        android:id="@+id/carrier.textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/primary_light"
+        android:textSize="16dp"
+        app:layout_constraintStart_toEndOf="@id/icon.imageview"
+        app:layout_constraintTop_toBottomOf="@id/routeType.textview"
+        tools:text="MPK Wrocław" />
+
+    <!--
+    <TextView
+        android:id="@+id/directionsHeader"
+        style="@style/TimeTableHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:paddingStart="16dp"
+        android:textSize="28dp"
+        app:layout_constraintTop_toBottomOf="@id/icon"
+        tools:text="Kierunki:" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/directionsRecyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/directionsHeader"
+        tools:listitem="@layout/route_details_directions_list_item" />
+        -->
+</android.support.constraint.ConstraintLayout>

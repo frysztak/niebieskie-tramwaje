@@ -11,6 +11,7 @@ import android.widget.Button
 import com.kennyc.view.MultiStateView
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
+import com.orpington.software.rozkladmpk.routeDetails.RouteDetailsActivity
 import com.orpington.software.rozkladmpk.routeVariants.RouteVariantsActivity
 import kotlinx.android.synthetic.main.activity_stops_and_routes.*
 
