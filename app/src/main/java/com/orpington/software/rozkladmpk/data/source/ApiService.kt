@@ -1,9 +1,6 @@
 package com.orpington.software.rozkladmpk.data.source
 
-import com.orpington.software.rozkladmpk.data.model.RouteInfo
-import com.orpington.software.rozkladmpk.data.model.RouteVariants
-import com.orpington.software.rozkladmpk.data.model.StopNames
-import com.orpington.software.rozkladmpk.data.model.TimeTable
+import com.orpington.software.rozkladmpk.data.model.*
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -14,6 +11,9 @@ interface ApiService {
 
     @GET("route/{routeID}/info")
     fun getRouteInfo(@Path("routeID") routeID: String): Call<RouteInfo>
+
+    @GET("route/{routeID}/directions")
+    fun getRouteDirections(@Path("routeID") routeID: String): Call<RouteDirections>
 
     @GET("routes/variants/stop/{stopName}")
     fun getRouteVariantsForStopName(@Path("stopName") stopName: String): Call<RouteVariants>

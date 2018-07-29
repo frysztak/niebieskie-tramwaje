@@ -1,9 +1,6 @@
 package com.orpington.software.rozkladmpk.data.source
 
-import com.orpington.software.rozkladmpk.data.model.RouteInfo
-import com.orpington.software.rozkladmpk.data.model.RouteVariants
-import com.orpington.software.rozkladmpk.data.model.StopNames
-import com.orpington.software.rozkladmpk.data.model.TimeTable
+import com.orpington.software.rozkladmpk.data.model.*
 import mu.KotlinLogging
 import retrofit2.Call
 import retrofit2.Callback
@@ -43,6 +40,10 @@ class RemoteDataSource private constructor(private val service: ApiService) : IR
 
     override fun getRouteInfo(routeID: String, callback: IDataSource.LoadDataCallback<RouteInfo>) {
         makeACall(service.getRouteInfo(routeID), callback)
+    }
+
+    override fun getRouteDirections(routeID: String, callback: IDataSource.LoadDataCallback<RouteDirections>) {
+        makeACall(service.getRouteDirections(routeID), callback)
     }
 
     override fun getRouteVariantsForStopName(stopName: String, callback: IDataSource.LoadDataCallback<RouteVariants>) {
