@@ -3,13 +3,11 @@ package com.orpington.software.rozkladmpk.routeDetails
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AlphaAnimation
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
-import com.orpington.software.rozkladmpk.data.model.RouteDirections
 import com.orpington.software.rozkladmpk.data.model.RouteInfo
 import kotlinx.android.synthetic.main.activity_route_details.*
 import kotlinx.android.synthetic.main.route_details_header.*
@@ -21,8 +19,6 @@ class RouteDetailsActivity : AppCompatActivity(),
 
     private lateinit var stopName: String
     private lateinit var routeID: String
-
-    private lateinit var presenter: RouteDetailsContract.Presenter
 
     private val PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.9f
     private val PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f
@@ -40,14 +36,14 @@ class RouteDetailsActivity : AppCompatActivity(),
 
         appBarLayout.addOnOffsetChangedListener(this)
 
-        viewPager.adapter = RouteDetailsPagerAdapter(this)
+        val presenter = RouteDetailsPresenter(Injection.provideDataSource(cacheDir), this)
 
         routeID = intent.getStringExtra("routeID")
         stopName = intent.getStringExtra("stopName")
 
-        presenter = RouteDetailsPresenter(Injection.provideDataSource(cacheDir), this)
+        viewPager.adapter = RouteDetailsPagerAdapter(routeID, supportFragmentManager)
+
         presenter.loadRouteDetails(routeID)
-        presenter.loadRouteDirections(routeID)
     }
 
     override fun showRouteInfo(routeInfo: RouteInfo) {
@@ -78,14 +74,6 @@ class RouteDetailsActivity : AppCompatActivity(),
             40 -> R.string.nightBus
             else -> -1
         })
-    }
-
-    override fun showRouteDirections(routeDirections: RouteDirections) {
-        val recyclerView: RecyclerView = viewPager.findViewById(R.id.routeDirections_recyclerview)
-            ?: return
-
-        val adapter= recyclerView.adapter as RouteDirectionsAdapter
-        adapter.setItems(routeDirections.directions)
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {

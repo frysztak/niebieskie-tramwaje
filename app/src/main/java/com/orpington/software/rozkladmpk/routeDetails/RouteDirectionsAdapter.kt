@@ -10,7 +10,8 @@ import com.orpington.software.rozkladmpk.R
 import kotlinx.android.synthetic.main.route_directions_list_item.view.*
 
 class RouteDirectionsAdapter(
-    private val context: Context
+    private val context: Context,
+    private val presenter: RouteDirectionsPresenter
 ) : RecyclerView.Adapter<RouteDirectionsAdapter.ViewHolder>() {
 
     private var items: List<String> = emptyList()
@@ -22,7 +23,7 @@ class RouteDirectionsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.route_directions_list_item, parent, false)
-        return ViewHolder(view)
+        return ViewHolder(view, presenter)
     }
 
     override fun getItemCount(): Int {
@@ -34,15 +35,19 @@ class RouteDirectionsAdapter(
         holder.stopTextView.text = item
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(
+        view: View,
+        private val presenter: RouteDirectionsPresenter) :
+        RecyclerView.ViewHolder(view),
+        View.OnClickListener {
         val stopTextView: TextView = view.stopName_textview
 
         init {
-            //view.setOnClickListener(this)
+            view.setOnClickListener(this)
         }
 
-        //override fun onClick(v: View?) {
-        //    presenter.routeClicked(adapterPosition)
-        //}
+        override fun onClick(v: View?) {
+            presenter.directionClicked(adapterPosition)
+        }
     }
 }

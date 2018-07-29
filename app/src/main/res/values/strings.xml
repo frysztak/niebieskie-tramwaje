@@ -25,4 +25,5 @@
     <string name="zoneBus">Zone bus</string>
     <string name="nightBus">Night bus</string>
     <string name="unknown">Unknown</string>
+    <string name="select_direction_first">Please select direction first</string>
 </resources>
