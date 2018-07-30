@@ -14,9 +14,10 @@ import kotlinx.android.synthetic.main.route_details_header.*
 
 
 class RouteDetailsActivity : AppCompatActivity(),
-    RouteDetailsContract.View,
+    RouteDetailsContract.InfoView,
     AppBarLayout.OnOffsetChangedListener {
 
+    private lateinit var presenter: RouteDetailsContract.Presenter
     private lateinit var stopName: String
     private lateinit var routeID: String
 
@@ -36,14 +37,21 @@ class RouteDetailsActivity : AppCompatActivity(),
 
         appBarLayout.addOnOffsetChangedListener(this)
 
-        val presenter = RouteDetailsPresenter(Injection.provideDataSource(cacheDir), this)
-
         routeID = intent.getStringExtra("routeID")
         stopName = intent.getStringExtra("stopName")
 
-        viewPager.adapter = RouteDetailsPagerAdapter(routeID, supportFragmentManager)
+        presenter = RouteDetailsPresenter(Injection.provideDataSource(cacheDir))
+        presenter.apply {
+            setRouteID(routeID)
+            setStopName(stopName)
+            attachInfoView(this@RouteDetailsActivity)
+        }
+        viewPager.adapter = RouteDetailsPagerAdapter(
+            presenter,
+            supportFragmentManager
+        )
 
-        presenter.loadRouteDetails(routeID)
+        presenter.loadRouteInfo()
     }
 
     override fun showRouteInfo(routeInfo: RouteInfo) {

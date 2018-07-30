@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.route_directions_list_item.view.*
 
 class RouteDirectionsAdapter(
     private val context: Context,
-    private val presenter: RouteDirectionsPresenter
+    private val presenter: RouteDetailsContract.Presenter
 ) : RecyclerView.Adapter<RouteDirectionsAdapter.ViewHolder>() {
 
     private var items: List<String> = emptyList()
@@ -37,7 +37,7 @@ class RouteDirectionsAdapter(
 
     class ViewHolder(
         view: View,
-        private val presenter: RouteDirectionsPresenter) :
+        private val presenter: RouteDetailsContract.Presenter) :
         RecyclerView.ViewHolder(view),
         View.OnClickListener {
         val stopTextView: TextView = view.stopName_textview

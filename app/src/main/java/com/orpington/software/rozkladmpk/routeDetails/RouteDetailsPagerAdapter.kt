@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 
 class RouteDetailsPagerAdapter(
-    private val routeID: String,
+    private val presenter: RouteDetailsContract.Presenter,
     fragmentManager: FragmentManager
 ) : FragmentPagerAdapter(fragmentManager) {
 
@@ -15,8 +15,19 @@ class RouteDetailsPagerAdapter(
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> RouteDirectionsFragment.newInstance(routeID)
-            else -> RouteDirectionsFragment.newInstance(routeID)
+            else -> {
+                val fragment = RouteDirectionsFragment.newInstance()
+                fragment.attachPresenter(presenter)
+                presenter.attachDirectionsView(fragment)
+                fragment
+            }
+            /*
+            else -> {
+                val fragment = RouteTimetableFragment.newInstance()
+                fragment.setPresenter(timetablePresenter)
+                timetablePresenter.setView(fragment)
+                fragment
+            }*/
         }
     }
 

@@ -1,5 +1,6 @@
 package com.orpington.software.rozkladmpk.routeDetails
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -7,33 +8,33 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteDirections
 
-class RouteDirectionsFragment : Fragment(), RouteDirectionsContract.View {
+class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView {
 
     private lateinit var adapter: RouteDirectionsAdapter
-    private lateinit var presenter: RouteDirectionsPresenter
+    private  var presenter: RouteDetailsContract.Presenter? = null
+    // TODO? clear presenter when fragment dies
+
+    override fun attachPresenter(newPresenter: RouteDetailsContract.Presenter) {
+        presenter = newPresenter
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.route_directions, container, false)
 
-        if (activity == null || activity?.cacheDir == null) {
+        if (activity == null) {
             return view
         }
 
-        presenter = RouteDirectionsPresenter(Injection.provideDataSource(activity!!.cacheDir), this)
-        adapter = RouteDirectionsAdapter(activity!!, presenter)
+        adapter = RouteDirectionsAdapter(activity!!, presenter!!)
         view.findViewById<RecyclerView>(R.id.routeDirections_recyclerview)?.apply {
             adapter = this@RouteDirectionsFragment.adapter
             layoutManager = LinearLayoutManager(context)
         }
 
-        val routeID = arguments?.getString("routeID")
-        if (routeID != null) {
-            presenter.loadRouteDirections(routeID)
-        }
+        presenter?.loadRouteDirections()
 
         return view
     }
@@ -43,19 +44,11 @@ class RouteDirectionsFragment : Fragment(), RouteDirectionsContract.View {
     }
 
     override fun showTimetable(direction: String) {
-
     }
 
     companion object {
-        fun newInstance(routeID: String): RouteDirectionsFragment {
-            val fragment = RouteDirectionsFragment()
-
-            val bundle = Bundle().apply {
-                putString("routeID", routeID)
-            }
-            fragment.arguments = bundle
-
-            return fragment
+        fun newInstance(): RouteDirectionsFragment {
+            return RouteDirectionsFragment()
         }
     }
 
