@@ -1,4 +1,4 @@
-package com.orpington.software.rozkladmpk.timetable
+package com.orpington.software.rozkladmpk.routeDetails
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -8,14 +8,13 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.orpington.software.rozkladmpk.R
-import com.orpington.software.rozkladmpk.timetable.TimetablePresenter.*
 import kotlinx.android.synthetic.main.timetable_list_header.view.*
 import kotlinx.android.synthetic.main.timetable_list_row.view.*
+import com.orpington.software.rozkladmpk.routeDetails.TimetableViewHelper.*
 
 typealias Row = MutableList<String>
 
-class TimetableRecyclerViewAdapter(private val context: Context,
-                                   private val presenter: TimetablePresenter)
+class RouteTimetableAdapter(private val context: Context)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: List<ViewItem> = listOf()
@@ -52,7 +51,7 @@ class TimetableRecyclerViewAdapter(private val context: Context,
             ViewType.HEADER.code -> {
                 val viewHolder = holder as HeaderViewHolder
                 val item = items[position] as HeaderItem
-                viewHolder.mainTextView.text = when(item.dayType) {
+                viewHolder.mainTextView.text = when (item.dayType) {
                     DayType.Weekday -> "Weekday"
                     DayType.Saturday -> "Saturday"
                     DayType.Sunday -> "Sunday"

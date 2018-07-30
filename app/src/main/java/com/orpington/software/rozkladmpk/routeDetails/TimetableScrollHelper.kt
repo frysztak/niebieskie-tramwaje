@@ -1,7 +1,7 @@
-package com.orpington.software.rozkladmpk.timetable
+package com.orpington.software.rozkladmpk.routeDetails
 
-import com.orpington.software.rozkladmpk.timetable.TimetablePresenter.*
 import java.util.*
+import com.orpington.software.rozkladmpk.routeDetails.TimetableViewHelper.*
 
 data class TimeIndices(val hourIdx: Int, val minuteIdx: Int)
 

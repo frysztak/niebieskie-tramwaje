@@ -18,9 +18,8 @@ interface ApiService {
     @GET("routes/variants/stop/{stopName}")
     fun getRouteVariantsForStopName(@Path("stopName") stopName: String): Call<RouteVariants>
 
-    @GET("route/{routeID}/timetable/at/{atStopName}/from/{fromStopName}/to/{toStopName}")
+    @GET("route/{routeID}/timetable/at/{stopName}/direction/{direction}")
     fun getTimeTable(@Path("routeID") routeID: String,
-                     @Path("atStopName") atStopName: String,
-                     @Path("fromStopName") fromStopName: String,
-                     @Path("toStopName") toStopName: String): Call<TimeTable>
+                     @Path("stopName") stopName: String,
+                     @Path("direction") direction: String): Call<TimeTable>
 }

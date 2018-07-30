@@ -67,6 +67,10 @@ class RouteDetailsActivity : AppCompatActivity(),
         routeType_textview.text = getRouteTypeString(routeInfo.typeID)
     }
 
+    override fun switchToTimetableTab() {
+        viewPager.currentItem = 1
+    }
+
     private fun isBus(routeTypeID: Int): Boolean {
         val busRouteTypeIDs = listOf(30, 34, 35, 39, 40)
         return busRouteTypeIDs.contains(routeTypeID)

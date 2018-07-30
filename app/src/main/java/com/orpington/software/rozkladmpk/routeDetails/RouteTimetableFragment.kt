@@ -8,17 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.orpington.software.rozkladmpk.R
-import com.orpington.software.rozkladmpk.data.model.RouteDirections
 
-class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView {
+class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
 
-    private lateinit var adapter: RouteDirectionsAdapter
+    private lateinit var adapter: RouteTimetableAdapter
     private var presenter: RouteDetailsContract.Presenter? = null
-    // TODO? clear presenter when fragment dies
 
     override fun attachPresenter(newPresenter: RouteDetailsContract.Presenter) {
         presenter = newPresenter
-        presenter!!.attachDirectionsView(this)
+        presenter!!.attachTimetableView(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -28,27 +26,30 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
             return view
         }
 
-        adapter = RouteDirectionsAdapter(activity!!, presenter!!)
+        adapter = RouteTimetableAdapter(activity!!)
         view.findViewById<RecyclerView>(R.id.routeDirections_recyclerview)?.apply {
-            adapter = this@RouteDirectionsFragment.adapter
+            adapter = this@RouteTimetableFragment.adapter
             layoutManager = LinearLayoutManager(context)
         }
-
-        presenter?.loadRouteDirections()
 
         return view
     }
 
-    override fun showRouteDirections(routeDirections: RouteDirections) {
-        adapter.setItems(routeDirections.directions)
+    override fun showTimeTable(items: List<TimetableViewHelper.ViewItem>, timeToScrollInto: TimeIndices) {
+        adapter.setItems(items)
     }
 
-    override fun showTimetable(direction: String) {
+    override fun showProgressBar() {
+
+    }
+
+    override fun reportThatSomethingWentWrong() {
+
     }
 
     companion object {
-        fun newInstance(): RouteDirectionsFragment {
-            return RouteDirectionsFragment()
+        fun newInstance(): RouteTimetableFragment {
+            return RouteTimetableFragment()
         }
     }
 

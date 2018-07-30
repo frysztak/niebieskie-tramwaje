@@ -1,45 +1,13 @@
-package com.orpington.software.rozkladmpk.timetable
+package com.orpington.software.rozkladmpk.routeDetails
 
 import com.orpington.software.rozkladmpk.data.model.TimeTable
 import com.orpington.software.rozkladmpk.data.model.TimeTableEntry
-import com.orpington.software.rozkladmpk.data.source.IDataSource
-import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
 import java.util.*
 
-class TimetablePresenter(
-    private var dataSource: RemoteDataSource,
-    private var view: TimetableContract.View
-) : TimetableContract.Presenter {
+class TimetableViewHelper {
 
     private lateinit var timeTable: TimeTable
     private var items: MutableList<ViewItem> = arrayListOf()
-    private var timeToScrollInto = TimeIndices(-1, -1)
-
-    override fun setTimeTable(newTimeTable: TimeTable) {
-        timeTable = newTimeTable
-        processTimeTable()
-        val helper = TimetableHelper(Calendar.getInstance())
-        timeToScrollInto = helper.calculateRowAndColumnToScrollInto(items)
-    }
-
-    override fun getTimeTable(): TimeTable {
-        return timeTable
-    }
-
-    override fun loadTimeTable(routeID: String, atStop: String, fromStop: String, toStop: String) {
-        view.showProgressBar()
-        dataSource.getTimeTable(routeID, atStop, fromStop, toStop,
-            object : IDataSource.LoadDataCallback<TimeTable> {
-                override fun onDataLoaded(data: TimeTable) {
-                    setTimeTable(data)
-                    view.showTimeTable(items, timeToScrollInto)
-                }
-
-                override fun onDataNotAvailable() {
-                    view.reportThatSomethingWentWrong()
-                }
-            })
-    }
 
     enum class ViewType(val code: Int) {
         HEADER(0),
@@ -64,7 +32,9 @@ class TimetablePresenter(
         Sunday
     }
 
-    private fun processTimeTable() {
+    fun processTimeTable(tt: TimeTable): List<ViewItem> {
+        timeTable = tt
+
         val calendar = Calendar.getInstance()
         val day = calendar.get(Calendar.DAY_OF_WEEK)
 
@@ -78,8 +48,9 @@ class TimetablePresenter(
         addHeaderAndRows(DayType.Weekday, timeTable.weekdays)
         addHeaderAndRows(DayType.Saturday, timeTable.saturdays)
         addHeaderAndRows(DayType.Sunday, timeTable.sundays)
-    }
 
+        return items
+    }
 
 
     private fun processSingleTimeTable(data: List<TimeTableEntry>): List<ViewItem> {
@@ -121,5 +92,4 @@ class TimetablePresenter(
 
         return ""
     }
-
 }

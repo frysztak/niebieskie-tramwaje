@@ -10,24 +10,21 @@ class RouteDetailsPagerAdapter(
 ) : FragmentPagerAdapter(fragmentManager) {
 
     override fun getCount(): Int {
-        return 1
+        return 2
     }
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            else -> {
+            0 -> {
                 val fragment = RouteDirectionsFragment.newInstance()
                 fragment.attachPresenter(presenter)
-                presenter.attachDirectionsView(fragment)
                 fragment
             }
-            /*
             else -> {
                 val fragment = RouteTimetableFragment.newInstance()
-                fragment.setPresenter(timetablePresenter)
-                timetablePresenter.setView(fragment)
+                fragment.attachPresenter(presenter)
                 fragment
-            }*/
+            }
         }
     }
 

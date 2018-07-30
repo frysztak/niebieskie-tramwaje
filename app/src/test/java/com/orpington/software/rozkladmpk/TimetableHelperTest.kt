@@ -2,8 +2,7 @@ package com.orpington.software.rozkladmpk
 
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
-import com.orpington.software.rozkladmpk.timetable.TimetableHelper
-import com.orpington.software.rozkladmpk.timetable.TimetablePresenter.*
+import com.orpington.software.rozkladmpk.routeDetails.TimetableHelper
 import junit.framework.Assert
 import org.junit.Test
 import org.junit.experimental.runners.Enclosed

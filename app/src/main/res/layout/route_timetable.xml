@@ -4,9 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <TextView
+        android:id="@+id/selectDirection.textview"
         android:layout_width="match_parent"
+        android:text="@string/select_direction_first"
+        android:gravity="center"
+        android:textSize="22dp"
+        android:fontFamily="sans-serif-light"
+        android:layout_height="match_parent" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/timetable.recyclerview"
+        android:layout_width="match_parent"
+        android:visibility="invisible"
         android:layout_height="match_parent"
         tools:listitem="@layout/timetable_list_row" />
 

@@ -10,9 +10,8 @@ data class TimeTableEntry(
 
 data class TimeTable(
     @SerializedName("RouteID") val routeID: String,
-    @SerializedName("AtStop") val atStop: String,
-    @SerializedName("FromStop") val fromStop: String,
-    @SerializedName("ToStop") val toStop: String,
+    @SerializedName("StopName") val stopName: String,
+    @SerializedName("Direction") val direction: String,
     @SerializedName("Weekdays") val weekdays: List<TimeTableEntry>,
     @SerializedName("Saturdays") val saturdays: List<TimeTableEntry>,
     @SerializedName("Sundays") val sundays: List<TimeTableEntry>

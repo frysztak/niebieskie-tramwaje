@@ -50,8 +50,8 @@ class RemoteDataSource private constructor(private val service: ApiService) : IR
         makeACall(service.getRouteVariantsForStopName(stopName), callback)
     }
 
-    override fun getTimeTable(routeID: String, atStop: String, fromStop: String, toStop: String, callback: IDataSource.LoadDataCallback<TimeTable>) {
-        makeACall(service.getTimeTable(routeID, atStop, fromStop, toStop), callback)
+    override fun getTimeTable(routeID: String, stopName: String, direction: String, callback: IDataSource.LoadDataCallback<TimeTable>) {
+        makeACall(service.getTimeTable(routeID, stopName, direction), callback)
     }
 
     companion object {

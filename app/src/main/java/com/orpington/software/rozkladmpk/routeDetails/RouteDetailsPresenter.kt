@@ -2,6 +2,7 @@ package com.orpington.software.rozkladmpk.routeDetails
 
 import com.orpington.software.rozkladmpk.data.model.RouteDirections
 import com.orpington.software.rozkladmpk.data.model.RouteInfo
+import com.orpington.software.rozkladmpk.data.model.TimeTable
 import com.orpington.software.rozkladmpk.data.source.IDataSource
 import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
 
@@ -11,6 +12,7 @@ class RouteDetailsPresenter(
 
     private var infoView: RouteDetailsContract.InfoView? = null
     private var directionsView: RouteDetailsContract.DirectionsView? = null
+    private var timetableView: RouteDetailsContract.TimetableView? = null
 
     private var routeID: String = ""
     private var stopName: String = ""
@@ -25,12 +27,20 @@ class RouteDetailsPresenter(
         directionsView = view
     }
 
+    override fun attachTimetableView(view: RouteDetailsContract.TimetableView) {
+        timetableView = view
+    }
+
     override fun setRouteID(id: String) {
         routeID = id
     }
 
     override fun setStopName(name: String) {
         stopName = name
+    }
+
+    override fun setDirection(dir: String) {
+        direction = dir
     }
 
     override fun loadRouteInfo() {
@@ -64,6 +74,23 @@ class RouteDetailsPresenter(
 
     override fun directionClicked(idx: Int) {
         direction = routeDirections[idx]
+        loadTimeTable()
         directionsView?.showTimetable(direction)
+        infoView?.switchToTimetableTab()
+    }
+
+    override fun loadTimeTable() {
+        timetableView?.showProgressBar()
+        dataSource.getTimeTable(routeID, stopName, direction,
+            object : IDataSource.LoadDataCallback<TimeTable> {
+                override fun onDataLoaded(data: TimeTable) {
+                    val helper = TimetableViewHelper()
+                    timetableView?.showTimeTable(helper.processTimeTable(data))
+                }
+
+                override fun onDataNotAvailable() {
+                    timetableView?.reportThatSomethingWentWrong()
+                }
+            })
     }
 }
