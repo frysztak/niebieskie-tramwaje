@@ -2,6 +2,7 @@ package com.orpington.software.rozkladmpk.routeDetails
 
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
+import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
@@ -48,8 +49,10 @@ class RouteDetailsActivity : AppCompatActivity(),
         }
         viewPager.adapter = RouteDetailsPagerAdapter(
             presenter,
+            this,
             supportFragmentManager
         )
+        tabLayout.setupWithViewPager(viewPager)
 
         presenter.loadRouteInfo()
     }
