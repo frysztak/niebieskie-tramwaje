@@ -1,5 +1,6 @@
 package com.orpington.software.rozkladmpk.routeDetails
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v4.view.ViewPager
@@ -57,10 +58,12 @@ class RouteDetailsActivity : AppCompatActivity(),
         presenter.loadRouteInfo()
     }
 
+    @SuppressLint("SetTextI18n")
     override fun showRouteInfo(routeInfo: RouteInfo) {
         val routeText = "${getString(R.string.route)} ${routeInfo.routeID}"
         route_textview.text = routeText
-        toolbarTitle.text = routeText
+        stopName_textview.text = stopName
+        toolbarTitle.text = "$routeText — $stopName"
 
         carrier_textview.text = routeInfo.agencyName
         icon_imageview.setImageResource(when (isBus(routeInfo.typeID)) {

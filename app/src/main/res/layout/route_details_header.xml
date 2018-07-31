@@ -10,14 +10,15 @@
     <Space
         android:id="@+id/space"
         android:layout_width="32dp"
-        android:layout_height="wrap_content" />
+        android:layout_height="10dp" />
 
     <ImageView
         android:id="@+id/icon.imageview"
         android:layout_width="128dp"
         android:layout_height="128dp"
-        android:padding="8dp"
+        android:padding="4dp"
         app:layout_constraintStart_toEndOf="@id/space"
+        app:layout_constraintTop_toBottomOf="@id/space"
         tools:srcCompat="@drawable/tram" />
 
     <TextView
@@ -26,12 +27,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:paddingTop="16dp"
+        android:paddingTop="8dp"
         android:text="@string/route"
         android:textColor="@color/icons"
         android:textSize="36dp"
-        tools:text="Route 900P"
-        app:layout_constraintStart_toEndOf="@id/icon.imageview" />
+        app:layout_constraintStart_toEndOf="@id/icon.imageview"
+        tools:text="Route 900P" />
+
+    <TextView
+        android:id="@+id/stopName.textview"
+        style="@style/TimeTableHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingStart="16dp"
+        android:text="@string/route"
+        android:textColor="@color/icons"
+        android:textSize="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icon.imageview"
+        app:layout_constraintTop_toBottomOf="@id/route.textview"
+        tools:text="Armii Krajowej (Bogadeina)" />
 
     <TextView
         android:id="@+id/routeType.textview"
@@ -42,7 +59,7 @@
         android:textColor="@color/primary_light"
         android:textSize="18dp"
         app:layout_constraintStart_toEndOf="@id/icon.imageview"
-        app:layout_constraintTop_toBottomOf="@id/route.textview"
+        app:layout_constraintTop_toBottomOf="@id/stopName.textview"
         tools:text="tramwaj normalny" />
 
     <TextView
