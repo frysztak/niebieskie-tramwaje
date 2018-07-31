@@ -9,6 +9,7 @@ interface IRemoteDataSource : IDataSource {
 
     fun getRouteInfo(routeID: String, callback: LoadDataCallback<RouteInfo>)
     fun getRouteDirections(routeID: String, callback: LoadDataCallback<RouteDirections>)
+    fun getRouteDirectionsThroughStop(routeID: String, stopName: String, callback: LoadDataCallback<RouteDirections>)
 
     fun getRouteVariantsForStopName(stopName: String, callback: LoadDataCallback<RouteVariants>)
 

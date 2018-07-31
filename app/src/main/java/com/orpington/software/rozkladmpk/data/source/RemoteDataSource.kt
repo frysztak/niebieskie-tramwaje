@@ -46,6 +46,10 @@ class RemoteDataSource private constructor(private val service: ApiService) : IR
         makeACall(service.getRouteDirections(routeID), callback)
     }
 
+    override fun getRouteDirectionsThroughStop(routeID: String, stopName: String, callback: IDataSource.LoadDataCallback<RouteDirections>) {
+        makeACall(service.getRouteDirectionsThroughStop(routeID, stopName), callback)
+    }
+
     override fun getRouteVariantsForStopName(stopName: String, callback: IDataSource.LoadDataCallback<RouteVariants>) {
         makeACall(service.getRouteVariantsForStopName(stopName), callback)
     }

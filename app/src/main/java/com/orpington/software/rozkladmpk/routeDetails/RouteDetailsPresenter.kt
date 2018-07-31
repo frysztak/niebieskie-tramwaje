@@ -61,7 +61,7 @@ class RouteDetailsPresenter(
 
     override fun loadRouteDirections() {
         //view.showProgressBar()
-        dataSource.getRouteDirections(routeID, object : IDataSource.LoadDataCallback<RouteDirections> {
+        dataSource.getRouteDirectionsThroughStop(routeID, stopName, object : IDataSource.LoadDataCallback<RouteDirections> {
             override fun onDataLoaded(data: RouteDirections) {
                 routeDirections = data.directions
                 directionsView?.showRouteDirections(data)

@@ -15,6 +15,10 @@ interface ApiService {
     @GET("route/{routeID}/directions")
     fun getRouteDirections(@Path("routeID") routeID: String): Call<RouteDirections>
 
+    @GET("route/{routeID}/directions/through/{stopName}")
+    fun getRouteDirectionsThroughStop(@Path("routeID") routeID: String,
+                                      @Path("stopName") stopName: String): Call<RouteDirections>
+
     @GET("routes/variants/stop/{stopName}")
     fun getRouteVariantsForStopName(@Path("stopName") stopName: String): Call<RouteVariants>
 
