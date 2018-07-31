@@ -46,6 +46,18 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
     override fun showTimetable(direction: String) {
     }
 
+    override fun highlightDirection(directionIdx: Int) {
+        val recyclerView = view?.findViewById<RecyclerView>(R.id.routeDirections_recyclerview)
+        val viewHolder = recyclerView?.findViewHolderForAdapterPosition(directionIdx) as RouteDirectionsAdapter.ViewHolder?
+        viewHolder?.highlight()
+    }
+
+    override fun unhighlightDirection(directionIdx: Int) {
+        val recyclerView = view?.findViewById<RecyclerView>(R.id.routeDirections_recyclerview)
+        val viewHolder = recyclerView?.findViewHolderForAdapterPosition(directionIdx) as RouteDirectionsAdapter.ViewHolder?
+        viewHolder?.removeHighlight()
+    }
+
     companion object {
         fun newInstance(): RouteDirectionsFragment {
             return RouteDirectionsFragment()

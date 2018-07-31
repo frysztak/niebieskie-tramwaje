@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.orpington.software.rozkladmpk.R
 
 class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
@@ -20,14 +21,14 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.route_directions, container, false)
+        val view = inflater.inflate(R.layout.route_timetable, container, false)
 
         if (activity == null) {
             return view
         }
 
         adapter = RouteTimetableAdapter(activity!!)
-        view.findViewById<RecyclerView>(R.id.routeDirections_recyclerview)?.apply {
+        view.findViewById<RecyclerView>(R.id.timetable_recyclerview)?.apply {
             adapter = this@RouteTimetableFragment.adapter
             layoutManager = LinearLayoutManager(context)
         }
@@ -36,7 +37,9 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
     }
 
     override fun showTimeTable(items: List<TimetableViewHelper.ViewItem>, timeToScrollInto: TimeIndices) {
+        view?.findViewById<TextView>(R.id.selectDirection_textview)?.visibility = View.INVISIBLE
         adapter.setItems(items)
+        view?.findViewById<RecyclerView>(R.id.timetable_recyclerview)?.visibility = View.VISIBLE
     }
 
     override fun showProgressBar() {

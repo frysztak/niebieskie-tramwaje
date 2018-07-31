@@ -16,7 +16,7 @@ interface RouteDetailsContract {
         fun loadRouteInfo()
 
         fun loadRouteDirections()
-        fun directionClicked(directionIdx: Int)
+        fun onDirectionClicked(directionIdx: Int)
 
         fun loadTimeTable()
     }
@@ -31,6 +31,9 @@ interface RouteDetailsContract {
 
         fun showRouteDirections(routeDirections: RouteDirections)
         fun showTimetable(direction: String)
+
+        fun highlightDirection(directionIdx: Int)
+        fun unhighlightDirection(directionIdx: Int)
     }
 
     interface TimetableView {

@@ -17,6 +17,8 @@ class RouteDetailsPresenter(
     private var routeID: String = ""
     private var stopName: String = ""
     private var routeDirections: List<String> = emptyList()
+
+    private var directionIdx = -1
     private var direction: String = ""
 
     override fun attachInfoView(view: RouteDetailsContract.InfoView) {
@@ -72,11 +74,19 @@ class RouteDetailsPresenter(
         })
     }
 
-    override fun directionClicked(idx: Int) {
+    override fun onDirectionClicked(idx: Int) {
         direction = routeDirections[idx]
         loadTimeTable()
+
+        if (directionIdx != -1) {
+            directionsView?.unhighlightDirection(directionIdx)
+        }
+        directionsView?.highlightDirection(idx)
+
         directionsView?.showTimetable(direction)
         infoView?.switchToTimetableTab()
+
+        directionIdx = idx
     }
 
     override fun loadTimeTable() {
