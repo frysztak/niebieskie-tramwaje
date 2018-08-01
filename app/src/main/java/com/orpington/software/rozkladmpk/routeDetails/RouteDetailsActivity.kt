@@ -77,6 +77,10 @@ class RouteDetailsActivity : AppCompatActivity(),
         viewPager.currentItem = 1
     }
 
+    override fun switchToTimelineTab() {
+        viewPager.currentItem = 2
+    }
+
     private fun isBus(routeTypeID: Int): Boolean {
         val busRouteTypeIDs = listOf(30, 34, 35, 39, 40)
         return busRouteTypeIDs.contains(routeTypeID)

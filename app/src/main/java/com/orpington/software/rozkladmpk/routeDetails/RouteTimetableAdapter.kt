@@ -8,14 +8,16 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.orpington.software.rozkladmpk.R
+import com.orpington.software.rozkladmpk.routeDetails.TimetableViewHelper.*
 import kotlinx.android.synthetic.main.timetable_list_header.view.*
 import kotlinx.android.synthetic.main.timetable_list_row.view.*
-import com.orpington.software.rozkladmpk.routeDetails.TimetableViewHelper.*
 
 typealias Row = MutableList<String>
 
-class RouteTimetableAdapter(private val context: Context)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class RouteTimetableAdapter(
+    private val context: Context,
+    private val presenter: RouteDetailsContract.Presenter
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: List<ViewItem> = listOf()
 
@@ -63,7 +65,7 @@ class RouteTimetableAdapter(private val context: Context)
             ViewType.ROW.code -> {
                 val viewHolder = holder as RowViewHolder
                 val item = items[position] as RowItem
-                populateRowLayout(item.data, viewHolder.hourTextView, viewHolder.linearLayout)
+                populateRowLayout(item, viewHolder.hourTextView, viewHolder.linearLayout)
             }
             else -> throw Exception("Unknown ViewType")
         }
@@ -83,14 +85,21 @@ class RouteTimetableAdapter(private val context: Context)
         }
     }
 
-    private fun populateRowLayout(row: Row, hourTextView: TextView, layout: LinearLayout) {
+    private fun populateRowLayout(row: RowItem, hourTextView: TextView, layout: LinearLayout) {
         layout.removeAllViews()
 
-        hourTextView.text = row[0]
+        val hour = row.data[0]
+        hourTextView.text = hour
 
-        for (minutes in row.drop(1)) {
+        for (minutes in row.data.drop(1)) {
             val view = LayoutInflater.from(context).inflate(R.layout.timetable_list_item, layout, false) as TextView
             view.text = minutes
+            view.tag = "${row.dayType.prefix}:$hour:$minutes"
+
+            view.setOnClickListener {
+                presenter.onTimeClicked(it.tag as String)
+            }
+
             layout.addView(view)
         }
     }

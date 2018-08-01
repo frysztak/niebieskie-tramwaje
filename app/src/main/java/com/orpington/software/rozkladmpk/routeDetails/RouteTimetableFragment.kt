@@ -27,7 +27,7 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
             return view
         }
 
-        adapter = RouteTimetableAdapter(activity!!)
+        adapter = RouteTimetableAdapter(activity!!, presenter!!)
         view.findViewById<RecyclerView>(R.id.timetable_recyclerview)?.apply {
             adapter = this@RouteTimetableFragment.adapter
             layoutManager = LinearLayoutManager(context)

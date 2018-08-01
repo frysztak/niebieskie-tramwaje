@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.Timeline
 
@@ -39,7 +40,9 @@ class RouteTimelineFragment : Fragment(), RouteDetailsContract.TimelineView {
     }
 
     override fun showTimeline(timeline: Timeline) {
+        view?.findViewById<TextView>(R.id.selectDirectionAndTime_textview)?.visibility = View.INVISIBLE
         adapter.setItems(timeline.timeline)
+        view?.findViewById<RecyclerView>(R.id.timeline_recyclerview)?.visibility = View.VISIBLE
     }
 
     companion object {

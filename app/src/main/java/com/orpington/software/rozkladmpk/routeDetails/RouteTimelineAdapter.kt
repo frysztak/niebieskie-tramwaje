@@ -37,11 +37,20 @@ class RouteTimelineAdapter(private val context: Context)
         val item = items[position]
         holder.stopName.text = item.stopName
         holder.time.text = item.departureTime.removeSuffix(":00")
+
+        holder.verticalLineTopHalf.visibility = View.VISIBLE
+        holder.verticalLineBottomHalf.visibility = View.VISIBLE
+        when (position) {
+            0 -> holder.verticalLineTopHalf.visibility = View.INVISIBLE
+            itemCount - 1 -> holder.verticalLineBottomHalf.visibility = View.INVISIBLE
+        }
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val stopName : TextView = view.stopName_textview
+        val stopName: TextView = view.stopName_textview
         val time: TextView = view.time_textview
+        val verticalLineTopHalf: View = view.lineTopHalf
+        val verticalLineBottomHalf: View = view.lineBottomHalf
     }
 
 }

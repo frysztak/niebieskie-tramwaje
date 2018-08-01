@@ -22,14 +22,14 @@ class TimetableViewHelper {
         override val type: ViewType = ViewType.HEADER
     }
 
-    class RowItem(val data: Row) : ViewItem {
+    class RowItem(val dayType: DayType, val data: Row) : ViewItem {
         override val type: ViewType = ViewType.ROW
     }
 
-    enum class DayType {
-        Weekday,
-        Saturday,
-        Sunday
+    enum class DayType(val prefix: String){
+        Weekday("WE"),
+        Saturday("SA"),
+        Sunday("SU")
     }
 
     fun processTimeTable(tt: TimeTable): List<ViewItem> {
@@ -38,12 +38,13 @@ class TimetableViewHelper {
         val calendar = Calendar.getInstance()
         val day = calendar.get(Calendar.DAY_OF_WEEK)
 
-        val addHeaderAndRows = { dayType: DayType, timeTableEntries: List<TimeTableEntry>? ->
-            if (timeTableEntries != null) {
-                items.add(HeaderItem(dayType, getHeaderAdditionalInfo(day, dayType)))
-                items.addAll(processSingleTimeTable(timeTableEntries))
+        val addHeaderAndRows =
+            { dayType: DayType, timeTableEntries: List<TimeTableEntry>? ->
+                if (timeTableEntries != null) {
+                    items.add(HeaderItem(dayType, getHeaderAdditionalInfo(day, dayType)))
+                    items.addAll(processSingleTimeTable(dayType, timeTableEntries))
+                }
             }
-        }
 
         addHeaderAndRows(DayType.Weekday, timeTable.weekdays)
         addHeaderAndRows(DayType.Saturday, timeTable.saturdays)
@@ -53,7 +54,7 @@ class TimetableViewHelper {
     }
 
 
-    private fun processSingleTimeTable(data: List<TimeTableEntry>): List<ViewItem> {
+    private fun processSingleTimeTable(dayType: DayType, data: List<TimeTableEntry>): List<ViewItem> {
         val groups = data.groupBy { entry ->
             entry.arrivalTime.split(":")[0]
         }.mapValues { (key, value) ->
@@ -67,7 +68,7 @@ class TimetableViewHelper {
             var row: Row = arrayListOf()
             row.add(key)
             row.addAll(value)
-            items.add(RowItem(row))
+            items.add(RowItem(dayType, row))
         }
         return items
     }

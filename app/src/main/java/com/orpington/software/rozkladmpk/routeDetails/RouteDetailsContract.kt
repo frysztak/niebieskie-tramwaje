@@ -21,6 +21,7 @@ interface RouteDetailsContract {
         fun onDirectionClicked(directionIdx: Int)
 
         fun loadTimeTable()
+        fun onTimeClicked(time: String)
 
         fun loadTimeline()
     }
@@ -28,6 +29,7 @@ interface RouteDetailsContract {
     interface InfoView {
         fun showRouteInfo(routeInfo: RouteInfo)
         fun switchToTimetableTab()
+        fun switchToTimelineTab()
     }
 
     interface DirectionsView {
