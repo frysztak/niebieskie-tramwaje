@@ -12,29 +12,37 @@ class RouteDetailsPagerAdapter(
     fragmentManager: FragmentManager
 ) : FragmentPagerAdapter(fragmentManager) {
 
-    private val pageTitles = listOf(R.string.direction, R.string.timetable)
+    private val pageTitles = listOf(R.string.direction, R.string.timetable, R.string.timeline)
 
     override fun getCount(): Int {
-        return 2
+        return 3
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
         return context.getString(pageTitles[position])
     }
 
-    override fun getItem(position: Int): Fragment {
-        return when (position) {
+    override fun getItem(position: Int): Fragment? {
+
+        when (position) {
             0 -> {
                 val fragment = RouteDirectionsFragment.newInstance()
                 fragment.attachPresenter(presenter)
-                fragment
+                return fragment
             }
-            else -> {
+            1 -> {
                 val fragment = RouteTimetableFragment.newInstance()
                 fragment.attachPresenter(presenter)
-                fragment
+                return fragment
             }
+            2 -> {
+                val fragment = RouteTimelineFragment.newInstance()
+                fragment.attachPresenter(presenter)
+                return fragment
+            }
+            else -> return null
         }
+
     }
 
 }

@@ -3,7 +3,6 @@ package com.orpington.software.rozkladmpk.routeDetails
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
-import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
@@ -53,6 +52,7 @@ class RouteDetailsActivity : AppCompatActivity(),
             this,
             supportFragmentManager
         )
+        viewPager.offscreenPageLimit = 2
         tabLayout.setupWithViewPager(viewPager)
 
         presenter.loadRouteInfo()

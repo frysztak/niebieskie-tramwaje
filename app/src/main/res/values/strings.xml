@@ -26,4 +26,6 @@
     <string name="nightBus">Night bus</string>
     <string name="unknown">Unknown</string>
     <string name="select_direction_first">Please select direction first</string>
+    <string name="timeline">Timeline</string>
+    <string name="select_direction_and_time">Please select direction and time first</string>
 </resources>

@@ -2,12 +2,14 @@ package com.orpington.software.rozkladmpk.routeDetails
 
 import com.orpington.software.rozkladmpk.data.model.RouteDirections
 import com.orpington.software.rozkladmpk.data.model.RouteInfo
+import com.orpington.software.rozkladmpk.data.model.Timeline
 
 interface RouteDetailsContract {
     interface Presenter {
         fun attachInfoView(view: InfoView)
         fun attachDirectionsView(view: DirectionsView)
         fun attachTimetableView(view: TimetableView)
+        fun attachTimelineView(view: TimelineView)
 
         fun setRouteID(id: String)
         fun setStopName(name: String)
@@ -19,6 +21,8 @@ interface RouteDetailsContract {
         fun onDirectionClicked(directionIdx: Int)
 
         fun loadTimeTable()
+
+        fun loadTimeline()
     }
 
     interface InfoView {
@@ -30,7 +34,6 @@ interface RouteDetailsContract {
         fun attachPresenter(newPresenter: Presenter)
 
         fun showRouteDirections(routeDirections: RouteDirections)
-        fun showTimetable(direction: String)
 
         fun highlightDirection(directionIdx: Int)
         fun unhighlightDirection(directionIdx: Int)
@@ -46,5 +49,16 @@ interface RouteDetailsContract {
             items: List<TimetableViewHelper.ViewItem>,
             timeToScrollInto: TimeIndices = TimeIndices(-1, -1)
         )
+
+        fun onTimeClicked()
+    }
+
+    interface TimelineView {
+        fun attachPresenter(newPresenter: Presenter)
+
+        fun showProgressBar()
+        fun reportThatSomethingWentWrong()
+
+        fun showTimeline(timeline: Timeline)
     }
 }

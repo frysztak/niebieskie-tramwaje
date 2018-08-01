@@ -26,4 +26,7 @@ interface ApiService {
     fun getTimeTable(@Path("routeID") routeID: String,
                      @Path("stopName") stopName: String,
                      @Path("direction") direction: String): Call<TimeTable>
+
+    @GET("trip/{tripID}/timeline")
+    fun getTripTimeline(@Path("tripID") tripID: String): Call<Timeline>
 }

@@ -50,6 +50,10 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
 
     }
 
+    override fun onTimeClicked() {
+
+    }
+
     companion object {
         fun newInstance(): RouteTimetableFragment {
             return RouteTimetableFragment()

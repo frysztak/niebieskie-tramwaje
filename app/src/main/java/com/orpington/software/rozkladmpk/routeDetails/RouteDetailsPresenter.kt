@@ -13,6 +13,7 @@ class RouteDetailsPresenter(
     private var infoView: RouteDetailsContract.InfoView? = null
     private var directionsView: RouteDetailsContract.DirectionsView? = null
     private var timetableView: RouteDetailsContract.TimetableView? = null
+    private var timelineView: RouteDetailsContract.TimelineView? = null
 
     private var routeID: String = ""
     private var stopName: String = ""
@@ -31,6 +32,10 @@ class RouteDetailsPresenter(
 
     override fun attachTimetableView(view: RouteDetailsContract.TimetableView) {
         timetableView = view
+    }
+
+    override fun attachTimelineView(view: RouteDetailsContract.TimelineView) {
+        timelineView = view
     }
 
     override fun setRouteID(id: String) {
@@ -82,8 +87,6 @@ class RouteDetailsPresenter(
             directionsView?.unhighlightDirection(directionIdx)
         }
         directionsView?.highlightDirection(idx)
-
-        directionsView?.showTimetable(direction)
         infoView?.switchToTimetableTab()
 
         directionIdx = idx
@@ -102,5 +105,9 @@ class RouteDetailsPresenter(
                     timetableView?.reportThatSomethingWentWrong()
                 }
             })
+    }
+
+    override fun loadTimeline() {
+
     }
 }

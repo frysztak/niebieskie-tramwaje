@@ -1,5 +1,6 @@
 package com.orpington.software.rozkladmpk.routeDetails
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -24,11 +25,7 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.route_directions, container, false)
 
-        if (activity == null) {
-            return view
-        }
-
-        adapter = RouteDirectionsAdapter(activity!!, presenter!!)
+        adapter = RouteDirectionsAdapter(context!!, presenter!!)
         view.findViewById<RecyclerView>(R.id.routeDirections_recyclerview)?.apply {
             adapter = this@RouteDirectionsFragment.adapter
             layoutManager = LinearLayoutManager(context)
@@ -41,9 +38,6 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
 
     override fun showRouteDirections(routeDirections: RouteDirections) {
         adapter.setItems(routeDirections.directions)
-    }
-
-    override fun showTimetable(direction: String) {
     }
 
     override fun highlightDirection(directionIdx: Int) {

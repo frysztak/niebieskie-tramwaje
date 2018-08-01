@@ -18,6 +18,7 @@ class RouteDirectionsAdapter(
 ) : RecyclerView.Adapter<RouteDirectionsAdapter.ViewHolder>() {
 
     private var highlightColour = context.resources.getColor(R.color.primary_very_light, null)
+
     private var items: List<String> = emptyList()
 
     fun setItems(newItems: List<String>) {
