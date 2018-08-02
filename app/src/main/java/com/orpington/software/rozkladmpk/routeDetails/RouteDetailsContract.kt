@@ -42,11 +42,8 @@ interface RouteDetailsContract {
         fun unhighlightDirection(directionIdx: Int)
     }
 
-    interface TimetableView {
+    interface TimetableView : BaseView {
         fun attachPresenter(newPresenter: Presenter)
-
-        fun showProgressBar()
-        fun reportThatSomethingWentWrong()
 
         fun showTimeTable(
             items: List<TimetableViewHelper.ViewItem>,

@@ -3,12 +3,14 @@ package com.orpington.software.rozkladmpk.routeDetails
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import com.ethanhua.skeleton.Skeleton
+import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.R
+import kotlinx.android.synthetic.main.error_view.view.*
+import kotlinx.android.synthetic.main.route_timetable.*
 
 class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
 
@@ -22,32 +24,58 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.route_timetable, container, false)
-
-        if (activity == null) {
-            return view
-        }
-
-        adapter = RouteTimetableAdapter(activity!!, presenter!!)
-        view.findViewById<RecyclerView>(R.id.timetable_recyclerview)?.apply {
-            adapter = this@RouteTimetableFragment.adapter
-            layoutManager = LinearLayoutManager(context)
-        }
+        adapter = RouteTimetableAdapter(context!!, presenter!!)
 
         return view
     }
 
-    override fun showTimeTable(items: List<TimetableViewHelper.ViewItem>, timeToScrollInto: TimeIndices) {
-        view?.findViewById<TextView>(R.id.selectDirection_textview)?.visibility = View.INVISIBLE
-        adapter.setItems(items)
-        view?.findViewById<RecyclerView>(R.id.timetable_recyclerview)?.visibility = View.VISIBLE
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        timetable_recyclerview?.apply {
+            adapter = this@RouteTimetableFragment.adapter
+            layoutManager = LinearLayoutManager(context)
+        }
+
+        errorLayout.tryAgainButton.setOnClickListener {
+           presenter?.loadTimeTable()
+        }
+
     }
 
-    override fun showProgressBar() {
+    override fun showTimeTable(items: List<TimetableViewHelper.ViewItem>, timeToScrollInto: TimeIndices) {
+        selectDirection_textview.visibility = View.GONE
+        errorLayout.visibility = View.GONE
+        timetable_recyclerview.visibility = View.VISIBLE
 
+        adapter.setItems(items)
+    }
+
+    private var skeletonScreen: SkeletonScreen? = null
+    override fun showProgressBar() {
+        selectDirection_textview.visibility = View.GONE
+        errorLayout.visibility = View.GONE
+        timetable_recyclerview.visibility = View.VISIBLE
+
+        skeletonScreen = Skeleton
+            .bind(timetable_recyclerview)
+            .adapter(adapter)
+            .load(R.layout.route_timetable_skeleton_list_item)
+            .show()
+    }
+
+    override fun hideProgressBar() {
+        selectDirection_textview.visibility = View.GONE
+        errorLayout.visibility = View.GONE
+        timetable_recyclerview.visibility = View.VISIBLE
+
+        skeletonScreen?.hide()
     }
 
     override fun reportThatSomethingWentWrong() {
-
+        selectDirection_textview.visibility = View.GONE
+        errorLayout.visibility = View.VISIBLE
+        timetable_recyclerview.visibility = View.GONE
     }
 
     override fun onTimeClicked() {

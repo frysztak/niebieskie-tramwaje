@@ -7,4 +7,6 @@
 
     <dimen name="TimeTableRowHeight">48dp</dimen>
     <dimen name="TimeTableColumnWidth">48dp</dimen>
+
+    <dimen name="SkeletonTimeTableCellSize">36dp</dimen>
 </resources>

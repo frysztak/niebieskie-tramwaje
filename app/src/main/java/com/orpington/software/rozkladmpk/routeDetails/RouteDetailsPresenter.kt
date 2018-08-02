@@ -104,10 +104,12 @@ class RouteDetailsPresenter(
                 override fun onDataLoaded(data: TimeTable) {
                     val helper = TimetableViewHelper()
                     timetable = data
+                    timetableView?.hideProgressBar()
                     timetableView?.showTimeTable(helper.processTimeTable(data))
                 }
 
                 override fun onDataNotAvailable() {
+                    timetableView?.hideProgressBar()
                     timetableView?.reportThatSomethingWentWrong()
                 }
             })

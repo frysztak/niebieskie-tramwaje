@@ -7,17 +7,21 @@
     <TextView
         android:id="@+id/selectDirection.textview"
         android:layout_width="match_parent"
-        android:text="@string/select_direction_first"
-        android:gravity="center"
-        android:textSize="22dp"
+        android:layout_height="match_parent"
         android:fontFamily="sans-serif-light"
-        android:layout_height="match_parent" />
+        android:gravity="center"
+        android:text="@string/select_direction_first"
+        android:textSize="22dp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/timetable.recyclerview"
         android:layout_width="match_parent"
-        android:visibility="invisible"
         android:layout_height="match_parent"
+        android:visibility="invisible"
         tools:listitem="@layout/route_timetable_list_item" />
+
+    <include
+        android:id="@+id/errorLayout"
+        layout="@layout/error_view" />
 
 </android.support.constraint.ConstraintLayout>
