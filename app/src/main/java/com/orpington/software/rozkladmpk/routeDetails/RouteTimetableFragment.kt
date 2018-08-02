@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.R
@@ -17,6 +18,9 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
     private lateinit var adapter: RouteTimetableAdapter
     private var presenter: RouteDetailsContract.Presenter? = null
 
+    private var highlightColor: Int = -1
+    private var normalColor: Int = -1
+
     override fun attachPresenter(newPresenter: RouteDetailsContract.Presenter) {
         presenter = newPresenter
         presenter!!.attachTimetableView(this)
@@ -25,6 +29,9 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.route_timetable, container, false)
         adapter = RouteTimetableAdapter(context!!, presenter!!)
+
+        highlightColor = resources.getColor(R.color.primary_dark, null)
+        normalColor = resources.getColor(R.color.primary_text, null)
 
         return view
     }
@@ -38,7 +45,7 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
         }
 
         errorLayout.tryAgainButton.setOnClickListener {
-           presenter?.loadTimeTable()
+            presenter?.loadTimeTable()
         }
 
     }
@@ -78,8 +85,16 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
         timetable_recyclerview.visibility = View.GONE
     }
 
-    override fun onTimeClicked() {
+    override fun highlightTime(tag: String) {
+        val textView =
+            timetable_recyclerview?.findViewWithTag<TextView>(tag)
+        textView?.setTextColor(highlightColor)
+    }
 
+    override fun unhighlightTime(tag: String) {
+        val textView =
+            timetable_recyclerview?.findViewWithTag<TextView>(tag)
+        textView?.setTextColor(normalColor)
     }
 
     companion object {

@@ -19,6 +19,7 @@ class RouteDetailsPresenter(
     private var routeID: String = ""
     private var stopName: String = ""
     private var timetable: TimeTable? = null
+    private var timeTag: String = ""
     private var tripID: String = ""
     private var routeDirections: List<String> = emptyList()
 
@@ -134,13 +135,17 @@ class RouteDetailsPresenter(
         val hhmmss = "$hhmm:00"
         val entry = timetableEntries?.find { entry ->
             entry.departureTime == hhmmss
-        }
+        } ?: return
 
-        if (entry != null) {
-            tripID = entry.tripID
-            loadTimeline()
-            infoView?.switchToTimelineTab()
+        tripID = entry.tripID
+        loadTimeline()
+        if (timeTag.isNotEmpty()) {
+            timetableView?.unhighlightTime(timeTag)
         }
+        timetableView?.highlightTime(time)
+        infoView?.switchToTimelineTab()
+
+        timeTag = time
     }
 
     override fun loadTimeline() {

@@ -50,7 +50,8 @@ interface RouteDetailsContract {
             timeToScrollInto: TimeIndices = TimeIndices(-1, -1)
         )
 
-        fun onTimeClicked()
+        fun highlightTime(tag: String)
+        fun unhighlightTime(tag: String)
     }
 
     interface TimelineView {
