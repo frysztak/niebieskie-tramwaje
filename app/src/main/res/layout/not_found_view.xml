@@ -5,23 +5,20 @@
     android:gravity="center"
     android:orientation="vertical">
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+
     <ImageView
+        android:id="@+id/icon"
         android:layout_width="match_parent"
         android:layout_height="@dimen/StateViewIconSize"
-        android:src="@drawable/warning" />
+        android:src="@drawable/loupe" />
 
     <TextView
         style="@style/ErrorViewTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/somethingWentWrong" />
-
-    <Button
-        android:id="@+id/tryAgainButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:paddingTop="8dp"
-        android:text="@string/tryAgain" />
+        android:text="@string/stopNotFound" />
 
 </LinearLayout>

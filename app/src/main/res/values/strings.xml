@@ -6,15 +6,16 @@
 
     <string name="searchHint">Stop name…</string>
 
-    <string name="somethingWentWrong">Something went wrong…</string>
+    <string name="somethingWentWrong">Something went wrong.\nPlease check your connection.</string>
     <string name="tryAgain">TRY AGAIN</string>
-    <string name="stopNotFound">Stop not found</string>
+    <string name="stopNotFound">Stop or route not found.\nPlease try again.</string>
     <string name="fetchingData">Fetching latest data, just for you…</string>
 
     <string name="search">Search</string>
     <string name="variants">VARIANTS</string>
     <string name="direction">Direction</string>
     <string name="timetable">Timetable</string>
+    <string name="timeline">Timeline</string>
     <string name="stops">Stops</string>
     <string name="route">Route</string>
 
@@ -26,6 +27,5 @@
     <string name="nightBus">Night bus</string>
     <string name="unknown">Unknown</string>
     <string name="select_direction_first">Please select direction first</string>
-    <string name="timeline">Timeline</string>
     <string name="select_direction_and_time">Please select direction and time first</string>
 </resources>

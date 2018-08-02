@@ -7,13 +7,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.View
-import android.widget.Button
-import com.kennyc.view.MultiStateView
+import com.ethanhua.skeleton.Skeleton
+import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
-import com.orpington.software.rozkladmpk.routeDetails.RouteDetailsActivity
 import com.orpington.software.rozkladmpk.routeVariants.RouteVariantsActivity
 import kotlinx.android.synthetic.main.activity_stops_and_routes.*
+import kotlinx.android.synthetic.main.error_view.view.*
 
 
 class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View {
@@ -32,13 +32,10 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
         var layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = recyclerAdapter
 
-        multiStateView.getView(MultiStateView.VIEW_STATE_ERROR)
-            ?.findViewById<Button>(R.id.tryAgainButton)
-            ?.setOnClickListener {
-                presenter.loadStopNames()
-            }
+        errorLayout.tryAgainButton.setOnClickListener {
+            presenter.loadStopNames()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -65,9 +62,9 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     }
 
     override fun displayStops(stops: List<String>) {
-        multiStateView.viewState = MultiStateView.VIEW_STATE_CONTENT
         recyclerView.visibility = View.VISIBLE
         notFoundLayout.visibility = View.GONE
+        errorLayout.visibility = View.GONE
 
         recyclerAdapter.setStops(stops)
     }
@@ -79,19 +76,33 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     }
 
     override fun reportThatSomethingWentWrong() {
-        multiStateView.viewState = MultiStateView.VIEW_STATE_ERROR
-    }
-
-    override fun showProgressBar() {
-        multiStateView.viewState = MultiStateView.VIEW_STATE_LOADING
-    }
-
-    override fun hideProgressBar() {
-        multiStateView.viewState = MultiStateView.VIEW_STATE_CONTENT
+        recyclerView.visibility = View.GONE
+        notFoundLayout.visibility = View.GONE
+        errorLayout.visibility = View.VISIBLE
     }
 
     override fun showStopNotFound() {
-        notFoundLayout.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
+        notFoundLayout.visibility = View.VISIBLE
+        errorLayout.visibility = View.GONE
     }
+
+    private var skeletonScreen: SkeletonScreen? = null
+    override fun showProgressBar() {
+
+        recyclerView.visibility = View.VISIBLE
+        notFoundLayout.visibility = View.GONE
+        errorLayout.visibility = View.GONE
+
+        skeletonScreen = Skeleton.bind(recyclerView)
+            .adapter(recyclerAdapter)
+            .load(R.layout.stops_and_routes_skeleton_list_item)
+            .show()
+    }
+
+    override fun hideProgressBar() {
+        skeletonScreen?.hide()
+    }
+
+
 }
