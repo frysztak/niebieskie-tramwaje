@@ -12,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".stopsAndRoutes.StopsAndRoutesActivity">
+        <activity
+            android:name=".stopsAndRoutes.StopsAndRoutesActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,9 +26,15 @@
                 android:value=".stopsAndRoutes.StopsAndRoutesActivity" />
             -->
         </activity>
-        <activity android:name=".routeVariants.RouteVariantsActivity" />
-        <activity android:name=".timetable.TimetableActivity" />
-        <activity android:name=".routeDetails.RouteDetailsActivity"></activity>
+        <activity
+            android:name=".routeVariants.RouteVariantsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".timetable.TimetableActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".routeDetails.RouteDetailsActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
