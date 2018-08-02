@@ -9,8 +9,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.routeDetails.TimetableViewHelper.*
-import kotlinx.android.synthetic.main.timetable_list_header.view.*
-import kotlinx.android.synthetic.main.timetable_list_row.view.*
+import kotlinx.android.synthetic.main.route_timetable_list_header.view.*
+import kotlinx.android.synthetic.main.route_timetable_list_item.view.*
 
 typealias Row = MutableList<String>
 
@@ -74,11 +74,11 @@ class RouteTimetableAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             ViewType.HEADER.code -> {
-                val view = LayoutInflater.from(context).inflate(R.layout.timetable_list_header, parent, false)
+                val view = LayoutInflater.from(context).inflate(R.layout.route_timetable_list_header, parent, false)
                 HeaderViewHolder(view)
             }
             ViewType.ROW.code -> {
-                val view = LayoutInflater.from(context).inflate(R.layout.timetable_list_row, parent, false)
+                val view = LayoutInflater.from(context).inflate(R.layout.route_timetable_list_item, parent, false)
                 RowViewHolder(view)
             }
             else -> throw Exception("Unknown ViewType")
@@ -92,7 +92,7 @@ class RouteTimetableAdapter(
         hourTextView.text = hour
 
         for (minutes in row.data.drop(1)) {
-            val view = LayoutInflater.from(context).inflate(R.layout.timetable_list_item, layout, false) as TextView
+            val view = LayoutInflater.from(context).inflate(R.layout.route_timetable_minute, layout, false) as TextView
             view.text = minutes
             view.tag = "${row.dayType.prefix}:$hour:$minutes"
 

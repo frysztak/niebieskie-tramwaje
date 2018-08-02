@@ -18,6 +18,6 @@
         android:layout_width="match_parent"
         android:visibility="invisible"
         android:layout_height="match_parent"
-        tools:listitem="@layout/timetable_list_row" />
+        tools:listitem="@layout/route_timetable_list_item" />
 
 </android.support.constraint.ConstraintLayout>
