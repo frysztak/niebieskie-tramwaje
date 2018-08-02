@@ -2,12 +2,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/multiStateView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:msv_animateViewChanges="false"
-    app:msv_errorView="@layout/error_view"
-    app:msv_loadingView="@layout/loading_view"
     tools:context=".stopsAndRoutes.StopsAndRoutesActivity">
 
     <android.support.v7.widget.Toolbar

@@ -2,32 +2,25 @@ package com.orpington.software.rozkladmpk.routeVariants
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
-import android.support.design.widget.BottomSheetBehavior
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
-import android.widget.Button
-import com.kennyc.view.MultiStateView
+import android.view.View
+import com.ethanhua.skeleton.Skeleton
+import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteVariant
 import com.orpington.software.rozkladmpk.routeDetails.RouteDetailsActivity
-import com.orpington.software.rozkladmpk.timetable.TimetableActivity
 import com.orpington.software.rozkladmpk.utils.GridSpacingItemDecoration
 import kotlinx.android.synthetic.main.activity_route_variants.*
-import kotlinx.android.synthetic.main.route_variant_bottom_sheet.*
-import kotlinx.android.synthetic.main.route_variant_bottom_sheet.view.*
+import kotlinx.android.synthetic.main.error_view.view.*
 
 
 class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
 
     private lateinit var presenter: RouteVariantsPresenter
     private lateinit var recyclerAdapter: RoutesRecyclerViewAdapter
-    private lateinit var variantsRecyclerAdapter: VariantsRecyclerViewAdapter
-
-    private lateinit var bottomSheetBehaviour: BottomSheetBehavior<ConstraintLayout>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,51 +35,45 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
 
         var layoutManager = GridLayoutManager(this, 2)
         recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = recyclerAdapter
         val itemDecoration = GridSpacingItemDecoration(2, 50, true)
         recyclerView.addItemDecoration(itemDecoration)
-
-        variantsRecyclerAdapter = VariantsRecyclerViewAdapter(this, presenter)
-        bottomSheetBehaviour = BottomSheetBehavior.from(bottomSheet)
-        bottomSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
-        bottomSheet.variantsRecyclerView.layoutManager = LinearLayoutManager(this)
-        bottomSheet.variantsRecyclerView.adapter = variantsRecyclerAdapter
 
         title = stopName
         presenter.loadVariants(stopName)
 
-        multiStateView.getView(MultiStateView.VIEW_STATE_ERROR)
-            ?.findViewById<Button>(R.id.tryAgainButton)
-            ?.setOnClickListener {
-                presenter.loadVariants(stopName)
-            }
+        errorLayout.tryAgainButton.setOnClickListener {
+            presenter.loadVariants(stopName)
+        }
     }
 
     override fun showRoutes(variants: List<RouteVariant>) {
-        multiStateView.viewState = MultiStateView.VIEW_STATE_CONTENT
         recyclerAdapter.setItems(variants)
+
+        recyclerView.visibility = View.VISIBLE
+        errorLayout.visibility = View.GONE
     }
 
-    override fun showVariants(variants: List<RouteVariant>) {
-        variantsRecyclerAdapter.setItems(variants)
-        bottomSheetBehaviour.state = BottomSheetBehavior.STATE_COLLAPSED
-    }
-
+    private var skeletonScreen: SkeletonScreen? = null
     override fun showProgressBar() {
-        multiStateView.viewState = MultiStateView.VIEW_STATE_LOADING
+        recyclerView.visibility = View.VISIBLE
+        errorLayout.visibility = View.GONE
+
+        skeletonScreen = Skeleton.bind(recyclerView)
+            .adapter(recyclerAdapter)
+            .load(R.layout.route_skeleton_card_view)
+            .show()
+    }
+
+    override fun hideProgressBar() {
+        skeletonScreen?.hide()
+
+        recyclerView.visibility = View.VISIBLE
+        errorLayout.visibility = View.GONE
     }
 
     override fun reportThatSomethingWentWrong() {
-        multiStateView.viewState = MultiStateView.VIEW_STATE_ERROR
-    }
-
-    override fun navigateToTimetable(routeID: String, atStop: String, fromStop: String, toStop: String) {
-        val i = Intent(baseContext, TimetableActivity::class.java)
-        i.putExtra("routeID", routeID)
-        i.putExtra("atStop", atStop)
-        i.putExtra("fromStop", fromStop)
-        i.putExtra("toStop", toStop)
-        startActivity(i)
+        recyclerView.visibility = View.GONE
+        errorLayout.visibility = View.VISIBLE
     }
 
     override fun navigateToRouteDetails(routeID: String, stopName: String) {

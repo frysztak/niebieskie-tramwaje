@@ -8,17 +8,14 @@ interface RouteVariantsContract {
     interface Presenter: BasePresenter {
         fun loadVariants(stopName: String)
         fun routeClicked(position: Int)
-        fun variantClicked(position: Int)
     }
 
     interface View: BaseView {
         fun showProgressBar()
+        fun hideProgressBar()
         fun reportThatSomethingWentWrong()
 
         fun showRoutes(variants: List<RouteVariant>)
-        fun showVariants(variants: List<RouteVariant>)
-
         fun navigateToRouteDetails(routeID: String, stopName: String)
-        fun navigateToTimetable(routeID: String, atStop: String, fromStop: String, toStop: String)
     }
 }

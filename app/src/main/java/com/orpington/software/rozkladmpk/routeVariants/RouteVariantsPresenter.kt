@@ -22,10 +22,12 @@ class RouteVariantsPresenter(
             override fun onDataLoaded(data: RouteVariants) {
                 routes = data.routeVariants
                 sortedDistinctRoutes = routes.distinctBy { it.routeID }.sortedWith(routeInfoComparator)
+                view.hideProgressBar()
                 view.showRoutes(sortedDistinctRoutes)
             }
 
             override fun onDataNotAvailable() {
+                view.hideProgressBar()
                 view.reportThatSomethingWentWrong()
             }
 
@@ -51,12 +53,7 @@ class RouteVariantsPresenter(
                 route.tripIDs.size
             }
         view.navigateToRouteDetails(routeID, currentStopName)
-        //view.showVariants(shownVariants)
     }
 
-    override fun variantClicked(position: Int) {
-        val variant = shownVariants[position]
-        view.navigateToTimetable(variant.routeID, currentStopName, variant.firstStop, variant.lastStop)
-    }
 }
 
