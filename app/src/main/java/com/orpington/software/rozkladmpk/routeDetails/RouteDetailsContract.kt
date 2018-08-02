@@ -27,6 +27,10 @@ interface RouteDetailsContract {
     }
 
     interface InfoView {
+        fun showProgressBar()
+        fun hideProgressBar()
+        fun reportThatSomethingWentWrong()
+
         fun showRouteInfo(routeInfo: RouteInfo)
         fun switchToTimetableTab()
         fun switchToTimelineTab()

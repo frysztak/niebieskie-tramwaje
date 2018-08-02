@@ -54,16 +54,17 @@ class RouteDetailsPresenter(
     }
 
     override fun loadRouteInfo() {
-        //view.showProgressBar()
+        infoView?.showProgressBar()
         dataSource.getRouteInfo(routeID, object : IDataSource.LoadDataCallback<RouteInfo> {
             override fun onDataLoaded(data: RouteInfo) {
+                infoView?.hideProgressBar()
                 infoView?.showRouteInfo(data)
             }
 
             override fun onDataNotAvailable() {
-                //view.reportThatSomethingWentWrong()
+                infoView?.hideProgressBar()
+                infoView?.reportThatSomethingWentWrong()
             }
-
         })
     }
 

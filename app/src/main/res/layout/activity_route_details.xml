@@ -24,7 +24,9 @@
             app:expandedTitleMarginStart="48dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <include layout="@layout/route_details_header" />
+            <include
+                android:id="@+id/headerLayout"
+                layout="@layout/route_details_header" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"

@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AlphaAnimation
+import com.ethanhua.skeleton.Skeleton
+import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteInfo
@@ -71,6 +73,23 @@ class RouteDetailsActivity : AppCompatActivity(),
             false -> R.drawable.tram
         })
         routeType_textview.text = getRouteTypeString(routeInfo.typeID)
+    }
+
+    private var skeletonScreen: SkeletonScreen? = null
+    override fun showProgressBar() {
+        skeletonScreen = Skeleton.bind(headerLayout)
+            .load(R.layout.route_details_skeleton_header)
+            .show()
+    }
+
+    override fun hideProgressBar() {
+        skeletonScreen?.hide()
+    }
+
+    override fun reportThatSomethingWentWrong() {
+        // there's really no space in the header for any kind of error reporting
+        // just try to load again
+        presenter.loadRouteInfo()
     }
 
     override fun switchToTimetableTab() {
