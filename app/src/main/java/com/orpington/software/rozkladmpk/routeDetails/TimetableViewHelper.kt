@@ -26,7 +26,7 @@ class TimetableViewHelper {
         override val type: ViewType = ViewType.ROW
     }
 
-    enum class DayType(val prefix: String){
+    enum class DayType(val prefix: String) {
         Weekday("WE"),
         Saturday("SA"),
         Sunday("SU")
@@ -42,7 +42,7 @@ class TimetableViewHelper {
             { dayType: DayType, timeTableEntries: List<TimeTableEntry>? ->
                 if (timeTableEntries != null) {
                     items.add(HeaderItem(dayType, getHeaderAdditionalInfo(day, dayType)))
-                    items.addAll(processSingleTimeTable(dayType, timeTableEntries))
+                    processSingleTimeTable(dayType, timeTableEntries, items)
                 }
             }
 
@@ -53,24 +53,29 @@ class TimetableViewHelper {
         return items
     }
 
+    private val maxMinutesInARow = 6
 
-    private fun processSingleTimeTable(dayType: DayType, data: List<TimeTableEntry>): List<ViewItem> {
+    private fun processSingleTimeTable(
+        dayType: DayType,
+        data: List<TimeTableEntry>,
+        items: MutableList<ViewItem>
+    ) {
         val groups = data.groupBy { entry ->
             entry.arrivalTime.split(":")[0]
         }.mapValues { (key, value) ->
             value.map { entry ->
                 entry.arrivalTime.split(":")[1]
-            }
+            }.chunked(maxMinutesInARow)
         }
 
-        var items: MutableList<ViewItem> = arrayListOf()
-        for ((key, value) in groups) {
-            var row: Row = arrayListOf()
-            row.add(key)
-            row.addAll(value)
-            items.add(RowItem(dayType, row))
+        for ((hour, listOfMinutes) in groups) {
+            for (minutes in listOfMinutes) {
+                var row: Row = arrayListOf()
+                row.add(hour)
+                row.addAll(minutes)
+                items.add(RowItem(dayType, row))
+            }
         }
-        return items
     }
 
     private fun getHeaderAdditionalInfo(currentDay: Int, timetableDay: DayType): String {
