@@ -16,7 +16,7 @@
 
     <View
         android:id="@+id/stopName.textview"
-        android:layout_width="250dp"
+        android:layout_width="300dp"
         android:layout_height="26dp"
         android:background="@color/light_transparent"
         app:layout_constraintBottom_toBottomOf="@id/arrow"
