@@ -69,17 +69,18 @@ class RouteDetailsPresenter(
     }
 
     override fun loadRouteDirections() {
-        //view.showProgressBar()
+        directionsView?.showProgressBar()
         dataSource.getRouteDirectionsThroughStop(routeID, stopName, object : IDataSource.LoadDataCallback<RouteDirections> {
             override fun onDataLoaded(data: RouteDirections) {
                 routeDirections = data.directions
+                directionsView?.hideProgressBar()
                 directionsView?.showRouteDirections(data)
             }
 
             override fun onDataNotAvailable() {
-                //view.reportThatSomethingWentWrong()
+                directionsView?.hideProgressBar()
+                directionsView?.reportThatSomethingWentWrong()
             }
-
         })
     }
 

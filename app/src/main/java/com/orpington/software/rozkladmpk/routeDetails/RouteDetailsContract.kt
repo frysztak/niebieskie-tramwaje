@@ -1,5 +1,6 @@
 package com.orpington.software.rozkladmpk.routeDetails
 
+import com.orpington.software.rozkladmpk.BaseView
 import com.orpington.software.rozkladmpk.data.model.RouteDirections
 import com.orpington.software.rozkladmpk.data.model.RouteInfo
 import com.orpington.software.rozkladmpk.data.model.Timeline
@@ -26,17 +27,13 @@ interface RouteDetailsContract {
         fun loadTimeline()
     }
 
-    interface InfoView {
-        fun showProgressBar()
-        fun hideProgressBar()
-        fun reportThatSomethingWentWrong()
-
+    interface InfoView : BaseView {
         fun showRouteInfo(routeInfo: RouteInfo)
         fun switchToTimetableTab()
         fun switchToTimelineTab()
     }
 
-    interface DirectionsView {
+    interface DirectionsView : BaseView {
         fun attachPresenter(newPresenter: Presenter)
 
         fun showRouteDirections(routeDirections: RouteDirections)

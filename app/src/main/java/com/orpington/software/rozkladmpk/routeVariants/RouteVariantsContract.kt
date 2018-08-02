@@ -11,10 +11,6 @@ interface RouteVariantsContract {
     }
 
     interface View: BaseView {
-        fun showProgressBar()
-        fun hideProgressBar()
-        fun reportThatSomethingWentWrong()
-
         fun showRoutes(variants: List<RouteVariant>)
         fun navigateToRouteDetails(routeID: String, stopName: String)
     }
