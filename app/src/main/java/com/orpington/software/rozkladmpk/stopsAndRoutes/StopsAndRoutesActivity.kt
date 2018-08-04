@@ -2,23 +2,24 @@ package com.orpington.software.rozkladmpk.stopsAndRoutes
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.view.Menu
 import android.view.View
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
-import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.routeVariants.RouteVariantsActivity
+import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_stops_and_routes.*
 import kotlinx.android.synthetic.main.error_view.view.*
+import javax.inject.Inject
 
 
-class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View {
+class StopsAndRoutesActivity : DaggerAppCompatActivity(), StopsAndRoutesContract.View {
 
-    private lateinit var presenter: StopsAndRoutesPresenter
+    @Inject
+    internal lateinit var presenter: StopsAndRoutesPresenter
     private lateinit var recyclerAdapter: StopsAndRoutesRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,8 +27,8 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         setContentView(R.layout.activity_stops_and_routes)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        presenter = StopsAndRoutesPresenter(Injection.provideDataSource(cacheDir), this)
         recyclerAdapter = StopsAndRoutesRecyclerViewAdapter(this, presenter)
+        presenter.attachView(this)
         presenter.loadStopNames()
 
         var layoutManager = LinearLayoutManager(this)
