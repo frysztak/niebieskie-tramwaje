@@ -28,8 +28,6 @@ class StopsAndRoutesActivity : DaggerAppCompatActivity(), StopsAndRoutesContract
         setSupportActionBar(findViewById(R.id.toolbar))
 
         recyclerAdapter = StopsAndRoutesRecyclerViewAdapter(this, presenter)
-        presenter.attachView(this)
-        presenter.loadStopNames()
 
         var layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
@@ -37,6 +35,19 @@ class StopsAndRoutesActivity : DaggerAppCompatActivity(), StopsAndRoutesContract
         errorLayout.tryAgainButton.setOnClickListener {
             presenter.loadStopNames()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        presenter.attachView(this)
+        presenter.loadStopNames()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        presenter.dropView()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
