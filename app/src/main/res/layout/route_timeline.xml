@@ -22,9 +22,4 @@
         tools:listitem="@layout/route_timeline_list_item"
         tools:visibility="visible" />
 
-    <include
-        android:id="@+id/errorLayout"
-        layout="@layout/error_view"
-        android:visibility="gone" />
-
 </android.support.constraint.ConstraintLayout>

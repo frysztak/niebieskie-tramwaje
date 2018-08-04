@@ -54,8 +54,11 @@ interface RouteDetailsContract {
         fun unhighlightTime(tag: String)
     }
 
-    interface TimelineView: BaseView {
+    interface TimelineView {
         fun attachPresenter(newPresenter: Presenter)
+
+        fun showProgressBar()
+        fun reportThatSomethingWentWrong()
 
         fun showTimeline(timeline: Timeline)
     }

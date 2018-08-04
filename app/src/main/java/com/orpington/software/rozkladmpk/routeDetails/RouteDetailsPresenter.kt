@@ -153,12 +153,10 @@ class RouteDetailsPresenter(
         dataSource.getTripTimeline(tripID,
             object : IDataSource.LoadDataCallback<Timeline> {
                 override fun onDataLoaded(data: Timeline) {
-                    timelineView?.hideProgressBar()
                     timelineView?.showTimeline(data)
                 }
 
                 override fun onDataNotAvailable() {
-                    timelineView?.hideProgressBar()
                     timelineView?.reportThatSomethingWentWrong()
                 }
             })
