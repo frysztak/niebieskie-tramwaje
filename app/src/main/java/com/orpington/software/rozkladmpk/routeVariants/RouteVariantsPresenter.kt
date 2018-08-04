@@ -4,31 +4,45 @@ import com.orpington.software.rozkladmpk.data.model.RouteVariant
 import com.orpington.software.rozkladmpk.data.model.RouteVariants
 import com.orpington.software.rozkladmpk.data.source.IDataSource
 import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
+import javax.inject.Inject
 
-class RouteVariantsPresenter(
-    private val dataSource: RemoteDataSource,
-    private val view: RouteVariantsContract.View
+class RouteVariantsPresenter
+@Inject constructor(
+    private val dataSource: RemoteDataSource
 ) : RouteVariantsContract.Presenter {
+
+    private var view: RouteVariantsContract.View? = null
+
+    override fun attachView(view: RouteVariantsContract.View) {
+        this.view = view
+    }
+
+    override fun dropView() {
+        view = null
+    }
 
     private var currentStopName: String = ""
     private var routes: List<RouteVariant> = emptyList()
     private var sortedDistinctRoutes: List<RouteVariant> = emptyList()
     private var shownVariants: List<RouteVariant> = emptyList()
 
-    override fun loadVariants(stopName: String) {
+    override fun setStopName(stopName: String) {
         currentStopName = stopName
-        view.showProgressBar()
-        dataSource.getRouteVariantsForStopName(stopName, object : IDataSource.LoadDataCallback<RouteVariants> {
+    }
+
+    override fun loadVariants() {
+        view?.showProgressBar()
+        dataSource.getRouteVariantsForStopName(currentStopName, object : IDataSource.LoadDataCallback<RouteVariants> {
             override fun onDataLoaded(data: RouteVariants) {
                 routes = data.routeVariants
                 sortedDistinctRoutes = routes.distinctBy { it.routeID }.sortedWith(routeInfoComparator)
-                view.hideProgressBar()
-                view.showRoutes(sortedDistinctRoutes)
+                view?.hideProgressBar()
+                view?.showRoutes(sortedDistinctRoutes)
             }
 
             override fun onDataNotAvailable() {
-                view.hideProgressBar()
-                view.reportThatSomethingWentWrong()
+                view?.hideProgressBar()
+                view?.reportThatSomethingWentWrong()
             }
 
         })
@@ -52,7 +66,7 @@ class RouteVariantsPresenter(
             }.sortedByDescending { route ->
                 route.tripIDs.size
             }
-        view.navigateToRouteDetails(routeID, currentStopName)
+        view?.navigateToRouteDetails(routeID, currentStopName)
     }
 
 }

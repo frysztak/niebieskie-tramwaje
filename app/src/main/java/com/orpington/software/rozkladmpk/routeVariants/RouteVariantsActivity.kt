@@ -2,24 +2,25 @@ package com.orpington.software.rozkladmpk.routeVariants
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.view.MenuItem
 import android.view.View
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
-import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteVariant
 import com.orpington.software.rozkladmpk.routeDetails.RouteDetailsActivity
 import com.orpington.software.rozkladmpk.utils.GridSpacingItemDecoration
+import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_route_variants.*
 import kotlinx.android.synthetic.main.error_view.view.*
+import javax.inject.Inject
 
 
-class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
+class RouteVariantsActivity : DaggerAppCompatActivity(), RouteVariantsContract.View {
 
-    private lateinit var presenter: RouteVariantsPresenter
+    @Inject
+    internal lateinit var presenter: RouteVariantsPresenter
     private lateinit var recyclerAdapter: RoutesRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +31,6 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
 
         var stopName = intent.getStringExtra("stopName")
 
-        presenter = RouteVariantsPresenter(Injection.provideDataSource(cacheDir), this)
         recyclerAdapter = RoutesRecyclerViewAdapter(this, presenter)
 
         var layoutManager = GridLayoutManager(this, 2)
@@ -39,11 +39,23 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
         recyclerView.addItemDecoration(itemDecoration)
 
         title = stopName
-        presenter.loadVariants(stopName)
+        presenter.setStopName(stopName)
 
         errorLayout.tryAgainButton.setOnClickListener {
-            presenter.loadVariants(stopName)
+            presenter.loadVariants()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        presenter.attachView(this)
+        presenter.loadVariants()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.dropView()
     }
 
     override fun showRoutes(variants: List<RouteVariant>) {
