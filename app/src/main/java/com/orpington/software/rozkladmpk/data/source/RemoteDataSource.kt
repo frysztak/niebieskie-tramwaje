@@ -5,11 +5,9 @@ import mu.KotlinLogging
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import javax.inject.Singleton
 
 
-@Singleton
-class RemoteDataSource constructor(private val service: ApiService) : IRemoteDataSource {
+class RemoteDataSource private constructor(private val service: ApiService) : IRemoteDataSource {
 
     private fun <T> makeACall(call: Call<T>, callback: IDataSource.LoadDataCallback<T>) {
         call.enqueue(object : Callback<T> {
