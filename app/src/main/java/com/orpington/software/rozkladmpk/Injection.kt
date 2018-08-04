@@ -6,11 +6,16 @@ import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
 import java.io.File
 
 
-object Injection {
-
-    fun provideDataSource(cacheDir: File): RemoteDataSource {
-        val apiService = ApiClient.get(cacheDir).create(ApiService::class.java)
-        return RemoteDataSource.getInstance(apiService)
+class Injection {
+    companion object {
+        private var dataSource: RemoteDataSource? = null
+        fun provideDataSource(cacheDir: File): RemoteDataSource {
+            if (dataSource == null) {
+                val apiService = ApiClient.get(cacheDir).create(ApiService::class.java)
+                dataSource = RemoteDataSource.getInstance(apiService)
+            }
+            return dataSource!!
+        }
     }
 }
 
