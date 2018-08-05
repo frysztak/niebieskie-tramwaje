@@ -2,6 +2,7 @@ package com.orpington.software.rozkladmpk.routeDetails
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.design.widget.AppBarLayout
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
@@ -12,17 +13,20 @@ import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteInfo
+import com.orpington.software.rozkladmpk.data.source.RouteDetailsState
 import kotlinx.android.synthetic.main.activity_route_details.*
 import kotlinx.android.synthetic.main.route_details_header.*
+import com.orpington.software.rozkladmpk.R.id.viewPager
+
+
 
 
 class RouteDetailsActivity : AppCompatActivity(),
-    RouteDetailsContract.InfoView,
+    RouteDetailsContract.View,
     AppBarLayout.OnOffsetChangedListener {
 
     private lateinit var presenter: RouteDetailsContract.Presenter
-    private lateinit var stopName: String
-    private lateinit var routeID: String
+    private var state = RouteDetailsState()
 
     private val PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR = 0.9f
     private val PERCENTAGE_TO_HIDE_TITLE_DETAILS = 0.3f
@@ -40,32 +44,54 @@ class RouteDetailsActivity : AppCompatActivity(),
 
         appBarLayout.addOnOffsetChangedListener(this)
 
-        routeID = intent.getStringExtra("routeID")
-        stopName = intent.getStringExtra("stopName")
+        state.routeID = intent.getStringExtra("routeID")
+        state.stopName = intent.getStringExtra("stopName")
 
-        presenter = RouteDetailsPresenter(Injection.provideDataSource(cacheDir))
-        presenter.apply {
-            setRouteID(routeID)
-            setStopName(stopName)
-            attachInfoView(this@RouteDetailsActivity)
-        }
+        presenter = RouteDetailsPresenter(Injection.provideDataSource(), state)
         viewPager.adapter = RouteDetailsPagerAdapter(
-            presenter,
             this,
+            state,
             supportFragmentManager
         )
-        viewPager.offscreenPageLimit = 2
+        viewPager.offscreenPageLimit = 1
         tabLayout.setupWithViewPager(viewPager)
+    }
 
+    override fun onResume() {
+        super.onResume()
+        presenter.attachView(this)
         presenter.loadRouteInfo()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        val page = supportFragmentManager.findFragmentByTag("android:switcher:" + viewPager + ":" + viewPager.currentItem)
+        if (page is RouteTimetableFragment) {
+            page.setState(state)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.dropView()
+    }
+
+    override fun directionSelected(direction: String) {
+        state.direction = direction
     }
 
     @SuppressLint("SetTextI18n")
     override fun showRouteInfo(routeInfo: RouteInfo) {
         val routeText = "${getString(R.string.route)} ${routeInfo.routeID}"
         route_textview.text = routeText
-        stopName_textview.text = stopName
-        toolbarTitle.text = "$routeText — $stopName"
+        stopName_textview.text = state.stopName
+        toolbarTitle.text = "$routeText — ${state.stopName}"
 
         carrier_textview.text = routeInfo.agencyName
         icon_imageview.setImageResource(when (isBus(routeInfo.typeID)) {

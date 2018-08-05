@@ -16,7 +16,7 @@ typealias Row = MutableList<String>
 
 class RouteTimetableAdapter(
     private val context: Context,
-    private val presenter: RouteDetailsContract.Presenter
+    private val presenter: RouteTimetableContract.Presenter
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: List<ViewItem> = listOf()

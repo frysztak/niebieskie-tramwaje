@@ -12,5 +12,7 @@ class RozkladMPK : Application() {
         if (BuildConfig.DEBUG) {
             LeakCanary.install(this)
         }
+
+        Injection.provideDataSource(cacheDir)
     }
 }

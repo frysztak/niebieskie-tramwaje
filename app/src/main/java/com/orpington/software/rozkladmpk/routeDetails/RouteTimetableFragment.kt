@@ -9,25 +9,24 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
+import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
+import com.orpington.software.rozkladmpk.data.source.RouteDetailsState
 import kotlinx.android.synthetic.main.error_view.view.*
 import kotlinx.android.synthetic.main.route_timetable.*
 
-class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
+class RouteTimetableFragment : Fragment(), RouteTimetableContract.View {
 
+    private lateinit var state: RouteDetailsState
     private lateinit var adapter: RouteTimetableAdapter
-    private var presenter: RouteDetailsContract.Presenter? = null
+    private lateinit var presenter: RouteTimetableContract.Presenter
 
     private var highlightColor: Int = -1
     private var normalColor: Int = -1
 
-    override fun attachPresenter(newPresenter: RouteDetailsContract.Presenter) {
-        presenter = newPresenter
-        presenter!!.attachTimetableView(this)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.route_timetable, container, false)
+        presenter = RouteTimetablePresenter(Injection.provideDataSource(), state)
         adapter = RouteTimetableAdapter(context!!, presenter!!)
 
         highlightColor = resources.getColor(R.color.primary_dark, null)
@@ -45,9 +44,19 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
         }
 
         errorLayout.tryAgainButton.setOnClickListener {
-            presenter?.loadTimeTable()
+            presenter.loadTimeTable()
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter.attachView(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.dropView()
     }
 
     override fun showTimeTable(items: List<TimetableViewHelper.ViewItem>, timeToScrollInto: TimeIndices) {
@@ -95,6 +104,11 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
         val textView =
             timetable_recyclerview?.findViewWithTag<TextView>(tag)
         textView?.setTextColor(normalColor)
+    }
+
+    fun setState(state: RouteDetailsState): RouteTimetableFragment {
+        this.state = state
+        return this
     }
 
     companion object {

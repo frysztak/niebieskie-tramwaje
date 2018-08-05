@@ -5,10 +5,11 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import com.orpington.software.rozkladmpk.R
+import com.orpington.software.rozkladmpk.data.source.RouteDetailsState
 
 class RouteDetailsPagerAdapter(
-    private val presenter: RouteDetailsContract.Presenter,
     private val context: Context,
+    private val state: RouteDetailsState,
     fragmentManager: FragmentManager
 ) : FragmentPagerAdapter(fragmentManager) {
 
@@ -24,23 +25,11 @@ class RouteDetailsPagerAdapter(
 
     override fun getItem(position: Int): Fragment? {
 
-        when (position) {
-            0 -> {
-                val fragment = RouteDirectionsFragment.newInstance()
-                fragment.attachPresenter(presenter)
-                return fragment
-            }
-            1 -> {
-                val fragment = RouteTimetableFragment.newInstance()
-                fragment.attachPresenter(presenter)
-                return fragment
-            }
-            2 -> {
-                val fragment = RouteTimelineFragment.newInstance()
-                fragment.attachPresenter(presenter)
-                return fragment
-            }
-            else -> return null
+        return when (position) {
+            0 -> RouteDirectionsFragment.newInstance().setState(state)
+            1 -> RouteTimetableFragment.newInstance().setState(state)
+            2 -> RouteTimelineFragment.newInstance()
+            else -> null
         }
 
     }

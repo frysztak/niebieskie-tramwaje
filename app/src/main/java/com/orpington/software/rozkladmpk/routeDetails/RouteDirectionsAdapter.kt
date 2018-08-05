@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.route_directions_list_item.view.*
 
 class RouteDirectionsAdapter(
     private val context: Context,
-    private val presenter: RouteDetailsContract.Presenter
+    private val presenter: RouteDirectionsContract.Presenter
 ) : RecyclerView.Adapter<RouteDirectionsAdapter.ViewHolder>() {
 
     private var highlightColour = context.resources.getColor(R.color.primary_dark, null)
@@ -43,7 +43,7 @@ class RouteDirectionsAdapter(
         view: View,
         private val highlightColor: Int,
         private val normalColor: Int,
-        private val presenter: RouteDetailsContract.Presenter) :
+        private val presenter: RouteDirectionsContract.Presenter) :
         RecyclerView.ViewHolder(view),
         View.OnClickListener {
         val stopTextView: TextView = view.stopName_textview

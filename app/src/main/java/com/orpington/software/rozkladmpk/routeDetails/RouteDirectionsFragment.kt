@@ -8,25 +8,24 @@ import android.view.View
 import android.view.ViewGroup
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
+import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteDirections
+import com.orpington.software.rozkladmpk.data.source.RouteDetailsState
+import com.orpington.software.rozkladmpk.utils.afterMeasured
 import kotlinx.android.synthetic.main.error_view.view.*
 import kotlinx.android.synthetic.main.route_directions.*
 
-class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView {
+class RouteDirectionsFragment : Fragment(), RouteDirectionsContract.View {
 
     private lateinit var adapter: RouteDirectionsAdapter
-    private var presenter: RouteDetailsContract.Presenter? = null
-    // TODO? clear presenter when fragment dies
-
-    override fun attachPresenter(newPresenter: RouteDetailsContract.Presenter) {
-        presenter = newPresenter
-        presenter!!.attachDirectionsView(this)
-    }
+    private lateinit var presenter: RouteDirectionsContract.Presenter
+    private lateinit var state: RouteDetailsState // weakref?
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.route_directions, container, false)
-        adapter = RouteDirectionsAdapter(context!!, presenter!!)
+        presenter = RouteDirectionsPresenter(Injection.provideDataSource(), state)
+        adapter = RouteDirectionsAdapter(context!!, presenter)
 
         return view
     }
@@ -40,14 +39,34 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
         }
 
         errorLayout.tryAgainButton.setOnClickListener {
-            presenter?.loadRouteDirections()
+            presenter.loadRouteDirections()
         }
 
-        presenter?.loadRouteDirections()
+        presenter.loadRouteDirections()
     }
 
-    override fun showRouteDirections(routeDirections: RouteDirections) {
+    override fun onResume() {
+        super.onResume()
+        presenter.attachView(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter.dropView()
+    }
+
+    override fun directionSelected(direction: String) {
+        val listener = activity as RouteDirectionsEventListener?
+        listener?.directionSelected(direction)
+    }
+
+    override fun showRouteDirections(routeDirections: RouteDirections, directionIdxToHighlight: Int) {
         adapter.setItems(routeDirections.directions)
+        if (directionIdxToHighlight != -1) {
+            routeDirections_recyclerview.afterMeasured {
+                highlightDirection(directionIdxToHighlight)
+            }
+        }
     }
 
     private var skeletonScreen: SkeletonScreen? = null
@@ -85,6 +104,11 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
         val viewHolder =
             routeDirections_recyclerview?.findViewHolderForAdapterPosition(directionIdx) as RouteDirectionsAdapter.ViewHolder?
         viewHolder?.removeHighlight()
+    }
+
+    fun setState(state: RouteDetailsState): RouteDirectionsFragment {
+        this.state = state
+        return this
     }
 
     companion object {
