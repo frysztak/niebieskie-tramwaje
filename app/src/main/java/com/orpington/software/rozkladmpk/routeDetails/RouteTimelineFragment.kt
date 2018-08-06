@@ -25,13 +25,13 @@ class RouteTimelineFragment : Fragment(), RouteDetailsContract.TimelineView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.route_timeline, container, false)
-        adapter = RouteTimelineAdapter(context!!)
 
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        adapter = RouteTimelineAdapter(context!!)
 
         timeline_recyclerview?.apply {
             adapter = this@RouteTimelineFragment.adapter

@@ -28,7 +28,6 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.route_timetable, container, false)
-        adapter = RouteTimetableAdapter(context!!, presenter!!)
 
         highlightColor = resources.getColor(R.color.primary_dark, null)
         normalColor = resources.getColor(R.color.primary_text, null)
@@ -38,6 +37,7 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        adapter = RouteTimetableAdapter(context!!, presenter!!)
 
         timetable_recyclerview?.apply {
             adapter = this@RouteTimetableFragment.adapter

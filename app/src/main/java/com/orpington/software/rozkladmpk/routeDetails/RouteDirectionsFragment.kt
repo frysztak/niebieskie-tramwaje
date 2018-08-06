@@ -26,13 +26,14 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.route_directions, container, false)
-        adapter = RouteDirectionsAdapter(context!!, presenter!!)
 
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        adapter = RouteDirectionsAdapter(context!!, presenter!!)
 
         routeDirections_recyclerview.apply {
             adapter = this@RouteDirectionsFragment.adapter

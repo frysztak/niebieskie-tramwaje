@@ -3,6 +3,8 @@ package com.orpington.software.rozkladmpk.routeDetails
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
@@ -14,6 +16,7 @@ import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteInfo
 import kotlinx.android.synthetic.main.activity_route_details.*
 import kotlinx.android.synthetic.main.route_details_header.*
+import mu.KLogging
 
 
 class RouteDetailsActivity : AppCompatActivity(),
@@ -50,12 +53,29 @@ class RouteDetailsActivity : AppCompatActivity(),
             attachInfoView(this@RouteDetailsActivity)
         }
         viewPager.adapter = RouteDetailsPagerAdapter(
-            presenter,
             this,
             supportFragmentManager
         )
-        viewPager.offscreenPageLimit = 2
+        viewPager.offscreenPageLimit = 1
         tabLayout.setupWithViewPager(viewPager)
+
+        supportFragmentManager.registerFragmentLifecycleCallbacks(
+            object : FragmentManager.FragmentLifecycleCallbacks() {
+
+                override fun onFragmentViewCreated(fm: FragmentManager?, f: Fragment?, v: View?, savedInstanceState: Bundle?) {
+                    if (f is RouteDetailsContract.DirectionsView) {
+                        f.attachPresenter(presenter)
+                    }
+
+                    if (f is RouteDetailsContract.TimetableView) {
+                        f.attachPresenter(presenter)
+                    }
+
+                    if (f is RouteDetailsContract.TimelineView) {
+                        f.attachPresenter(presenter)
+                    }
+                }
+            }, false)
 
         presenter.loadRouteInfo()
     }
