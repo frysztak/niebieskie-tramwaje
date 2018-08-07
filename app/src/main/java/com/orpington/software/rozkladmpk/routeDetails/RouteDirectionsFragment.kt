@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.R
-import com.orpington.software.rozkladmpk.data.model.RouteDirections
+import com.orpington.software.rozkladmpk.utils.afterMeasured
 import kotlinx.android.synthetic.main.error_view.view.*
 import kotlinx.android.synthetic.main.route_directions.*
 
@@ -25,9 +25,7 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.route_directions, container, false)
-
-        return view
+        return inflater.inflate(R.layout.route_directions, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -43,12 +41,21 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
         errorLayout.tryAgainButton.setOnClickListener {
             presenter?.loadRouteDirections()
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
         presenter?.loadRouteDirections()
     }
 
-    override fun showRouteDirections(routeDirections: RouteDirections) {
-        adapter.setItems(routeDirections.directions)
+    override fun showRouteDirections(routeDirections: List<String>,
+                                     idxToHighlight: Int) {
+        adapter.setItems(routeDirections)
+        if (idxToHighlight != -1) {
+            routeDirections_recyclerview.afterMeasured {
+                highlightDirection(idxToHighlight)
+            }
+        }
     }
 
     private var skeletonScreen: SkeletonScreen? = null

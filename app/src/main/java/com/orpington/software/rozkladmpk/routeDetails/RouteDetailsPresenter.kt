@@ -16,15 +16,7 @@ class RouteDetailsPresenter(
     private var timetableView: RouteDetailsContract.TimetableView? = null
     private var timelineView: RouteDetailsContract.TimelineView? = null
 
-    private var routeID: String = ""
-    private var stopName: String = ""
-    private var timetable: TimeTable? = null
-    private var timeTag: String = ""
-    private var tripID: String = ""
-    private var routeDirections: List<String> = emptyList()
-
-    private var directionIdx = -1
-    private var direction: String = ""
+    private var state = RouteDetailsState()
 
     override fun attachInfoView(view: RouteDetailsContract.InfoView) {
         infoView = view
@@ -43,20 +35,16 @@ class RouteDetailsPresenter(
     }
 
     override fun setRouteID(id: String) {
-        routeID = id
+        state.routeID = id
     }
 
     override fun setStopName(name: String) {
-        stopName = name
-    }
-
-    override fun setDirection(dir: String) {
-        direction = dir
+        state.stopName = name
     }
 
     override fun loadRouteInfo() {
         infoView?.showProgressBar()
-        dataSource.getRouteInfo(routeID, object : IDataSource.LoadDataCallback<RouteInfo> {
+        dataSource.getRouteInfo(state.routeID, object : IDataSource.LoadDataCallback<RouteInfo> {
             override fun onDataLoaded(data: RouteInfo) {
                 infoView?.hideProgressBar()
                 infoView?.showRouteInfo(data)
@@ -70,12 +58,18 @@ class RouteDetailsPresenter(
     }
 
     override fun loadRouteDirections() {
+        if (state.routeDirections.isNotEmpty()){
+            // called when resuming
+            directionsView?.showRouteDirections(state.routeDirections, state.currentRouteDirection)
+            return
+        }
+
         directionsView?.showProgressBar()
-        dataSource.getRouteDirectionsThroughStop(routeID, stopName, object : IDataSource.LoadDataCallback<RouteDirections> {
+        dataSource.getRouteDirectionsThroughStop(state.routeID, state.stopName, object : IDataSource.LoadDataCallback<RouteDirections> {
             override fun onDataLoaded(data: RouteDirections) {
-                routeDirections = data.directions
+                state.routeDirections = data.directions
                 directionsView?.hideProgressBar()
-                directionsView?.showRouteDirections(data)
+                directionsView?.showRouteDirections(data.directions)
             }
 
             override fun onDataNotAvailable() {
@@ -85,26 +79,25 @@ class RouteDetailsPresenter(
         })
     }
 
-    override fun onDirectionClicked(idx: Int) {
-        direction = routeDirections[idx]
+    override fun onDirectionClicked(directionIdx: Int) {
+        state.currentRouteDirection = directionIdx
         loadTimeTable()
 
-        if (directionIdx != -1) {
-            directionsView?.unhighlightDirection(directionIdx)
+        if (state.currentRouteDirection != -1) {
+            directionsView?.unhighlightDirection(state.currentRouteDirection)
         }
-        directionsView?.highlightDirection(idx)
+        directionsView?.highlightDirection(directionIdx)
         infoView?.switchToTimetableTab()
-
-        directionIdx = idx
     }
 
     override fun loadTimeTable() {
         timetableView?.showProgressBar()
-        dataSource.getTimeTable(routeID, stopName, direction,
+        val direction = state.routeDirections[state.currentRouteDirection]
+        dataSource.getTimeTable(state.routeID, state.stopName, direction,
             object : IDataSource.LoadDataCallback<TimeTable> {
                 override fun onDataLoaded(data: TimeTable) {
                     val helper = TimetableViewHelper()
-                    timetable = data
+                    state.timetable = data
                     timetableView?.hideProgressBar()
                     timetableView?.showTimeTable(helper.processTimeTable(data))
                 }
@@ -123,11 +116,11 @@ class RouteDetailsPresenter(
         val prefix = time.take(2)
         val timetableEntries = when (prefix) {
             TimetableViewHelper.DayType.Weekday.prefix ->
-                timetable?.weekdays
+                state.timetable?.weekdays
             TimetableViewHelper.DayType.Saturday.prefix ->
-                timetable?.saturdays
+                state.timetable?.saturdays
             TimetableViewHelper.DayType.Sunday.prefix ->
-                timetable?.sundays
+                state.timetable?.sundays
             else -> null
         }
 
@@ -137,20 +130,20 @@ class RouteDetailsPresenter(
             entry.departureTime == hhmmss
         } ?: return
 
-        tripID = entry.tripID
+        state.tripID = entry.tripID
         loadTimeline()
-        if (timeTag.isNotEmpty()) {
-            timetableView?.unhighlightTime(timeTag)
+        if (state.currentTimeTag.isNotEmpty()) {
+            timetableView?.unhighlightTime(state.currentTimeTag)
         }
         timetableView?.highlightTime(time)
         infoView?.switchToTimelineTab()
 
-        timeTag = time
+        state.currentTimeTag = time
     }
 
     override fun loadTimeline() {
         timelineView?.showProgressBar()
-        dataSource.getTripTimeline(tripID,
+        dataSource.getTripTimeline(state.tripID,
             object : IDataSource.LoadDataCallback<Timeline> {
                 override fun onDataLoaded(data: Timeline) {
                     timelineView?.hideProgressBar()
@@ -162,5 +155,13 @@ class RouteDetailsPresenter(
                     timelineView?.reportThatSomethingWentWrong()
                 }
             })
+    }
+
+    override fun getState(): RouteDetailsState {
+        return state
+    }
+
+    override fun setState(state: RouteDetailsState) {
+        this.state = state
     }
 }

@@ -16,7 +16,6 @@ import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteInfo
 import kotlinx.android.synthetic.main.activity_route_details.*
 import kotlinx.android.synthetic.main.route_details_header.*
-import mu.KLogging
 
 
 class RouteDetailsActivity : AppCompatActivity(),
@@ -47,11 +46,15 @@ class RouteDetailsActivity : AppCompatActivity(),
         stopName = intent.getStringExtra("stopName")
 
         presenter = RouteDetailsPresenter(Injection.provideDataSource(cacheDir))
-        presenter.apply {
-            setRouteID(routeID)
-            setStopName(stopName)
-            attachInfoView(this@RouteDetailsActivity)
+        presenter.attachInfoView(this)
+        if (savedInstanceState == null) {
+            presenter.setRouteID(routeID)
+            presenter.setStopName(stopName)
+        } else {
+            val state = savedInstanceState.getParcelable<RouteDetailsState>("state")
+            presenter.setState(state)
         }
+
         viewPager.adapter = RouteDetailsPagerAdapter(
             this,
             supportFragmentManager
@@ -78,6 +81,11 @@ class RouteDetailsActivity : AppCompatActivity(),
             }, false)
 
         presenter.loadRouteInfo()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable("state", presenter.getState())
     }
 
     @SuppressLint("SetTextI18n")

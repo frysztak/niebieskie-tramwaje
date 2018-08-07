@@ -14,7 +14,6 @@ interface RouteDetailsContract {
 
         fun setRouteID(id: String)
         fun setStopName(name: String)
-        fun setDirection(dir: String)
 
         fun loadRouteInfo()
 
@@ -25,6 +24,9 @@ interface RouteDetailsContract {
         fun onTimeClicked(time: String)
 
         fun loadTimeline()
+
+        fun getState(): RouteDetailsState
+        fun setState(state: RouteDetailsState)
     }
 
     interface InfoView : BaseView {
@@ -36,7 +38,8 @@ interface RouteDetailsContract {
     interface DirectionsView : BaseView {
         fun attachPresenter(newPresenter: Presenter)
 
-        fun showRouteDirections(routeDirections: RouteDirections)
+        fun showRouteDirections(routeDirections: List<String>,
+                                idxToHighlight: Int = -1)
 
         fun highlightDirection(directionIdx: Int)
         fun unhighlightDirection(directionIdx: Int)
