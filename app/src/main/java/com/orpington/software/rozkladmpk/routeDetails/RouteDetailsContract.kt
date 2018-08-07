@@ -22,6 +22,7 @@ interface RouteDetailsContract {
 
         fun loadTimeTable()
         fun onTimeClicked(time: String)
+        fun setTimetablePosition(position: Int)
 
         fun loadTimeline()
 
@@ -49,7 +50,8 @@ interface RouteDetailsContract {
 
         fun showTimeTable(
             items: List<TimetableViewHelper.ViewItem>,
-            timeToScrollInto: TimeIndices = TimeIndices(-1, -1)
+            timeToHighlight: String = "",
+            itemToScrollTo: Int = -1 //TimeIndices = TimeIndices(-1, -1)
         )
 
         fun highlightTime(tag: String)

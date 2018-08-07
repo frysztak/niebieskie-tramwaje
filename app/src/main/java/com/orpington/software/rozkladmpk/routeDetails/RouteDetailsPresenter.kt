@@ -82,6 +82,13 @@ class RouteDetailsPresenter(
     }
 
     override fun loadTimeTable() {
+        if (state.routeID.isEmpty()
+            || state.stopName.isEmpty()
+            || state.routeDirections.isEmpty()
+            || state.currentRouteDirection == -1) {
+            return
+        }
+
         timetableView?.showProgressBar()
         val direction = state.routeDirections[state.currentRouteDirection]
         dataSource.getTimeTable(state.routeID, state.stopName, direction,
@@ -90,7 +97,11 @@ class RouteDetailsPresenter(
                     val helper = TimetableViewHelper()
                     state.timetable = data
                     timetableView?.hideProgressBar()
-                    timetableView?.showTimeTable(helper.processTimeTable(data))
+                    timetableView?.showTimeTable(
+                        helper.processTimeTable(data),
+                        state.currentTimeTag,
+                        state.currentTimetablePosition
+                    )
                 }
 
                 override fun onDataNotAvailable() {
@@ -98,6 +109,10 @@ class RouteDetailsPresenter(
                     timetableView?.reportThatSomethingWentWrong()
                 }
             })
+    }
+
+    override fun setTimetablePosition(position: Int) {
+        state.currentTimetablePosition = position
     }
 
     /// time: PREFIX:HH:MM, e.g.

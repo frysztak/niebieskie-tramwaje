@@ -10,12 +10,14 @@ import android.widget.TextView
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.R
+import com.orpington.software.rozkladmpk.utils.afterMeasured
 import kotlinx.android.synthetic.main.error_view.view.*
 import kotlinx.android.synthetic.main.route_timetable.*
 
 class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
 
     private lateinit var adapter: RouteTimetableAdapter
+    private lateinit var layoutManager: LinearLayoutManager
     private var presenter: RouteDetailsContract.Presenter? = null
 
     private var highlightColor: Int = -1
@@ -38,24 +40,47 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         adapter = RouteTimetableAdapter(context!!, presenter!!)
+        layoutManager = LinearLayoutManager(context)
 
-        timetable_recyclerview?.apply {
-            adapter = this@RouteTimetableFragment.adapter
-            layoutManager = LinearLayoutManager(context)
-        }
+        timetable_recyclerview?.adapter = adapter
+        timetable_recyclerview?.layoutManager = layoutManager
 
         errorLayout.tryAgainButton.setOnClickListener {
             presenter?.loadTimeTable()
         }
-
     }
 
-    override fun showTimeTable(items: List<TimetableViewHelper.ViewItem>, timeToScrollInto: TimeIndices) {
+    override fun onResume() {
+        super.onResume()
+        presenter?.loadTimeTable()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val layoutManager = timetable_recyclerview.layoutManager as LinearLayoutManager
+        val position = layoutManager.findFirstCompletelyVisibleItemPosition()
+        presenter?.setTimetablePosition(position)
+    }
+
+    override fun showTimeTable(
+        items: List<TimetableViewHelper.ViewItem>,
+        timeToHighlight: String,
+        itemToScrollTo: Int
+    ) {
         selectDirection_textview.visibility = View.GONE
         errorLayout.visibility = View.GONE
         timetable_recyclerview.visibility = View.VISIBLE
 
         adapter.setItems(items)
+        if (itemToScrollTo != -1) {
+            layoutManager.scrollToPositionWithOffset(itemToScrollTo, 0)
+        }
+
+        if (timeToHighlight.isNotEmpty()) {
+            timetable_recyclerview.afterMeasured {
+                highlightTime(timeToHighlight)
+            }
+        }
     }
 
     private var skeletonScreen: SkeletonScreen? = null

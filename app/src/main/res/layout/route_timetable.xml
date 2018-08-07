@@ -17,11 +17,12 @@
         android:id="@+id/timetable.recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible"
+        android:visibility="gone"
         tools:listitem="@layout/route_timetable_list_item" />
 
     <include
         android:id="@+id/errorLayout"
-        layout="@layout/error_view" />
+        layout="@layout/error_view"
+        android:visibility="gone" />
 
 </android.support.constraint.ConstraintLayout>

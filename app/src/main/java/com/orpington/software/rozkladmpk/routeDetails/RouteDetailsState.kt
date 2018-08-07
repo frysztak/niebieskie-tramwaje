@@ -11,6 +11,7 @@ data class RouteDetailsState(
 
     var timetable: TimeTable? = null,
     var currentTimeTag: String = "",
+    var currentTimetablePosition: Int = -1,
 
     var tripID: String = "",
     var routeDirections: List<String> = emptyList(),
