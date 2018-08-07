@@ -58,18 +58,12 @@ class RouteDetailsPresenter(
     }
 
     override fun loadRouteDirections() {
-        if (state.routeDirections.isNotEmpty()){
-            // called when resuming
-            directionsView?.showRouteDirections(state.routeDirections, state.currentRouteDirection)
-            return
-        }
-
         directionsView?.showProgressBar()
         dataSource.getRouteDirectionsThroughStop(state.routeID, state.stopName, object : IDataSource.LoadDataCallback<RouteDirections> {
             override fun onDataLoaded(data: RouteDirections) {
                 state.routeDirections = data.directions
                 directionsView?.hideProgressBar()
-                directionsView?.showRouteDirections(data.directions)
+                directionsView?.showRouteDirections(state.routeDirections, state.currentRouteDirection)
             }
 
             override fun onDataNotAvailable() {
@@ -83,9 +77,6 @@ class RouteDetailsPresenter(
         state.currentRouteDirection = directionIdx
         loadTimeTable()
 
-        if (state.currentRouteDirection != -1) {
-            directionsView?.unhighlightDirection(state.currentRouteDirection)
-        }
         directionsView?.highlightDirection(directionIdx)
         infoView?.switchToTimetableTab()
     }

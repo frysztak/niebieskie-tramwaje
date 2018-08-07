@@ -84,15 +84,17 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
     }
 
     override fun highlightDirection(directionIdx: Int) {
-        val viewHolder =
-            routeDirections_recyclerview?.findViewHolderForAdapterPosition(directionIdx) as RouteDirectionsAdapter.ViewHolder?
-        viewHolder?.highlight()
-    }
+        for (i in 0 until adapter.itemCount) {
+            val viewHolder =
+                routeDirections_recyclerview?.findViewHolderForAdapterPosition(i) as RouteDirectionsAdapter.ViewHolder?
 
-    override fun unhighlightDirection(directionIdx: Int) {
-        val viewHolder =
-            routeDirections_recyclerview?.findViewHolderForAdapterPosition(directionIdx) as RouteDirectionsAdapter.ViewHolder?
-        viewHolder?.removeHighlight()
+            when (i) {
+                directionIdx -> viewHolder?.highlight()
+                // to make sure that only one item is highlighted,
+                // iterate over all directions and unhighlight them
+                else -> viewHolder?.removeHighlight()
+            }
+        }
     }
 
     companion object {

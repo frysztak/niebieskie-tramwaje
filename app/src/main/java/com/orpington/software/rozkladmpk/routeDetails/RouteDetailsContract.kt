@@ -42,7 +42,6 @@ interface RouteDetailsContract {
                                 idxToHighlight: Int = -1)
 
         fun highlightDirection(directionIdx: Int)
-        fun unhighlightDirection(directionIdx: Int)
     }
 
     interface TimetableView : BaseView {
