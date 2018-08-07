@@ -57,8 +57,7 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
 
     override fun onPause() {
         super.onPause()
-        val layoutManager = timetable_recyclerview.layoutManager as LinearLayoutManager
-        val position = layoutManager.findFirstCompletelyVisibleItemPosition()
+        val position = layoutManager.findFirstVisibleItemPosition()
         presenter?.setTimetablePosition(position)
     }
 

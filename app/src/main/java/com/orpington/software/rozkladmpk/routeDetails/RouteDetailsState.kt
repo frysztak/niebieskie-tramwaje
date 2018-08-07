@@ -9,11 +9,13 @@ data class RouteDetailsState(
     var routeID: String = "",
     var stopName: String = "",
 
+    var tripID: String = "",
+    var routeDirections: List<String> = emptyList(),
+    var currentRouteDirection: Int = -1,
+
     var timetable: TimeTable? = null,
     var currentTimeTag: String = "",
     var currentTimetablePosition: Int = -1,
 
-    var tripID: String = "",
-    var routeDirections: List<String> = emptyList(),
-    var currentRouteDirection: Int = -1
+    var currentTimelinePosition: Int = -1
 ) : Parcelable

@@ -147,13 +147,21 @@ class RouteDetailsPresenter(
         state.currentTimeTag = time
     }
 
+    override fun setTimelinePosition(position: Int) {
+       state.currentTimelinePosition = position
+    }
+
     override fun loadTimeline() {
+        if (state.tripID.isEmpty()) {
+            return
+        }
+
         timelineView?.showProgressBar()
         dataSource.getTripTimeline(state.tripID,
             object : IDataSource.LoadDataCallback<Timeline> {
                 override fun onDataLoaded(data: Timeline) {
                     timelineView?.hideProgressBar()
-                    timelineView?.showTimeline(data)
+                    timelineView?.showTimeline(data, state.currentTimelinePosition)
                 }
 
                 override fun onDataNotAvailable() {

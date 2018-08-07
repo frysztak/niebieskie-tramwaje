@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.route_timeline.*
 class RouteTimelineFragment : Fragment(), RouteDetailsContract.TimelineView {
 
     private lateinit var adapter: RouteTimelineAdapter
+    private lateinit var layoutManager: LinearLayoutManager
     private var presenter: RouteDetailsContract.Presenter? = null
 
     override fun attachPresenter(newPresenter: RouteDetailsContract.Presenter) {
@@ -24,23 +25,31 @@ class RouteTimelineFragment : Fragment(), RouteDetailsContract.TimelineView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.route_timeline, container, false)
-
-        return view
+        return inflater.inflate(R.layout.route_timeline, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         adapter = RouteTimelineAdapter(context!!)
+        layoutManager = LinearLayoutManager(context)
 
-        timeline_recyclerview?.apply {
-            adapter = this@RouteTimelineFragment.adapter
-            layoutManager = LinearLayoutManager(context)
-        }
+        timeline_recyclerview?.adapter = adapter
+        timeline_recyclerview?.layoutManager = layoutManager
 
         errorLayout.tryAgainButton.setOnClickListener {
             presenter?.loadTimeline()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter?.loadTimeline()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val position = layoutManager.findFirstVisibleItemPosition()
+        presenter?.setTimelinePosition(position)
     }
 
     private var skeletonScreen: SkeletonScreen? = null
@@ -70,12 +79,15 @@ class RouteTimelineFragment : Fragment(), RouteDetailsContract.TimelineView {
         timeline_recyclerview.visibility = View.GONE
     }
 
-    override fun showTimeline(timeline: Timeline) {
+    override fun showTimeline(timeline: Timeline, itemToScrollTo: Int) {
         selectDirectionAndTime_textview.visibility = View.GONE
         errorLayout.visibility = View.GONE
         timeline_recyclerview.visibility = View.VISIBLE
 
         adapter.setItems(timeline.timeline)
+        if (itemToScrollTo != -1) {
+            layoutManager.scrollToPositionWithOffset(itemToScrollTo, 0)
+        }
     }
 
     companion object {

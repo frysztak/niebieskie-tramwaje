@@ -25,6 +25,7 @@ interface RouteDetailsContract {
         fun setTimetablePosition(position: Int)
 
         fun loadTimeline()
+        fun setTimelinePosition(position: Int)
 
         fun getState(): RouteDetailsState
         fun setState(state: RouteDetailsState)
@@ -61,6 +62,9 @@ interface RouteDetailsContract {
     interface TimelineView: BaseView {
         fun attachPresenter(newPresenter: Presenter)
 
-        fun showTimeline(timeline: Timeline)
+        fun showTimeline(
+            timeline: Timeline,
+            itemToScrollTo: Int = -1
+        )
     }
 }
