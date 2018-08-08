@@ -28,6 +28,11 @@ class RouteTimelineFragment : Fragment(), RouteDetailsContract.TimelineView {
         return inflater.inflate(R.layout.route_timeline, container, false)
     }
 
+    override fun onDestroyView() {
+        presenter?.detachTimelineView()
+        super.onDestroyView()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         adapter = RouteTimelineAdapter(context!!)

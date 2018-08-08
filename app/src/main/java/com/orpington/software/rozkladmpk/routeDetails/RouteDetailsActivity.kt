@@ -83,6 +83,11 @@ class RouteDetailsActivity : AppCompatActivity(),
         presenter.loadRouteInfo()
     }
 
+    override fun onDestroy() {
+        presenter.detachInfoView()
+        super.onDestroy()
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable("state", presenter.getState())

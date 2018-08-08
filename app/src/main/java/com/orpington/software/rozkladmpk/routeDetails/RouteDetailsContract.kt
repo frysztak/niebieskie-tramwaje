@@ -8,9 +8,13 @@ import com.orpington.software.rozkladmpk.data.model.Timeline
 interface RouteDetailsContract {
     interface Presenter {
         fun attachInfoView(view: InfoView)
+        fun detachInfoView()
         fun attachDirectionsView(view: DirectionsView)
+        fun detachDirectionsView()
         fun attachTimetableView(view: TimetableView)
+        fun detachTimetableView()
         fun attachTimelineView(view: TimelineView)
+        fun detachTimelineView()
 
         fun setRouteID(id: String)
         fun setStopName(name: String)

@@ -37,6 +37,11 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
         return view
     }
 
+    override fun onDestroyView() {
+        presenter?.detachTimetableView()
+        super.onDestroyView()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         adapter = RouteTimetableAdapter(context!!, presenter!!)

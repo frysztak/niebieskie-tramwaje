@@ -22,16 +22,32 @@ class RouteDetailsPresenter(
         infoView = view
     }
 
+    override fun detachInfoView() {
+        infoView = null
+    }
+
     override fun attachDirectionsView(view: RouteDetailsContract.DirectionsView) {
         directionsView = view
+    }
+
+    override fun detachDirectionsView() {
+        directionsView = null
     }
 
     override fun attachTimetableView(view: RouteDetailsContract.TimetableView) {
         timetableView = view
     }
 
+    override fun detachTimetableView() {
+        timetableView = null
+    }
+
     override fun attachTimelineView(view: RouteDetailsContract.TimelineView) {
         timelineView = view
+    }
+
+    override fun detachTimelineView() {
+        timelineView = null
     }
 
     override fun setRouteID(id: String) {

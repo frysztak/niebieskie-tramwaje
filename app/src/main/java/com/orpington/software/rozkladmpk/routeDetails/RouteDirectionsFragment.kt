@@ -28,6 +28,11 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
         return inflater.inflate(R.layout.route_directions, container, false)
     }
 
+    override fun onDestroyView() {
+        presenter?.detachDirectionsView()
+        super.onDestroyView()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
