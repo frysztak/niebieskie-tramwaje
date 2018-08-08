@@ -145,6 +145,7 @@ class RouteDetailsPresenter(
         infoView?.switchToTimelineTab()
 
         state.currentTimeTag = time
+        state.currentTimelinePosition = -1
     }
 
     override fun setTimelinePosition(position: Int) {
