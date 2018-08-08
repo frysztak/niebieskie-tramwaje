@@ -2,7 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:showIn="@layout/activity_route_details">
 
@@ -33,7 +33,7 @@
         android:textColor="@color/icons"
         android:textSize="36dp"
         app:layout_constraintStart_toEndOf="@id/icon.imageview"
-        tools:text="Route 900P" />
+        tools:text="Route 1" />
 
     <TextView
         android:id="@+id/stopName.textview"
@@ -43,13 +43,14 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:text="@string/route"
         android:textColor="@color/icons"
         android:textSize="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/icon.imageview"
         app:layout_constraintTop_toBottomOf="@id/route.textview"
-        tools:text="Armii Krajowej (Bogadeina)" />
+        tools:text="Piramowicza" />
 
     <TextView
         android:id="@+id/routeType.textview"
