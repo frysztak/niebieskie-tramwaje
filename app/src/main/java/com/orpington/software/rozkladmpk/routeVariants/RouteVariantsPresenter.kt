@@ -6,8 +6,7 @@ import com.orpington.software.rozkladmpk.data.source.IDataSource
 import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
 
 class RouteVariantsPresenter(
-    private val dataSource: RemoteDataSource,
-    private val view: RouteVariantsContract.View
+    private val dataSource: RemoteDataSource
 ) : RouteVariantsContract.Presenter {
 
     private var currentStopName: String = ""
@@ -17,21 +16,30 @@ class RouteVariantsPresenter(
 
     override fun loadVariants(stopName: String) {
         currentStopName = stopName
-        view.showProgressBar()
+        view?.showProgressBar()
         dataSource.getRouteVariantsForStopName(stopName, object : IDataSource.LoadDataCallback<RouteVariants> {
             override fun onDataLoaded(data: RouteVariants) {
                 routes = data.routeVariants
                 sortedDistinctRoutes = routes.distinctBy { it.routeID }.sortedWith(routeInfoComparator)
-                view.hideProgressBar()
-                view.showRoutes(sortedDistinctRoutes)
+                view?.hideProgressBar()
+                view?.showRoutes(sortedDistinctRoutes)
             }
 
             override fun onDataNotAvailable() {
-                view.hideProgressBar()
-                view.reportThatSomethingWentWrong()
+                view?.hideProgressBar()
+                view?.reportThatSomethingWentWrong()
             }
 
         })
+    }
+
+    private var view : RouteVariantsContract.View? = null
+    override fun attachView(view: RouteVariantsContract.View) {
+        this.view = view
+    }
+
+    override fun detachView() {
+        view = null
     }
 
     private val routeInfoComparator = Comparator<RouteVariant> { p0, p1 ->
@@ -52,7 +60,7 @@ class RouteVariantsPresenter(
             }.sortedByDescending { route ->
                 route.tripIDs.size
             }
-        view.navigateToRouteDetails(routeID, currentStopName)
+        view?.navigateToRouteDetails(routeID, currentStopName)
     }
 
 }

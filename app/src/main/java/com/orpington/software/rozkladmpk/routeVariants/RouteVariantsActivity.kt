@@ -30,7 +30,7 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
 
         var stopName = intent.getStringExtra("stopName")
 
-        presenter = RouteVariantsPresenter(Injection.provideDataSource(cacheDir), this)
+        presenter = RouteVariantsPresenter(Injection.provideDataSource(cacheDir))
         recyclerAdapter = RoutesRecyclerViewAdapter(this, presenter)
 
         var layoutManager = GridLayoutManager(this, 2)
@@ -39,11 +39,17 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
         recyclerView.addItemDecoration(itemDecoration)
 
         title = stopName
+        presenter.attachView(this)
         presenter.loadVariants(stopName)
 
         errorLayout.tryAgainButton.setOnClickListener {
             presenter.loadVariants(stopName)
         }
+    }
+
+    override fun onDestroy() {
+        presenter.detachView()
+        super.onDestroy()
     }
 
     override fun showRoutes(variants: List<RouteVariant>) {

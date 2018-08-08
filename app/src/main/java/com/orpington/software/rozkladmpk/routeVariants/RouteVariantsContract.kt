@@ -6,6 +6,9 @@ import com.orpington.software.rozkladmpk.data.model.RouteVariant
 
 interface RouteVariantsContract {
     interface Presenter: BasePresenter {
+        fun attachView(view: View)
+        fun detachView()
+
         fun loadVariants(stopName: String)
         fun routeClicked(position: Int)
     }
