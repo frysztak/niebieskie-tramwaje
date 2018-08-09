@@ -178,7 +178,10 @@ class RouteDetailsPresenter(
             object : IDataSource.LoadDataCallback<Timeline> {
                 override fun onDataLoaded(data: Timeline) {
                     timelineView?.hideProgressBar()
-                    timelineView?.showTimeline(data, state.currentTimelinePosition)
+                    val itemToHighlight = data.timeline.indexOfFirst { item ->
+                        item.stopName == state.stopName
+                    }
+                    timelineView?.showTimeline(data, itemToHighlight, state.currentTimelinePosition)
                 }
 
                 override fun onDataNotAvailable() {

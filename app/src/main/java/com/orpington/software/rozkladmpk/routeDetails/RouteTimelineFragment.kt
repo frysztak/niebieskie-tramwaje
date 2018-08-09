@@ -84,12 +84,16 @@ class RouteTimelineFragment : Fragment(), RouteDetailsContract.TimelineView {
         timeline_recyclerview.visibility = View.GONE
     }
 
-    override fun showTimeline(timeline: Timeline, itemToScrollTo: Int) {
+    override fun showTimeline(
+        timeline: Timeline,
+        itemToHighlight: Int,
+        itemToScrollTo: Int
+    ) {
         selectDirectionAndTime_textview.visibility = View.GONE
         errorLayout.visibility = View.GONE
         timeline_recyclerview.visibility = View.VISIBLE
 
-        adapter.setItems(timeline.timeline)
+        adapter.setItems(timeline.timeline, itemToHighlight)
         if (itemToScrollTo != -1) {
             layoutManager.scrollToPositionWithOffset(itemToScrollTo, 0)
         }

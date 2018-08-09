@@ -68,6 +68,7 @@ interface RouteDetailsContract {
 
         fun showTimeline(
             timeline: Timeline,
+            itemToHighlight: Int = -1,
             itemToScrollTo: Int = -1
         )
     }
