@@ -6,12 +6,20 @@ import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
 
 
 class StopsAndRoutesPresenter(
-    private var dataSource: RemoteDataSource,
-    private var view: StopsAndRoutesContract.View
+    private var dataSource: RemoteDataSource
 ) : StopsAndRoutesContract.Presenter {
     private var allStops: List<String> = emptyList()
     private var shownStops: List<String> = emptyList()
     //private var generalRoutes: List<Route> = emptyList()
+
+    private var view: StopsAndRoutesContract.View? = null
+    override fun attachView(view: StopsAndRoutesContract.View) {
+        this.view = view
+    }
+
+    override fun detachView() {
+        this.view = null
+    }
 
     override fun setAllStopNames(names: List<String>) {
         allStops = names
@@ -23,18 +31,18 @@ class StopsAndRoutesPresenter(
 
     override fun loadStopNames() {
         if (allStops.isNotEmpty()) return
-        view.showProgressBar()
+        view?.showProgressBar()
         dataSource.getStopNames(object : IDataSource.LoadDataCallback<StopNames> {
             override fun onDataLoaded(data: StopNames) {
                 setAllStopNames(data.stopNames)
                 setShownStopNames(allStops)
-                view.hideProgressBar()
-                view.displayStops(shownStops)
+                view?.hideProgressBar()
+                view?.displayStops(shownStops)
             }
 
             override fun onDataNotAvailable() {
-                view.hideProgressBar()
-                view.reportThatSomethingWentWrong()
+                view?.hideProgressBar()
+                view?.reportThatSomethingWentWrong()
             }
         })
     }
@@ -42,16 +50,16 @@ class StopsAndRoutesPresenter(
     override fun queryTextChanged(newText: String) {
         setShownStopNames(allStops.filter { it.startsWith(newText, true) })
         if (shownStops.isNotEmpty()) {
-            view.displayStops(shownStops)
+            view?.displayStops(shownStops)
         } else {
-            view.showStopNotFound()
+            view?.showStopNotFound()
         }
     }
 
     override fun listItemClicked(position: Int) {
         if (position >= shownStops.size) return
         val stopName = shownStops[position]
-        view.navigateToRouteVariants(stopName)
+        view?.navigateToRouteVariants(stopName)
     }
 
 }

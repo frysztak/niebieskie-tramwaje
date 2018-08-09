@@ -26,7 +26,8 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         setContentView(R.layout.activity_stops_and_routes)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        presenter = StopsAndRoutesPresenter(Injection.provideDataSource(cacheDir), this)
+        presenter = StopsAndRoutesPresenter(Injection.provideDataSource(cacheDir))
+        presenter.attachView(this)
         recyclerAdapter = StopsAndRoutesRecyclerViewAdapter(this, presenter)
         presenter.loadStopNames()
 
@@ -36,6 +37,12 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         errorLayout.tryAgainButton.setOnClickListener {
             presenter.loadStopNames()
         }
+    }
+
+    override fun onDestroy() {
+        presenter.detachView()
+        skeletonScreen = null
+        super.onDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -98,6 +105,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
             .adapter(recyclerAdapter)
             .load(R.layout.stops_and_routes_skeleton_list_item)
             .show()
+
     }
 
     override fun hideProgressBar() {
