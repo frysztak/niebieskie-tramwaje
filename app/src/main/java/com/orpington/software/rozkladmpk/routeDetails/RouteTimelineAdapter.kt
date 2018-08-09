@@ -8,10 +8,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.Timeline
+import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import kotlinx.android.synthetic.main.route_timeline_list_item.view.*
 
 class RouteTimelineAdapter(private val context: Context)
-    : RecyclerView.Adapter<RouteTimelineAdapter.ViewHolder>() {
+    : RecyclerView.Adapter<RouteTimelineAdapter.ViewHolder>(),
+    FastScrollRecyclerView.SectionedAdapter {
 
     private var items: List<Timeline.TimelineEntry> = emptyList()
 
@@ -44,6 +46,11 @@ class RouteTimelineAdapter(private val context: Context)
             0 -> holder.verticalLineTopHalf.visibility = View.INVISIBLE
             itemCount - 1 -> holder.verticalLineBottomHalf.visibility = View.INVISIBLE
         }
+    }
+
+    override fun getSectionName(position: Int): String {
+        val item = items[position]
+        return item.departureTime.removeSuffix(":00")
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {

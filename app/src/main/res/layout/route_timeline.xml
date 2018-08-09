@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -14,11 +15,15 @@
         android:textSize="22dp"
         tools:visibility="invisible" />
 
-    <android.support.v7.widget.RecyclerView
+    <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
         android:id="@+id/timeline.recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible"
+        app:fastScrollPopupBgColor="@color/accent"
+        app:fastScrollPopupTextColor="@android:color/primary_text_dark"
+        app:fastScrollPopupTextSize="42sp"
+        app:fastScrollThumbColor="@color/accent"
         tools:listitem="@layout/route_timeline_list_item"
         tools:visibility="visible" />
 
