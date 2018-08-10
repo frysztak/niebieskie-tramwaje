@@ -18,13 +18,14 @@ class StopsAndRoutesPresenter(
         this.view = null
     }
 
-    private var stopsAndRoutes = StopsAndRoutes(emptyList(), emptyList())
+    private var stopsAndRoutes: List<StopOrRoute> = emptyList()
     override fun setStopsAndRoutes(data: StopsAndRoutes) {
-        stopsAndRoutes = data
+        val helper = StopsAndRoutesHelper()
+        stopsAndRoutes = helper.convertModel(data)
     }
 
-    private var shownStopsAndRoutes = StopsAndRoutes(emptyList(), emptyList())
-    override fun setShownStopsAndRoutes(data: StopsAndRoutes) {
+    private var shownStopsAndRoutes: List<StopOrRoute> = emptyList()
+    override fun setShownStopsAndRoutes(data: List<StopOrRoute>) {
         shownStopsAndRoutes = data
     }
 
@@ -34,8 +35,9 @@ class StopsAndRoutesPresenter(
         dataSource.getStopsAndRoutes(object : IDataSource.LoadDataCallback<StopsAndRoutes> {
             override fun onDataLoaded(data: StopsAndRoutes) {
                 setStopsAndRoutes(data)
+                setShownStopsAndRoutes(stopsAndRoutes)
                 view?.hideProgressBar()
-                view?.displayStopsAndRoutes(stopsAndRoutes)
+                view?.displayStopsAndRoutes(shownStopsAndRoutes)
             }
 
             override fun onDataNotAvailable() {
@@ -47,27 +49,10 @@ class StopsAndRoutesPresenter(
 
     override fun queryTextChanged(newText: String) {
 
-        val stops = stopsAndRoutes.stops.filter { stop ->
-            stop.startsWith(newText, true)
-        }
+        val helper = StopsAndRoutesHelper()
+        shownStopsAndRoutes = helper.filterOutItems(stopsAndRoutes, newText)
 
-        val routes = stopsAndRoutes.routes.filter { route ->
-            route.routeID.startsWith(newText, true)
-        }.sortedWith(Comparator { r1, r2 ->
-            val id1 = r1.routeID.toIntOrNull()
-            val id2 = r2.routeID.toIntOrNull()
-
-            if (id1 != null && id2 != null) {
-                id1 - id2
-            } else {
-                r1.routeID.compareTo(r2.routeID)
-            }
-        })
-
-        val success = stops.isNotEmpty() || routes.isNotEmpty()
-        shownStopsAndRoutes = StopsAndRoutes(stops, routes)
-
-        if (success) {
+        if (shownStopsAndRoutes.isNotEmpty()) {
             view?.displayStopsAndRoutes(shownStopsAndRoutes)
         } else {
             view?.showStopNotFound()
@@ -75,17 +60,12 @@ class StopsAndRoutesPresenter(
     }
 
     override fun listItemClicked(position: Int) {
-        view?.listItemClicked(position)
+        val item = shownStopsAndRoutes[position]
+        when (item) {
+            is Stop -> view?.navigateToRouteVariants(item.stopName)
+            is Route -> {}
+        }
     }
-
-    override fun stopClicked(stopName: String) {
-        view?.navigateToRouteVariants(stopName)
-    }
-
-    override fun routeClicked(routeID: String) {
-
-    }
-
 
 }
 

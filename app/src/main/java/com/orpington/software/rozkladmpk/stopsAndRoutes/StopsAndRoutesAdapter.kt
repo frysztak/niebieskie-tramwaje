@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.orpington.software.rozkladmpk.R
-import com.orpington.software.rozkladmpk.data.model.StopsAndRoutes
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import kotlinx.android.synthetic.main.stops_and_routes_list_item.view.*
 
@@ -20,17 +19,9 @@ class StopsAndRoutesAdapter(
 
     private var items: List<ViewItem> = emptyList()
 
-    fun setItems(stopsAndRoutes: StopsAndRoutes) {
-        this.items = convertToViewItems(stopsAndRoutes)
+    fun setItems(data: List<StopOrRoute>) {
+        this.items = convertToViewItems(data)
         notifyDataSetChanged()
-    }
-
-    fun itemClicked(position: Int) {
-        val item = items[position]
-        when (item.type) {
-            ViewType.STOP -> presenter.stopClicked((item as StopItem).stopName)
-            ViewType.ROUTE -> presenter.routeClicked((item as RouteItem).routeID)
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -76,17 +67,13 @@ class StopsAndRoutesAdapter(
         }.first().toString()
     }
 
-    private fun convertToViewItems(data: StopsAndRoutes): List<ViewItem> {
-        val stopViewItems: MutableList<ViewItem> = data.stops.map { stop ->
-            StopItem(stop)
-        }.toMutableList()
-
-        val routeViewItems: List<ViewItem> = data.routes.map { route ->
-            RouteItem(route.routeID, route.isBus)
+    private fun convertToViewItems(data: List<StopOrRoute>): List<ViewItem> {
+        return data.map { item ->
+            when (item) {
+                is Stop -> StopItem(item.stopName)
+                is Route -> RouteItem(item.routeID, item.isBus)
+            }
         }
-
-        stopViewItems.addAll(routeViewItems)
-        return stopViewItems
     }
 
     class ViewHolder(view: View, private val presenter: StopsAndRoutesPresenter) :

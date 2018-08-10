@@ -69,16 +69,13 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         return true
     }
 
-    override fun displayStopsAndRoutes(data: StopsAndRoutes) {
+
+    override fun displayStopsAndRoutes(data: List<StopOrRoute>) {
         recyclerView.visibility = View.VISIBLE
         notFoundLayout.visibility = View.GONE
         errorLayout.visibility = View.GONE
 
         recyclerAdapter.setItems(data)
-    }
-
-    override fun listItemClicked(position: Int) {
-        recyclerAdapter.itemClicked(position)
     }
 
     override fun navigateToRouteVariants(stopName: String) {
