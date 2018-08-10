@@ -11,8 +11,8 @@ import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
-import com.orpington.software.rozkladmpk.data.model.StopsAndRoutes
 import com.orpington.software.rozkladmpk.routeVariants.RouteVariantsActivity
+import com.orpington.software.rozkladmpk.stopsForRoute.StopsForRouteActivity
 import kotlinx.android.synthetic.main.activity_stops_and_routes.*
 import kotlinx.android.synthetic.main.error_view.view.*
 
@@ -81,6 +81,12 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     override fun navigateToRouteVariants(stopName: String) {
         val i = Intent(baseContext, RouteVariantsActivity::class.java)
         i.putExtra("stopName", stopName)
+        startActivity(i)
+    }
+
+    override fun navigateToStopsForRoute(routeID: String) {
+        val i = Intent(baseContext, StopsForRouteActivity::class.java)
+        i.putExtra("routeID", routeID)
         startActivity(i)
     }
 

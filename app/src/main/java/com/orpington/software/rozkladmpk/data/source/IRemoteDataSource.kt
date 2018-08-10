@@ -5,12 +5,12 @@ import com.orpington.software.rozkladmpk.data.source.IDataSource.LoadDataCallbac
 
 
 interface IRemoteDataSource : IDataSource {
-    fun getStopNames(callback: LoadDataCallback<StopNames>)
     fun getStopsAndRoutes(callback: LoadDataCallback<StopsAndRoutes>)
 
     fun getRouteInfo(routeID: String, callback: LoadDataCallback<RouteInfo>)
     fun getRouteDirections(routeID: String, callback: LoadDataCallback<RouteDirections>)
     fun getRouteDirectionsThroughStop(routeID: String, stopName: String, callback: LoadDataCallback<RouteDirections>)
+    fun getStopsForRoute(routeID: String, callback: LoadDataCallback<Stops>)
 
     fun getRouteVariantsForStopName(stopName: String, callback: LoadDataCallback<RouteVariants>)
 

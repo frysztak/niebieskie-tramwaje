@@ -6,9 +6,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface ApiService {
-    @GET("stops")
-    fun getStops(): Call<StopNames>
-
     @GET("stops/and/routes")
     fun getStopsAndRoutes(): Call<StopsAndRoutes>
 
@@ -21,6 +18,9 @@ interface ApiService {
     @GET("route/{routeID}/directions/through/{stopName}")
     fun getRouteDirectionsThroughStop(@Path("routeID") routeID: String,
                                       @Path("stopName") stopName: String): Call<RouteDirections>
+
+    @GET("route/{routeID}/stops")
+    fun getStopsForRoute(@Path("routeID") routeID: String): Call<Stops>
 
     @GET("routes/variants/stop/{stopName}")
     fun getRouteVariantsForStopName(@Path("stopName") stopName: String): Call<RouteVariants>

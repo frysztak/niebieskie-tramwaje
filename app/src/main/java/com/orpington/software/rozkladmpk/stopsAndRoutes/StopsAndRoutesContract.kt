@@ -18,6 +18,8 @@ interface StopsAndRoutesContract {
 
     interface View : BaseView {
         fun navigateToRouteVariants(stopName: String)
+        fun navigateToStopsForRoute(routeID: String)
+
         fun displayStopsAndRoutes(data: List<StopOrRoute>)
         fun showStopNotFound()
     }

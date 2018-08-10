@@ -34,10 +34,6 @@ class RemoteDataSource private constructor(private val service: ApiService) : IR
         })
     }
 
-    override fun getStopNames(callback: IDataSource.LoadDataCallback<StopNames>) {
-        makeACall(service.getStops(), callback)
-    }
-
     override fun getStopsAndRoutes(callback: IDataSource.LoadDataCallback<StopsAndRoutes>) {
         makeACall(service.getStopsAndRoutes(), callback)
     }
@@ -56,6 +52,10 @@ class RemoteDataSource private constructor(private val service: ApiService) : IR
 
     override fun getRouteVariantsForStopName(stopName: String, callback: IDataSource.LoadDataCallback<RouteVariants>) {
         makeACall(service.getRouteVariantsForStopName(stopName), callback)
+    }
+
+    override fun getStopsForRoute(routeID: String, callback: IDataSource.LoadDataCallback<Stops>) {
+        makeACall(service.getStopsForRoute(routeID), callback)
     }
 
     override fun getTimeTable(routeID: String, stopName: String, direction: String, callback: IDataSource.LoadDataCallback<TimeTable>) {

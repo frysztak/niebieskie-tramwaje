@@ -63,7 +63,7 @@ class StopsAndRoutesPresenter(
         val item = shownStopsAndRoutes[position]
         when (item) {
             is Stop -> view?.navigateToRouteVariants(item.stopName)
-            is Route -> {}
+            is Route -> view?.navigateToStopsForRoute(item.routeID)
         }
     }
 
