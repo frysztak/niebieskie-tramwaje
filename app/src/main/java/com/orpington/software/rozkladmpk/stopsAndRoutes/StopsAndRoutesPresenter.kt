@@ -1,6 +1,6 @@
 package com.orpington.software.rozkladmpk.stopsAndRoutes
 
-import com.orpington.software.rozkladmpk.data.model.StopNames
+import com.orpington.software.rozkladmpk.data.model.StopsAndRoutes
 import com.orpington.software.rozkladmpk.data.source.IDataSource
 import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
 
@@ -8,9 +8,6 @@ import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
 class StopsAndRoutesPresenter(
     private var dataSource: RemoteDataSource
 ) : StopsAndRoutesContract.Presenter {
-    private var allStops: List<String> = emptyList()
-    private var shownStops: List<String> = emptyList()
-    //private var generalRoutes: List<Route> = emptyList()
 
     private var view: StopsAndRoutesContract.View? = null
     override fun attachView(view: StopsAndRoutesContract.View) {
@@ -21,23 +18,24 @@ class StopsAndRoutesPresenter(
         this.view = null
     }
 
-    override fun setAllStopNames(names: List<String>) {
-        allStops = names
+    private var stopsAndRoutes = StopsAndRoutes(emptyList(), emptyList())
+    override fun setStopsAndRoutes(data: StopsAndRoutes) {
+        stopsAndRoutes = data
     }
 
-    override fun setShownStopNames(names: List<String>) {
-        shownStops = names
+    private var shownStopsAndRoutes = StopsAndRoutes(emptyList(), emptyList())
+    override fun setShownStopsAndRoutes(data: StopsAndRoutes) {
+        shownStopsAndRoutes = data
     }
 
-    override fun loadStopNames() {
-        if (allStops.isNotEmpty()) return
+    override fun loadStopsAndRoutes() {
+        //if (allStops.isNotEmpty()) return
         view?.showProgressBar()
-        dataSource.getStopNames(object : IDataSource.LoadDataCallback<StopNames> {
-            override fun onDataLoaded(data: StopNames) {
-                setAllStopNames(data.stopNames)
-                setShownStopNames(allStops)
+        dataSource.getStopsAndRoutes(object : IDataSource.LoadDataCallback<StopsAndRoutes> {
+            override fun onDataLoaded(data: StopsAndRoutes) {
+                setStopsAndRoutes(data)
                 view?.hideProgressBar()
-                view?.displayStops(shownStops)
+                view?.displayStopsAndRoutes(stopsAndRoutes)
             }
 
             override fun onDataNotAvailable() {
@@ -48,19 +46,46 @@ class StopsAndRoutesPresenter(
     }
 
     override fun queryTextChanged(newText: String) {
-        setShownStopNames(allStops.filter { it.startsWith(newText, true) })
-        if (shownStops.isNotEmpty()) {
-            view?.displayStops(shownStops)
+
+        val stops = stopsAndRoutes.stops.filter { stop ->
+            stop.startsWith(newText, true)
+        }
+
+        val routes = stopsAndRoutes.routes.filter { route ->
+            route.routeID.startsWith(newText, true)
+        }.sortedWith(Comparator { r1, r2 ->
+            val id1 = r1.routeID.toIntOrNull()
+            val id2 = r2.routeID.toIntOrNull()
+
+            if (id1 != null && id2 != null) {
+                id1 - id2
+            } else {
+                r1.routeID.compareTo(r2.routeID)
+            }
+        })
+
+        val success = stops.isNotEmpty() || routes.isNotEmpty()
+        shownStopsAndRoutes = StopsAndRoutes(stops, routes)
+
+        if (success) {
+            view?.displayStopsAndRoutes(shownStopsAndRoutes)
         } else {
             view?.showStopNotFound()
         }
     }
 
     override fun listItemClicked(position: Int) {
-        if (position >= shownStops.size) return
-        val stopName = shownStops[position]
+        view?.listItemClicked(position)
+    }
+
+    override fun stopClicked(stopName: String) {
         view?.navigateToRouteVariants(stopName)
     }
+
+    override fun routeClicked(routeID: String) {
+
+    }
+
 
 }
 

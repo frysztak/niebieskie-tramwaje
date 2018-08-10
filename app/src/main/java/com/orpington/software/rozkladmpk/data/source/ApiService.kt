@@ -9,6 +9,9 @@ interface ApiService {
     @GET("stops")
     fun getStops(): Call<StopNames>
 
+    @GET("stops/and/routes")
+    fun getStopsAndRoutes(): Call<StopsAndRoutes>
+
     @GET("route/{routeID}/info")
     fun getRouteInfo(@Path("routeID") routeID: String): Call<RouteInfo>
 

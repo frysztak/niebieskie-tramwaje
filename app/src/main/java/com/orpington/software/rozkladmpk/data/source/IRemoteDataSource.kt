@@ -6,6 +6,7 @@ import com.orpington.software.rozkladmpk.data.source.IDataSource.LoadDataCallbac
 
 interface IRemoteDataSource : IDataSource {
     fun getStopNames(callback: LoadDataCallback<StopNames>)
+    fun getStopsAndRoutes(callback: LoadDataCallback<StopsAndRoutes>)
 
     fun getRouteInfo(routeID: String, callback: LoadDataCallback<RouteInfo>)
     fun getRouteDirections(routeID: String, callback: LoadDataCallback<RouteDirections>)

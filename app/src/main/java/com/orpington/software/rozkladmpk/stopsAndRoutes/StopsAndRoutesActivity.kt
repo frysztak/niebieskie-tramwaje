@@ -11,6 +11,7 @@ import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
+import com.orpington.software.rozkladmpk.data.model.StopsAndRoutes
 import com.orpington.software.rozkladmpk.routeVariants.RouteVariantsActivity
 import kotlinx.android.synthetic.main.activity_stops_and_routes.*
 import kotlinx.android.synthetic.main.error_view.view.*
@@ -19,7 +20,7 @@ import kotlinx.android.synthetic.main.error_view.view.*
 class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View {
 
     private lateinit var presenter: StopsAndRoutesPresenter
-    private lateinit var recyclerAdapter: StopsAndRoutesRecyclerViewAdapter
+    private lateinit var recyclerAdapter: StopsAndRoutesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,14 +29,14 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
         presenter = StopsAndRoutesPresenter(Injection.provideDataSource(cacheDir))
         presenter.attachView(this)
-        recyclerAdapter = StopsAndRoutesRecyclerViewAdapter(this, presenter)
-        presenter.loadStopNames()
+        recyclerAdapter = StopsAndRoutesAdapter(this, presenter)
+        presenter.loadStopsAndRoutes()
 
         var layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
 
         errorLayout.tryAgainButton.setOnClickListener {
-            presenter.loadStopNames()
+            presenter.loadStopsAndRoutes()
         }
     }
 
@@ -68,12 +69,16 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         return true
     }
 
-    override fun displayStops(stops: List<String>) {
+    override fun displayStopsAndRoutes(data: StopsAndRoutes) {
         recyclerView.visibility = View.VISIBLE
         notFoundLayout.visibility = View.GONE
         errorLayout.visibility = View.GONE
 
-        recyclerAdapter.setStops(stops)
+        recyclerAdapter.setItems(data)
+    }
+
+    override fun listItemClicked(position: Int) {
+        recyclerAdapter.itemClicked(position)
     }
 
     override fun navigateToRouteVariants(stopName: String) {
