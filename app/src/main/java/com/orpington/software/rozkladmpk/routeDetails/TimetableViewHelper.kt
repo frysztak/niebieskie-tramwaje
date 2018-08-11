@@ -39,8 +39,8 @@ class TimetableViewHelper {
         val day = calendar.get(Calendar.DAY_OF_WEEK)
 
         val addHeaderAndRows =
-            { dayType: DayType, timeTableEntries: List<TimeTableEntry>? ->
-                if (timeTableEntries != null) {
+            { dayType: DayType, timeTableEntries: List<TimeTableEntry> ->
+                if (timeTableEntries.isNotEmpty()) {
                     items.add(HeaderItem(dayType, getHeaderAdditionalInfo(day, dayType)))
                     processSingleTimeTable(dayType, timeTableEntries, items)
                 }
