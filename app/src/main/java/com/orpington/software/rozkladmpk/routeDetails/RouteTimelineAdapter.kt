@@ -43,7 +43,7 @@ class RouteTimelineAdapter(private val context: Context) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.stopName.text = item.stopName
-        holder.time.text = item.departureTime.removeSuffix(":00")
+        holder.time.text = item.departureTime
 
         holder.verticalLineTopHalf.visibility = View.VISIBLE
         holder.verticalLineBottomHalf.visibility = View.VISIBLE
@@ -61,7 +61,7 @@ class RouteTimelineAdapter(private val context: Context) :
 
     override fun getSectionName(position: Int): String {
         val item = items[position]
-        return item.departureTime.removeSuffix(":00")
+        return item.departureTime
     }
 
     class ViewHolder(
