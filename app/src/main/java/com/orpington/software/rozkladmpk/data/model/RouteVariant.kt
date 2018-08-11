@@ -1,15 +1,18 @@
 package com.orpington.software.rozkladmpk.data.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import se.ansman.kotshi.JsonSerializable
 
+@JsonSerializable
 data class RouteVariant(
-    @SerializedName("RouteID") val routeID: String,
-    @SerializedName("IsBus") val isBus: Boolean,
-    @SerializedName("FirstStop") val firstStop: String,
-    @SerializedName("LastStop") val lastStop: String,
-    @SerializedName("TripIDs") val tripIDs: List<Int>
+    @Json(name = "RouteID") val routeID: String,
+    @Json(name = "IsBus") val isBus: Boolean,
+    @Json(name = "FirstStop") val firstStop: String,
+    @Json(name = "LastStop") val lastStop: String,
+    @Json(name = "TripIDs") val tripIDs: List<Int>
 )
 
+@JsonSerializable
 data class RouteVariants(
-    @SerializedName("routeVariants") val routeVariants: List<RouteVariant>
+    @Json(name = "routeVariants") val routeVariants: List<RouteVariant>
 )

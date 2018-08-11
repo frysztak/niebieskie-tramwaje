@@ -1,9 +1,11 @@
 package com.orpington.software.rozkladmpk.data.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import se.ansman.kotshi.JsonSerializable
 
 
+@JsonSerializable
 data class RouteDirections(
-    @SerializedName("RouteID") val routeID: String,
-    @SerializedName("Directions") val directions: List<String>
+    @Json(name = "RouteID") val routeID: String,
+    @Json(name = "Directions") val directions: List<String>
 )

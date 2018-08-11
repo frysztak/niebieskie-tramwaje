@@ -1,11 +1,14 @@
 package com.orpington.software.rozkladmpk.data.source
 
 import com.orpington.software.rozkladmpk.BuildConfig
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
+import se.ansman.kotshi.KotshiJsonAdapterFactory
 import java.io.File
 
 class ApiClient {
@@ -29,9 +32,10 @@ class ApiClient {
                             .cache(cache)
                             .build()
 
+                        val moshi = Moshi.Builder().add(ApplicationJsonAdapterFactory.INSTANCE).build()
                         sRetrofit = Retrofit.Builder()
                             .baseUrl(BASE_API_URL)
-                            .addConverterFactory(GsonConverterFactory.create())
+                            .addConverterFactory(MoshiConverterFactory.create(moshi))
                             .client(okHttpClient)
                             .build()
                     }
@@ -43,3 +47,9 @@ class ApiClient {
 
 }
 
+@KotshiJsonAdapterFactory
+abstract class ApplicationJsonAdapterFactory : JsonAdapter.Factory {
+    companion object {
+        val INSTANCE: ApplicationJsonAdapterFactory = KotshiApplicationJsonAdapterFactory()
+    }
+}

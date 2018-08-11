@@ -1,15 +1,18 @@
 package com.orpington.software.rozkladmpk.data.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import se.ansman.kotshi.JsonSerializable
 
 
+@JsonSerializable
 data class Timeline(
-    @SerializedName("TripID") val tripID: Int,
-    @SerializedName("Timeline") val timeline: List<TimelineEntry>
+    @Json(name = "TripID") val tripID: Int,
+    @Json(name = "Timeline") val timeline: List<TimelineEntry>
 ) {
 
+    @JsonSerializable
     data class TimelineEntry(
-        @SerializedName("StopName") val stopName: String,
-        @SerializedName("DepartureTime") val departureTime: String
+        @Json(name = "StopName") val stopName: String,
+        @Json(name = "DepartureTime") val departureTime: String
     )
 }
