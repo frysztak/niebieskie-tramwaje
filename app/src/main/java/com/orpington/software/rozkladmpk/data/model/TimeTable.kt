@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class TimeTableEntry(
-    @SerializedName("TripID") val tripID: String,
+    @SerializedName("TripID") val tripID: Int,
     @SerializedName("ArrivalTime") val arrivalTime: String,
     @SerializedName("DepartureTime") val departureTime: String
 ) : Parcelable

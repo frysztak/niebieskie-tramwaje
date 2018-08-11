@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 
 data class Timeline(
-    @SerializedName("TripID") val tripID: String,
+    @SerializedName("TripID") val tripID: Int,
     @SerializedName("Timeline") val timeline: List<TimelineEntry>
 ) {
 

@@ -9,7 +9,7 @@ data class RouteDetailsState(
     var routeID: String = "",
     var stopName: String = "",
 
-    var tripID: String = "",
+    var tripID: Int = -1,
     var routeDirections: List<String> = emptyList(),
     var currentRouteDirection: Int = -1,
 

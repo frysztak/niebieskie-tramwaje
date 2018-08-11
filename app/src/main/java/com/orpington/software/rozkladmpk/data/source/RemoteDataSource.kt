@@ -62,7 +62,7 @@ class RemoteDataSource private constructor(private val service: ApiService) : IR
         makeACall(service.getTimeTable(routeID, stopName, direction), callback)
     }
 
-    override fun getTripTimeline(tripID: String, callback: IDataSource.LoadDataCallback<Timeline>) {
+    override fun getTripTimeline(tripID: Int, callback: IDataSource.LoadDataCallback<Timeline>) {
         makeACall(service.getTripTimeline(tripID), callback)
     }
 

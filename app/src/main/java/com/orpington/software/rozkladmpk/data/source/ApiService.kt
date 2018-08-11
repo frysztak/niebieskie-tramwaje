@@ -31,5 +31,5 @@ interface ApiService {
                      @Path("direction") direction: String): Call<TimeTable>
 
     @GET("trip/{tripID}/timeline")
-    fun getTripTimeline(@Path("tripID") tripID: String): Call<Timeline>
+    fun getTripTimeline(@Path("tripID") tripID: Int): Call<Timeline>
 }

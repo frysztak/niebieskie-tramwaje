@@ -7,7 +7,7 @@ data class RouteVariant(
     @SerializedName("IsBus") val isBus: Boolean,
     @SerializedName("FirstStop") val firstStop: String,
     @SerializedName("LastStop") val lastStop: String,
-    @SerializedName("TripIDs") val tripIDs: List<String>
+    @SerializedName("TripIDs") val tripIDs: List<Int>
 )
 
 data class RouteVariants(

@@ -16,5 +16,5 @@ interface IRemoteDataSource : IDataSource {
 
     fun getTimeTable(routeID: String, stopName: String, direction: String, callback: LoadDataCallback<TimeTable>)
 
-    fun getTripTimeline(tripID: String, callback: LoadDataCallback<Timeline>)
+    fun getTripTimeline(tripID: Int, callback: LoadDataCallback<Timeline>)
 }

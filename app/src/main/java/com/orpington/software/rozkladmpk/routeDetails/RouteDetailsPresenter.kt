@@ -147,9 +147,8 @@ class RouteDetailsPresenter(
         }
 
         val hhmm = time.drop(3)
-        val hhmmss = "$hhmm:00"
         val entry = timetableEntries?.find { entry ->
-            entry.departureTime == hhmmss
+            entry.departureTime == hhmm
         } ?: return
 
         state.tripID = entry.tripID
@@ -169,7 +168,7 @@ class RouteDetailsPresenter(
     }
 
     override fun loadTimeline() {
-        if (state.tripID.isEmpty()) {
+        if (state.tripID == -1) {
             return
         }
 
