@@ -177,8 +177,11 @@ class RouteDetailsPresenter(
             object : IDataSource.LoadDataCallback<Timeline> {
                 override fun onDataLoaded(data: Timeline) {
                     timelineView?.hideProgressBar()
+
+                    // strip prefix from time tag
+                    val timeToFind = state.currentTimeTag.substringAfter(":")
                     val itemToHighlight = data.timeline.indexOfFirst { item ->
-                        item.stopName == state.stopName
+                        item.departureTime == timeToFind
                     }
                     timelineView?.showTimeline(data, itemToHighlight, state.currentTimelinePosition)
                 }
