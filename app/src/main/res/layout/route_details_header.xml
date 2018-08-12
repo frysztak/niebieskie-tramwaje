@@ -42,8 +42,8 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        android:paddingStart="16dp"
         android:paddingEnd="16dp"
+        android:paddingStart="16dp"
         android:text="@string/route"
         android:textColor="@color/icons"
         android:textSize="24dp"
@@ -54,15 +54,18 @@
 
     <TextView
         android:id="@+id/routeType.textview"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:fontFamily="sans-serif-light"
         android:textColor="@color/primary_light"
         android:textSize="18dp"
         app:layout_constraintStart_toEndOf="@id/icon.imageview"
         app:layout_constraintTop_toBottomOf="@id/stopName.textview"
-        tools:text="tramwaj normalny" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Pospieszna autobusaaaaaa" />
 
     <TextView
         android:id="@+id/carrier.textview"
