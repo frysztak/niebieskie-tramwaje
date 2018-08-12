@@ -136,7 +136,7 @@ class RouteDetailsActivity : AppCompatActivity(),
 
     private fun translateRouteType(routeType: String): String {
         val currentLanguage = Locale.getDefault().displayLanguage
-        if (currentLanguage == "pl") {
+        if (currentLanguage == "polski") {
             // API already serves route types in Polish
             return routeType
         }

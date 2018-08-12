@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">Rozklad MPK</string>
+    <string name="app_name">Wrocław Public Transport</string>
     <string name="weekdays">weekdays</string>
     <string name="saturday">saturday</string>
     <string name="sunday">sunday</string>
 
-    <string name="searchHint">Stop name…</string>
+    <string name="searchHint">Stop or route name…</string>
 
     <string name="somethingWentWrong">Something went wrong.\nPlease check your connection.</string>
     <string name="tryAgain">TRY AGAIN</string>
@@ -27,6 +27,6 @@
     <string name="zoneBus">Zone bus</string>
     <string name="nightBus">Night bus</string>
     <string name="unknown">Unknown</string>
-    <string name="select_direction_first">Please select direction first</string>
-    <string name="select_direction_and_time">Please select direction and time first</string>
+    <string name="select_direction_first">Please select direction first.</string>
+    <string name="select_direction_and_time">Please select direction and time first.</string>
 </resources>

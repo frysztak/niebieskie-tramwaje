@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Rozkład MPK</string>
+    <string name="weekdays">Dni robocze</string>
+    <string name="saturday">Sobota</string>
+    <string name="sunday">Niedziela</string>
+    <string name="searchHint">Przystanek lub linia…</string>
+    <string name="somethingWentWrong">Coś poszło nie tak.\nSprawdź proszę połączenie z Internetem.</string>
+    <string name="tryAgain">PONÓW</string>
+    <string name="stopNotFound">Przystanek bądź linia nie zostały znaleziona.\nSpróbuj ponownie.</string>
+    <string name="search">Szukaj</string>
+    <string name="direction">Kierunek</string>
+    <string name="timetable">Godziny</string>
+    <string name="timeline">Przystanki</string>
+    <string name="stops">Przystanki</string>
+    <string name="route">Linia</string>
+    <string name="select_direction_first">Wybierz najpierw kierunek.</string>
+    <string name="select_direction_and_time">Wybierz najpierw kierunek i godzinę.</string>
+</resources>
