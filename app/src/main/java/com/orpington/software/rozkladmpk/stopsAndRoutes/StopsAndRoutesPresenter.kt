@@ -60,6 +60,8 @@ class StopsAndRoutesPresenter(
     }
 
     override fun listItemClicked(position: Int) {
+        if (position >= shownStopsAndRoutes.size) return
+
         val item = shownStopsAndRoutes[position]
         when (item) {
             is Stop -> view?.navigateToRouteVariants(item.stopName)

@@ -1,21 +1,16 @@
 package com.orpington.software.rozkladmpk
 
 import com.nhaarman.mockito_kotlin.*
+import com.orpington.software.rozkladmpk.data.model.StopsAndRoutes
 import com.orpington.software.rozkladmpk.data.source.ApiService
-import com.orpington.software.rozkladmpk.data.source.ApplicationJsonAdapterFactory
 import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
-import com.orpington.software.rozkladmpk.stopsAndRoutes.StopsAndRoutesContract
-import com.orpington.software.rozkladmpk.stopsAndRoutes.StopsAndRoutesPresenter
+import com.orpington.software.rozkladmpk.stopsAndRoutes.*
 import com.orpington.software.rozkladmpk.utils.CurrentThreadExecutor
-import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
-import org.junit.Before
-import org.junit.BeforeClass
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import org.powermock.api.mockito.PowerMockito.*
 import org.powermock.core.classloader.annotations.PowerMockIgnore
@@ -76,10 +71,9 @@ class StopsAndRoutesPresenterTest {
             .build()
 
         // Get an instance of Retrofit
-        val moshi = Moshi.Builder().add(ApplicationJsonAdapterFactory.INSTANCE).build()
         val retrofit = Retrofit.Builder()
             .baseUrl(mockServer.url("/"))
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addConverterFactory(MoshiConverterFactory.create())
             .client(okHttpClient)
             .callbackExecutor(currentThreadExecutor)
             .build()
@@ -101,23 +95,25 @@ class StopsAndRoutesPresenterTest {
         mockServer.shutdown()
     }
 
-    /*
     @Test
+    @Ignore // returned content is never set -- why? it used to work.
     fun loadStopsAndRoutes() {
         val mockResponse = MockResponse()
             .setResponseCode(200)
+            .addHeader("Content-Type", "application/json; charset=utf-8")
             .setBody(loadJson("stops_and_routes.json"))
             //.setBody("{\"Stops\":[\"8 Maja\",\"AUCHAN\"],\"Routes\":[{\"ID\":\"0L\",\"IsBus\":false},{\"ID\":\"103\",\"IsBus\":true}]}")
         mockServer.enqueue(mockResponse)
 
-        val inOrder = inOrder(view)
         presenter.loadStopsAndRoutes()
+
+        val inOrder = inOrder(view)
         inOrder.verify(view, times(1)).showProgressBar()
-        inOrder.verify(view, times(1)).hideProgressBar()
+        inOrder.verify(view).displayStopsAndRoutes(any())
         //inOrder.verify(view).displayStopsAndRoutes(listOf<Stop>("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
-        verify(view, never()).reportThatSomethingWentWrong()
+        inOrder.verify(view, times(1)).hideProgressBar()
+        //verify(view, never()).reportThatSomethingWentWrong()
     }
-    */
 
     @Test
     fun loadStopNamesTest_404() {
@@ -133,22 +129,21 @@ class StopsAndRoutesPresenterTest {
         verify(view, never()).displayStopsAndRoutes(any())
     }
 
-    /*
-    @Test
-    fun loadStopNamesTest_AlreadyPopulated() {
-        presenter.setAllStopNames(listOf("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
-        presenter.loadStopNames()
-        verify(view, never()).showProgressBar()
-        verify(view, never()).reportThatSomethingWentWrong()
-        verify(view, never()).hideProgressBar()
-        verify(view, never()).displayStops(any())
-    }
-
     @Test
     fun queryTextChangedTest() {
-        presenter.setAllStopNames(listOf("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
+        val data = StopsAndRoutes(
+            listOf("BISKUPIN", "AUCHAN", "Bierzyce", "Adamieckiego"),
+            listOf(StopsAndRoutes.Route("33", false))
+        )
+
+        val expected = listOf<StopOrRoute>(
+            Stop("AUCHAN"),
+            Stop("Adamieckiego")
+        )
+
+        presenter.setStopsAndRoutes(data)
         presenter.queryTextChanged("a")
-        verify(view).displayStops(listOf("AUCHAN", "Adamczewskich", "Adamieckiego"))
+        verify(view).displayStopsAndRoutes(expected)
         verify(view, never()).showProgressBar()
         verify(view, never()).hideProgressBar()
         verify(view, never()).reportThatSomethingWentWrong()
@@ -156,9 +151,13 @@ class StopsAndRoutesPresenterTest {
 
     @Test
     fun queryTextChangedTest_EmptyList() {
-        presenter.setAllStopNames(emptyList())
+        val data = StopsAndRoutes(
+            emptyList(), emptyList()
+        )
+
+        presenter.setStopsAndRoutes(data)
         presenter.queryTextChanged("a")
-        verify(view, never()).displayStops(any())
+        verify(view, never()).displayStopsAndRoutes(any())
         verify(view, never()).showProgressBar()
         verify(view, never()).hideProgressBar()
         verify(view, never()).reportThatSomethingWentWrong()
@@ -166,17 +165,69 @@ class StopsAndRoutesPresenterTest {
     }
 
     @Test
-    fun listItemClickedTest() {
-        presenter.setShownStopNames(listOf("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
+    fun stopClicked() {
+        val data = listOf<StopOrRoute>(
+            Stop("8 Maja"),
+            Stop("AUCHAN"),
+            Stop("Adamieckiego")
+        )
+
+        presenter.setShownStopsAndRoutes(data)
         presenter.listItemClicked(0)
         verify(view, times(1)).navigateToRouteVariants("8 Maja")
+        verify(view, never()).navigateToStopsForRoute(any())
     }
 
     @Test
-    fun listItemClickedTest_OutOfRange() {
-        presenter.setShownStopNames(emptyList())
-        presenter.listItemClicked(0)
+    fun routeClicked() {
+        val data = listOf<StopOrRoute>(
+            Stop("8 Maja"),
+            Stop("AUCHAN"),
+            Route("33", false),
+            Stop("Adamieckiego")
+        )
+
+        presenter.setShownStopsAndRoutes(data)
+        presenter.listItemClicked(2)
+        verify(view, times(1)).navigateToStopsForRoute("33")
         verify(view, never()).navigateToRouteVariants(any())
     }
-    */
+
+    @Test
+    fun listItemClicked_EmptyList() {
+        presenter.setShownStopsAndRoutes(emptyList())
+        presenter.listItemClicked(0)
+        verify(view, never()).navigateToRouteVariants(any())
+        verify(view, never()).navigateToStopsForRoute(any())
+    }
+
+    @Test
+    fun listItemClicked_OutOfRange() {
+        val data = listOf<StopOrRoute>(
+            Stop("8 Maja"),
+            Stop("AUCHAN"),
+            Route("33", false),
+            Stop("Adamieckiego")
+        )
+
+        presenter.setShownStopsAndRoutes(data)
+        presenter.listItemClicked(10)
+        verify(view, never()).navigateToRouteVariants(any())
+        verify(view, never()).navigateToStopsForRoute(any())
+    }
+
+    @Test
+    fun listItemClicked_LastItem() {
+        val data = listOf(
+            Stop("8 Maja"),
+            Stop("AUCHAN"),
+            Route("33", false),
+            Stop("Adamieckiego")
+        )
+
+        presenter.setShownStopsAndRoutes(data)
+        presenter.listItemClicked(3)
+        verify(view, times(1)).navigateToRouteVariants("Adamieckiego")
+        verify(view, never()).navigateToStopsForRoute(any())
+    }
 }
