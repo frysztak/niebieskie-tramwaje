@@ -5,6 +5,7 @@
     style="@style/TimeTableItem"
     android:layout_width="@dimen/TimeTableColumnWidth"
     android:layout_height="@dimen/TimeTableRowHeight"
+    android:background="?android:attr/selectableItemBackgroundBorderless"
     android:clickable="true"
     android:gravity="center"
     tools:text="12" />

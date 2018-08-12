@@ -2,6 +2,7 @@ package com.orpington.software.rozkladmpk.routeDetails
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -29,12 +30,7 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.route_timetable, container, false)
-
-        highlightColor = resources.getColor(R.color.primary_dark, null)
-        normalColor = resources.getColor(R.color.primary_text, null)
-
-        return view
+        return inflater.inflate(R.layout.route_timetable, container, false)
     }
 
     override fun onDestroyView() {
@@ -44,6 +40,10 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        highlightColor = ContextCompat.getColor(context!!, R.color.primary_dark)
+        normalColor = ContextCompat.getColor(context!!, R.color.primary_text)
+
         adapter = RouteTimetableAdapter(context!!, presenter!!)
         layoutManager = LinearLayoutManager(context)
 

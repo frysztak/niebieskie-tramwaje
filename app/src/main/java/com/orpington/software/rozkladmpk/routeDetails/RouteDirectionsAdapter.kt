@@ -1,6 +1,7 @@
 package com.orpington.software.rozkladmpk.routeDetails
 
 import android.content.Context
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -15,8 +16,8 @@ class RouteDirectionsAdapter(
     private val presenter: RouteDetailsContract.Presenter
 ) : RecyclerView.Adapter<RouteDirectionsAdapter.ViewHolder>() {
 
-    private var highlightColour = context.resources.getColor(R.color.primary_dark, null)
-    private var normalColour = context.resources.getColor(R.color.primary_text, null)
+    private var highlightColour = ContextCompat.getColor(context, R.color.primary_dark)
+    private var normalColour = ContextCompat.getColor(context, R.color.primary_text)
 
     private var items: List<String> = emptyList()
 
