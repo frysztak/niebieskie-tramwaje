@@ -6,8 +6,8 @@ import se.ansman.kotshi.JsonSerializable
 @JsonSerializable
 data class RouteInfo(
     @Json(name = "RouteID") val routeID: String,
-    @Json(name = "TypeID") val typeID: Int,
-    @Json(name = "TypeName") val typeName: String,
+    @Json(name = "RouteType") val routeType: String,
+    @Json(name = "IsBus") val isBus: Boolean,
     @Json(name = "ValidFrom") val validFrom: String,
     @Json(name = "ValidUntil") val validUntil: String,
     @Json(name = "AgencyName") val agencyName: String,

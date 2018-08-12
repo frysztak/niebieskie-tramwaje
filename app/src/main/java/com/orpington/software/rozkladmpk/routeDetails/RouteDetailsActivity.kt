@@ -102,11 +102,11 @@ class RouteDetailsActivity : AppCompatActivity(),
         toolbarTitle.text = "$routeText — $stopName"
 
         carrier_textview.text = routeInfo.agencyName
-        icon_imageview.setImageResource(when (isBus(routeInfo.typeID)) {
+        icon_imageview.setImageResource(when (routeInfo.isBus) {
             true -> R.drawable.bus
             false -> R.drawable.tram
         })
-        routeType_textview.text = translateRouteType(routeInfo.typeName)
+        routeType_textview.text = translateRouteType(routeInfo.routeType)
     }
 
     private var skeletonScreen: SkeletonScreen? = null
@@ -132,11 +132,6 @@ class RouteDetailsActivity : AppCompatActivity(),
 
     override fun switchToTimelineTab() {
         viewPager.currentItem = 2
-    }
-
-    private fun isBus(routeTypeID: Int): Boolean {
-        val busRouteTypeIDs = listOf(30, 34, 35, 39, 40)
-        return busRouteTypeIDs.contains(routeTypeID)
     }
 
     private fun translateRouteType(routeType: String): String {
