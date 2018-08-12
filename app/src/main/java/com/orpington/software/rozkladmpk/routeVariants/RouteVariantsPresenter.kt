@@ -4,6 +4,7 @@ import com.orpington.software.rozkladmpk.data.model.RouteVariant
 import com.orpington.software.rozkladmpk.data.model.RouteVariants
 import com.orpington.software.rozkladmpk.data.source.IDataSource
 import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
+import com.orpington.software.rozkladmpk.utils.sort
 
 class RouteVariantsPresenter(
     private val dataSource: RemoteDataSource
@@ -20,7 +21,7 @@ class RouteVariantsPresenter(
         dataSource.getRouteVariantsForStopName(stopName, object : IDataSource.LoadDataCallback<RouteVariants> {
             override fun onDataLoaded(data: RouteVariants) {
                 routes = data.routeVariants
-                sortedDistinctRoutes = routes.distinctBy { it.routeID }.sortedWith(routeInfoComparator)
+                sortedDistinctRoutes = routes.distinctBy { it.routeID }.sort()
                 view?.hideProgressBar()
                 view?.showRoutes(sortedDistinctRoutes)
             }
@@ -40,16 +41,6 @@ class RouteVariantsPresenter(
 
     override fun detachView() {
         view = null
-    }
-
-    private val routeInfoComparator = Comparator<RouteVariant> { p0, p1 ->
-        var intId0 = p0.routeID.toIntOrNull()
-        var intId1 = p1.routeID.toIntOrNull()
-        if (intId0 != null && intId1 != null) {
-            intId0.compareTo(intId1)
-        } else {
-            p0.routeID.compareTo(p1.routeID)
-        }
     }
 
     override fun routeClicked(position: Int) {

@@ -17,26 +17,6 @@ class StopsAndRoutesHelperTest {
     }
 
     @Test
-    fun sort_Test() {
-        val data = listOf(
-            Route("3", false),
-            Route("1", false),
-            Route("0L", false),
-            Route("C", true)
-        )
-
-        val actual = data.sort()
-        val expected = listOf(
-            Route("0L", false),
-            Route("1", false),
-            Route("3", false),
-            Route("C", true)
-        )
-
-        assertThat(actual, Is(expected))
-    }
-
-    @Test
     fun stripAccents_Test() {
         val lowercase = "ąćęłńóśżź"
         val lowercaseExpected = "acelnoszz"
@@ -74,7 +54,7 @@ class StopsAndRoutesHelperTest {
 
     @Test
     fun filterItems_emptyQuery() {
-        val items : List<StopOrRoute> = listOf(
+        val items: List<StopOrRoute> = listOf(
             Stop("AUCHAN"),
             Stop("KOZANÓW"),
             Route("33", false),
@@ -87,7 +67,7 @@ class StopsAndRoutesHelperTest {
 
     @Test
     fun filterItems_queryCorrespondingToExpressBus() {
-        val items : List<StopOrRoute> = listOf(
+        val items: List<StopOrRoute> = listOf(
             Stop("C.H. Korona"),
             Stop("KOZANÓW"),
             Route("33", false),
@@ -95,7 +75,7 @@ class StopsAndRoutesHelperTest {
         )
 
         val actual = helper.filterItems(items, "C")
-        val expected : List<StopOrRoute> = listOf(
+        val expected: List<StopOrRoute> = listOf(
             Route("C", true)
         )
         assertThat(actual, Is(expected))
@@ -103,7 +83,7 @@ class StopsAndRoutesHelperTest {
 
     @Test
     fun filterItems_queryCorrespondingToRoutes() {
-        val items : List<StopOrRoute> = listOf(
+        val items: List<StopOrRoute> = listOf(
             Stop("AUCHAN"),
             Stop("KOZANÓW"),
             Route("3", false),
@@ -113,7 +93,7 @@ class StopsAndRoutesHelperTest {
         )
 
         val actual = helper.filterItems(items, "33")
-        val expected : List<StopOrRoute> = listOf(
+        val expected: List<StopOrRoute> = listOf(
             Route("33", false),
             Route("3", false)
         )
@@ -122,7 +102,7 @@ class StopsAndRoutesHelperTest {
 
     @Test
     fun filterItems_queryCorrespondingToStop() {
-        val items : List<StopOrRoute> = listOf(
+        val items: List<StopOrRoute> = listOf(
             Stop("Na Ostatnim Groszu"),
             Stop("KOZANÓW"),
             Route("3", false),
@@ -132,7 +112,7 @@ class StopsAndRoutesHelperTest {
         )
 
         val actual = helper.filterItems(items, "grosz")
-        val expected : List<StopOrRoute> = listOf(
+        val expected: List<StopOrRoute> = listOf(
             Stop("Na Ostatnim Groszu")
         )
         assertThat(actual, Is(expected))

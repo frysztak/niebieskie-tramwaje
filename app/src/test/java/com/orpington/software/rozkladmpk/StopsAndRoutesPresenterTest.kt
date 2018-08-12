@@ -2,11 +2,14 @@ package com.orpington.software.rozkladmpk
 
 import com.nhaarman.mockito_kotlin.*
 import com.orpington.software.rozkladmpk.data.source.ApiService
+import com.orpington.software.rozkladmpk.data.source.ApplicationJsonAdapterFactory
 import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
 import com.orpington.software.rozkladmpk.stopsAndRoutes.StopsAndRoutesContract
 import com.orpington.software.rozkladmpk.stopsAndRoutes.StopsAndRoutesPresenter
 import com.orpington.software.rozkladmpk.utils.CurrentThreadExecutor
+import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -21,11 +24,8 @@ import org.powermock.modules.junit4.PowerMockRunner
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
-import okhttp3.logging.HttpLoggingInterceptor
-
-
 
 
 @PowerMockIgnore("okhttp3.*", "retrofit2.*")
@@ -76,9 +76,10 @@ class StopsAndRoutesPresenterTest {
             .build()
 
         // Get an instance of Retrofit
+        val moshi = Moshi.Builder().add(ApplicationJsonAdapterFactory.INSTANCE).build()
         val retrofit = Retrofit.Builder()
             .baseUrl(mockServer.url("/"))
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(okHttpClient)
             .callbackExecutor(currentThreadExecutor)
             .build()
