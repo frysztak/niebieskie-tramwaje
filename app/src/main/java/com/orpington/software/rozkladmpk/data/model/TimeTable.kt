@@ -2,11 +2,11 @@ package com.orpington.software.rozkladmpk.data.model
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
-import se.ansman.kotshi.JsonSerializable
 
 @Parcelize
-@JsonSerializable
+@JsonClass(generateAdapter = true)
 data class TimeTableEntry(
     @Json(name = "TripID") val tripID: Int,
     @Json(name = "ArrivalTime") val arrivalTime: String,
@@ -14,7 +14,7 @@ data class TimeTableEntry(
 ) : Parcelable
 
 @Parcelize
-@JsonSerializable
+@JsonClass(generateAdapter = true)
 data class TimeTable(
     @Json(name = "RouteID") val routeID: String,
     @Json(name = "StopName") val stopName: String,

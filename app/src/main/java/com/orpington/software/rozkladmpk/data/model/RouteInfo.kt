@@ -1,9 +1,9 @@
 package com.orpington.software.rozkladmpk.data.model
 
 import com.squareup.moshi.Json
-import se.ansman.kotshi.JsonSerializable
+import com.squareup.moshi.JsonClass
 
-@JsonSerializable
+@JsonClass(generateAdapter = true)
 data class RouteInfo(
     @Json(name = "RouteID") val routeID: String,
     @Json(name = "RouteType") val routeType: String,

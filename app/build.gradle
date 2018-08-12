@@ -57,8 +57,7 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
 
     implementation 'com.squareup.moshi:moshi:1.6.0'
-    implementation 'se.ansman.kotshi:api:1.0.4'
-    kapt 'se.ansman.kotshi:compiler:1.0.4'
+    kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.6.0'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-moshi:2.3.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.10.0'
