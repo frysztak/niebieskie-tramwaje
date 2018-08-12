@@ -16,6 +16,7 @@ import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteInfo
 import kotlinx.android.synthetic.main.activity_route_details.*
 import kotlinx.android.synthetic.main.route_details_header.*
+import java.util.*
 
 
 class RouteDetailsActivity : AppCompatActivity(),
@@ -105,7 +106,7 @@ class RouteDetailsActivity : AppCompatActivity(),
             true -> R.drawable.bus
             false -> R.drawable.tram
         })
-        routeType_textview.text = getRouteTypeString(routeInfo.typeID)
+        routeType_textview.text = translateRouteType(routeInfo.typeName)
     }
 
     private var skeletonScreen: SkeletonScreen? = null
@@ -138,16 +139,30 @@ class RouteDetailsActivity : AppCompatActivity(),
         return busRouteTypeIDs.contains(routeTypeID)
     }
 
-    private fun getRouteTypeString(routeTypeID: Int): String {
-        return getString(when (routeTypeID) {
-            30 -> R.string.normalBus
-            31 -> R.string.normalTram
-            34 -> R.string.suburbanBus
-            35 -> R.string.expressBus
-            39 -> R.string.zoneBus
-            40 -> R.string.nightBus
-            else -> -1
-        })
+    private fun translateRouteType(routeType: String): String {
+        val currentLanguage = Locale.getDefault().displayLanguage
+        if (currentLanguage == "pl") {
+            // API already serves route types in Polish
+            return routeType
+        }
+
+        val map = mapOf(
+            "Normalna autobusowa" to R.string.normalBus,
+            "Normalna tramwajowa" to R.string.normalTram,
+            "Okresowa autobusowa" to R.string.seasonalBus,
+            "Podmiejska autobusowa" to R.string.suburbanBus,
+            "Pospieszna autobusowa" to R.string.expressBus,
+            "Strefowa autobusowa" to R.string.zoneBus,
+            "Nocna autobusowa" to R.string.nightBus
+        )
+
+        if (!map.containsKey(routeType)) {
+            // Unknown key
+            // TODO: logging?
+            return routeType
+        }
+
+        return getString(map[routeType]!!)
     }
 
     override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
