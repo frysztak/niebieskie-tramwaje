@@ -22,6 +22,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
+import okhttp3.logging.HttpLoggingInterceptor
+
+
+
 
 @PowerMockIgnore("okhttp3.*", "retrofit2.*")
 @RunWith(PowerMockRunner::class)
@@ -45,6 +50,13 @@ class StopsAndRoutesPresenterTest {
         }
     }
 
+    private fun loadJson(fileName: String): String {
+        val url = this.javaClass.classLoader.getResource("json/$fileName")
+        val file = File(url.path)
+        val str = String(file.readBytes())
+        return str
+    }
+
     @Throws
     @Before
     fun setUp() {
@@ -56,7 +68,12 @@ class StopsAndRoutesPresenterTest {
         // Get an okhttp client
         val currentThreadExecutor = CurrentThreadExecutor()
         val dispatcher = okhttp3.Dispatcher(currentThreadExecutor)
-        val okHttpClient = OkHttpClient.Builder().dispatcher(dispatcher).build()
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        val okHttpClient = OkHttpClient.Builder()
+            //.addNetworkInterceptor(interceptor)
+            .dispatcher(dispatcher)
+            .build()
 
         // Get an instance of Retrofit
         val retrofit = Retrofit.Builder()
@@ -72,7 +89,8 @@ class StopsAndRoutesPresenterTest {
         dataSource = RemoteDataSource.getInstance(apiService)
 
         view = mock {}
-        presenter = StopsAndRoutesPresenter(dataSource, view)
+        presenter = StopsAndRoutesPresenter(dataSource)
+        presenter.attachView(view)
     }
 
     @After
@@ -82,20 +100,23 @@ class StopsAndRoutesPresenterTest {
         mockServer.shutdown()
     }
 
+    /*
     @Test
-    fun loadStopNamesTest() {
+    fun loadStopsAndRoutes() {
         val mockResponse = MockResponse()
             .setResponseCode(200)
-            .setBody("{\"stopNames\":[\"8 Maja\",\"AUCHAN\",\"Adamczewskich\",\"Adamieckiego\"]}")
+            .setBody(loadJson("stops_and_routes.json"))
+            //.setBody("{\"Stops\":[\"8 Maja\",\"AUCHAN\"],\"Routes\":[{\"ID\":\"0L\",\"IsBus\":false},{\"ID\":\"103\",\"IsBus\":true}]}")
         mockServer.enqueue(mockResponse)
 
         val inOrder = inOrder(view)
-        presenter.loadStopNames()
+        presenter.loadStopsAndRoutes()
         inOrder.verify(view, times(1)).showProgressBar()
         inOrder.verify(view, times(1)).hideProgressBar()
-        inOrder.verify(view).displayStops(listOf("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
+        //inOrder.verify(view).displayStopsAndRoutes(listOf<Stop>("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
         verify(view, never()).reportThatSomethingWentWrong()
     }
+    */
 
     @Test
     fun loadStopNamesTest_404() {
@@ -104,13 +125,14 @@ class StopsAndRoutesPresenterTest {
         mockServer.enqueue(mockResponse)
 
         val inOrder = inOrder(view)
-        presenter.loadStopNames()
+        presenter.loadStopsAndRoutes()
         inOrder.verify(view, times(1)).showProgressBar()
         inOrder.verify(view, times(1)).hideProgressBar()
         inOrder.verify(view, times(1)).reportThatSomethingWentWrong()
-        verify(view, never()).displayStops(any())
+        verify(view, never()).displayStopsAndRoutes(any())
     }
 
+    /*
     @Test
     fun loadStopNamesTest_AlreadyPopulated() {
         presenter.setAllStopNames(listOf("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
@@ -155,4 +177,5 @@ class StopsAndRoutesPresenterTest {
         presenter.listItemClicked(0)
         verify(view, never()).navigateToRouteVariants(any())
     }
+    */
 }

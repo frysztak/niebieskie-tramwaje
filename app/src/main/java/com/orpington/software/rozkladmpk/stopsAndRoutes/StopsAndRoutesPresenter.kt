@@ -50,7 +50,7 @@ class StopsAndRoutesPresenter(
     override fun queryTextChanged(newText: String) {
 
         val helper = StopsAndRoutesHelper()
-        shownStopsAndRoutes = helper.filterOutItems(stopsAndRoutes, newText)
+        shownStopsAndRoutes = helper.filterItems(stopsAndRoutes, newText)
 
         if (shownStopsAndRoutes.isNotEmpty()) {
             view?.displayStopsAndRoutes(shownStopsAndRoutes)

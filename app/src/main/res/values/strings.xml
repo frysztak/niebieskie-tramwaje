@@ -21,6 +21,7 @@
 
     <string name="normalBus">Normal bus</string>
     <string name="normalTram">Normal tram</string>
+    <string name="seasonalBus">Seasonal bus</string>
     <string name="suburbanBus">Suburban bus</string>
     <string name="expressBus">Express bus</string>
     <string name="zoneBus">Zone bus</string>

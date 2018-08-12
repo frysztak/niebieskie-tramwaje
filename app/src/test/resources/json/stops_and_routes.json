@@ -1,0 +1,16 @@
+{
+  "Stops": [
+    "8 Maja",
+    "AUCHAN"
+  ],
+  "Routes": [
+    {
+      "ID": "0L",
+      "IsBus": false
+    },
+    {
+      "ID": "103",
+      "IsBus": true
+    }
+  ]
+}

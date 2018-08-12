@@ -13,6 +13,7 @@ import java.util.*
 @RunWith(Enclosed::class)
 class TimetableHelperTest {
 
+    /*
     @RunWith(Parameterized::class)
     class GetCurrentDayTypeTest(
         private val currentDay: Int,
@@ -120,5 +121,6 @@ class TimetableHelperTest {
         }
 
     }
+    */
 
 }

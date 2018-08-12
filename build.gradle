@@ -36,3 +36,8 @@ task wrapper(type: Wrapper) {
     gradleVersion = '4.7'
 }
 
+task copyResourcesToClasses(type: Copy) {
+    from "${projectDir}/src/test/json"
+    into "${buildDir}/intermediates/classes/test/debug/json"
+}
+
