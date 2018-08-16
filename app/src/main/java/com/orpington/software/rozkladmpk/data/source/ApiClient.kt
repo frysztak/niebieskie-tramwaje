@@ -10,7 +10,7 @@ import java.io.File
 
 class ApiClient {
     companion object {
-        private val BASE_API_URL = "http://192.168.0.22:8080"
+        private val BASE_API_URL = "http://88.198.99.142:8080"
 
         private var sRetrofit: Retrofit? = null
 
@@ -18,7 +18,7 @@ class ApiClient {
             if (sRetrofit == null) {
                 synchronized(Retrofit::class.java) {
                     if (sRetrofit == null) {
-                        val cacheSize: Long = 10 * 1024 * 1024 // 10 MB
+                        val cacheSize: Long = 5 * 1024 * 1024 // 5 MB
                         val cache = Cache(cacheDir, cacheSize)
 
                         val interceptor = HttpLoggingInterceptor()
