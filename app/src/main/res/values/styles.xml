@@ -15,7 +15,6 @@
     </style>
 
     <style name="ActionButtonOverflowStyle" parent="Widget.AppCompat.ActionButton.Overflow">
-        <item name="android:foreground">@color/icons</item>
     </style>
 
     <style name="ToolbarStyle">

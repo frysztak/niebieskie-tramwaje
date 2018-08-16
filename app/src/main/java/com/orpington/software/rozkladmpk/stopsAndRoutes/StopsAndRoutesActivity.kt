@@ -11,6 +11,7 @@ import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
+import com.orpington.software.rozkladmpk.about.AboutActivity
 import com.orpington.software.rozkladmpk.routeVariants.RouteVariantsActivity
 import com.orpington.software.rozkladmpk.stopsForRoute.StopsForRouteActivity
 import kotlinx.android.synthetic.main.activity_stops_and_routes.*
@@ -66,9 +67,15 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
             }
         )
 
+        val aboutItem = menu?.findItem(R.id.action_about)
+        aboutItem.setOnMenuItemClickListener {
+            val i = Intent(baseContext, AboutActivity::class.java)
+            startActivity(i)
+            true
+        }
+
         return true
     }
-
 
     override fun displayStopsAndRoutes(data: List<StopOrRoute>) {
         recyclerView.visibility = View.VISIBLE

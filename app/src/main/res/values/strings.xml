@@ -29,4 +29,8 @@
     <string name="unknown">Unknown</string>
     <string name="select_direction_first">Please select direction first.</string>
     <string name="select_direction_and_time">Please select direction and time first.</string>
+    <string name="icons_attribution">Icons made by Freepik and Pixel Buddha from www.flaticon.com.</string>
+    <string name="author_about_page">Author: Sebastian Frysztak</string>
+    <string name="about">About</string>
+    <string name="version">Version</string>
 </resources>

@@ -16,4 +16,8 @@
     <string name="route">Linia</string>
     <string name="select_direction_first">Wybierz najpierw kierunek.</string>
     <string name="select_direction_and_time">Wybierz najpierw kierunek i godzinę.</string>
+    <string name="icons_attribution">Ikony autorstwa Freepik oraz Pixel Buddha z www.flaticon.com.</string>
+    <string name="author_about_page">Autor: Sebastian Frysztak</string>
+    <string name="about">O aplikacji</string>
+    <string name="version">Wersja</string>
 </resources>
