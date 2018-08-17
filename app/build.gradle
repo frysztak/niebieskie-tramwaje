@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.getkeepsafe.dexcount'
+apply plugin: 'com.cookpad.android.licensetools'
 
 android {
     signingConfigs {
@@ -74,5 +75,4 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.1'
     implementation 'me.xdrop:fuzzywuzzy:1.1.10'
-    implementation 'com.mikepenz:aboutlibraries:6.1.1'
 }

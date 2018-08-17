@@ -20,6 +20,9 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+### My own
+-keep class android.support.v7.widget.SearchView { *; }
+
 ### Moshi
 -dontwarn okio.**
 -dontwarn javax.annotation.**

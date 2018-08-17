@@ -31,4 +31,5 @@
     <string name="author_about_page">Author: Sebastian Frysztak</string>
     <string name="about">About</string>
     <string name="version">Version</string>
+    <string name="oss_licenses">Open Source Licenses</string>
 </resources>
