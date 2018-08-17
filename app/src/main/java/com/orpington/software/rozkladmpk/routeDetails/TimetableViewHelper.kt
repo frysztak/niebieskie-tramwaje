@@ -62,7 +62,7 @@ class TimetableViewHelper {
     ) {
         val groups = data.groupBy { entry ->
             entry.arrivalTime.split(":")[0]
-        }.mapValues { (key, value) ->
+        }.mapValues { (_, value) ->
             value.map { entry ->
                 entry.arrivalTime.split(":")[1]
             }.chunked(maxMinutesInARow)

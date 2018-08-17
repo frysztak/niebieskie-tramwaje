@@ -14,6 +14,18 @@
     <string name="timeline">Przystanki</string>
     <string name="stops">Przystanki</string>
     <string name="route">Linia</string>
+
+    <!-- Those are not really needed since API serves those strings in Polish,
+         but I want to silence linter -->
+    <string name="normalBus">Autobus normalny</string>
+    <string name="normalTram">Tramwaj normalny</string>
+    <string name="seasonalBus">Autobus okresowy</string>
+    <string name="suburbanBus">Autobus podmiejski</string>
+    <string name="expressBus">Autobus pospieszny</string>
+    <string name="zoneBus">Autobus strefowy</string>
+    <string name="nightBus">Autobus nocny</string>
+    <string name="unknown">Nieznany</string>
+
     <string name="select_direction_first">Wybierz najpierw kierunek.</string>
     <string name="select_direction_and_time">Wybierz najpierw kierunek i godzinę.</string>
     <string name="icons_attribution">Ikony autorstwa Freepik oraz Pixel Buddha z www.flaticon.com.</string>

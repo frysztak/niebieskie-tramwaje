@@ -9,10 +9,8 @@
     <string name="somethingWentWrong">Something went wrong.\nPlease check your connection.</string>
     <string name="tryAgain">TRY AGAIN</string>
     <string name="stopNotFound">Stop or route not found.\nPlease try again.</string>
-    <string name="fetchingData">Fetching latest data, just for you…</string>
 
     <string name="search">Search</string>
-    <string name="variants">VARIANTS</string>
     <string name="direction">Direction</string>
     <string name="timetable">Timetable</string>
     <string name="timeline">Timeline</string>

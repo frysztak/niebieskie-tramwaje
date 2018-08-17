@@ -67,7 +67,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
             }
         )
 
-        val aboutItem = menu?.findItem(R.id.action_about)
+        val aboutItem = menu.findItem(R.id.action_about)
         aboutItem.setOnMenuItemClickListener {
             val i = Intent(baseContext, AboutActivity::class.java)
             startActivity(i)
