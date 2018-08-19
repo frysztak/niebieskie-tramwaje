@@ -116,6 +116,7 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
         selectDirection_textview.visibility = View.GONE
         errorLayout.visibility = View.GONE
         timetable_recyclerview.visibility = View.VISIBLE
+        activity?.appBarLayout?.setExpanded(false, true)
 
         adapter.setItems(items)
         if (itemToScrollTo != -1) {
