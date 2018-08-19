@@ -56,7 +56,7 @@ interface RouteDetailsContract {
         fun showTimeTable(
             items: List<TimetableViewHelper.ViewItem>,
             timeToHighlight: String = "",
-            itemToScrollTo: Int = -1 //TimeIndices = TimeIndices(-1, -1)
+            itemToScrollTo: Int = -1
         )
 
         fun highlightTime(tag: String)

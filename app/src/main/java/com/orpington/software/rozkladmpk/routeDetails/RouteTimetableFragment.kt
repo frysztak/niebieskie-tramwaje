@@ -7,13 +7,19 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.utils.afterMeasured
+import com.orpington.software.rozkladmpk.utils.forceRippleAnimation
+import com.orpington.software.rozkladmpk.utils.smoothScrollWithOffset
+import com.orpington.software.rozkladmpk.utils.whenScrollStateIdle
+import kotlinx.android.synthetic.main.activity_route_details.*
 import kotlinx.android.synthetic.main.error_view.view.*
 import kotlinx.android.synthetic.main.route_timetable.*
+
 
 class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
 
@@ -77,7 +83,16 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
 
         adapter.setItems(items)
         if (itemToScrollTo != -1) {
-            layoutManager.scrollToPositionWithOffset(itemToScrollTo, 0)
+            val activity = activity as RouteDetailsActivity?
+            val appBarHeight = activity?.appBarLayout?.height ?: 0
+
+            // 1) smooth scroll to an item
+            // 2) when recyclerview stops scrolling, show ripple animation
+            timetable_recyclerview.whenScrollStateIdle {
+                val v = timetable_recyclerview.findViewWithTag<LinearLayout>("SU:13")
+                v?.forceRippleAnimation()
+            }
+            layoutManager.smoothScrollWithOffset(timetable_recyclerview, itemToScrollTo, appBarHeight)
         }
 
         if (timeToHighlight.isNotEmpty()) {

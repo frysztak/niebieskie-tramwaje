@@ -2,7 +2,7 @@ package com.orpington.software.rozkladmpk
 
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
-import com.orpington.software.rozkladmpk.routeDetails.TimetableHelper
+import com.orpington.software.rozkladmpk.routeDetails.TimetableScrollHelper
 import com.orpington.software.rozkladmpk.routeDetails.TimetableViewHelper
 import com.orpington.software.rozkladmpk.routeDetails.TimetableViewHelper.*
 import junit.framework.Assert
@@ -13,7 +13,7 @@ import org.junit.runners.Parameterized
 import java.util.*
 
 @RunWith(Enclosed::class)
-class TimetableHelperTest {
+class TimetableScrollHelperTest {
 
     @RunWith(Parameterized::class)
     class GetCurrentDayTypeTest(
@@ -43,7 +43,7 @@ class TimetableHelperTest {
                 on { get(Calendar.DAY_OF_WEEK) } doReturn currentDay
             }
 
-            val helper = TimetableHelper(calendar)
+            val helper = TimetableScrollHelper(calendar)
             Assert.assertEquals(dayType, helper.getCurrentDayType())
         }
 
@@ -115,7 +115,7 @@ class TimetableHelperTest {
                 on { get(Calendar.MINUTE) } doReturn currentMinute
             }
 
-            val helper = TimetableHelper(calendar)
+            val helper = TimetableScrollHelper(calendar)
             val timeIndices = helper.calculateRowAndColumnToScrollInto(items)
             Assert.assertEquals(expectedRowIndex, timeIndices.hourIdx)
             Assert.assertEquals(expectedColumnIndex, timeIndices.minuteIdx)

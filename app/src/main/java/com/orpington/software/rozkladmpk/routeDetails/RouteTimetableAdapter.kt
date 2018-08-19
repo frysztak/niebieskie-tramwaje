@@ -31,8 +31,9 @@ class RouteTimetableAdapter(
     class RowViewHolder(view: View) :
         RecyclerView.ViewHolder(view) {
 
+        val rootLayout: LinearLayout = view.rootLayout
         val hourTextView: TextView = view.hourTextView
-        val linearLayout: LinearLayout = view.linearLayout
+        val minutesLayout: LinearLayout = view.minutesLayout
     }
 
     fun setItems(newItems: List<ViewItem>) {
@@ -65,7 +66,7 @@ class RouteTimetableAdapter(
             ViewType.ROW.code -> {
                 val viewHolder = holder as RowViewHolder
                 val item = items[position] as RowItem
-                populateRowLayout(item, viewHolder.hourTextView, viewHolder.linearLayout)
+                populateRowLayout(item, viewHolder)
             }
             else -> throw Exception("Unknown ViewType")
         }
@@ -85,14 +86,14 @@ class RouteTimetableAdapter(
         }
     }
 
-    private fun populateRowLayout(row: RowItem, hourTextView: TextView, layout: LinearLayout) {
-        layout.removeAllViews()
+    private fun populateRowLayout(row: RowItem, vh: RowViewHolder) {
+        vh.minutesLayout.removeAllViews()
 
         val hour = row.data[0]
-        hourTextView.text = hour
+        vh.hourTextView.text = hour
 
         for (minutes in row.data.drop(1)) {
-            val view = LayoutInflater.from(context).inflate(R.layout.route_timetable_minute, layout, false) as TextView
+            val view = LayoutInflater.from(context).inflate(R.layout.route_timetable_minute, vh.minutesLayout, false) as TextView
             view.text = minutes
             view.tag = "${row.dayType.prefix}:$hour:$minutes"
 
@@ -100,8 +101,9 @@ class RouteTimetableAdapter(
                 presenter.onTimeClicked(it.tag as String)
             }
 
-            layout.addView(view)
+            vh.minutesLayout.addView(view)
         }
+        vh.rootLayout.tag = "${row.dayType.prefix}:$hour"
     }
 
 

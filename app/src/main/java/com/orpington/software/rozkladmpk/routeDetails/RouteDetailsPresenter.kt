@@ -6,6 +6,7 @@ import com.orpington.software.rozkladmpk.data.model.TimeTable
 import com.orpington.software.rozkladmpk.data.model.Timeline
 import com.orpington.software.rozkladmpk.data.source.IDataSource
 import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
+import java.util.*
 
 class RouteDetailsPresenter(
     private val dataSource: RemoteDataSource
@@ -113,8 +114,17 @@ class RouteDetailsPresenter(
                     val helper = TimetableViewHelper()
                     state.timetable = data
                     timetableView?.hideProgressBar()
+
+                    val viewItems = helper.processTimeTable(data)
+                    val scrollHelper = TimetableScrollHelper(Calendar.getInstance())
+                    val timeToScrollTo = scrollHelper.calculateRowAndColumnToScrollInto(viewItems)
+
+                    if (state.currentTimetablePosition == -1) {
+                        state.currentTimetablePosition = timeToScrollTo.hourIdx
+                    }
+
                     timetableView?.showTimeTable(
-                        helper.processTimeTable(data),
+                        viewItems,
                         state.currentTimeTag,
                         state.currentTimetablePosition
                     )

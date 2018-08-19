@@ -5,7 +5,7 @@ import com.orpington.software.rozkladmpk.routeDetails.TimetableViewHelper.*
 
 data class TimeIndices(val hourIdx: Int, val minuteIdx: Int)
 
-class TimetableHelper(private val calendar: Calendar) {
+class TimetableScrollHelper(private val calendar: Calendar) {
     private data class Time(val hour: Int, val minute: Int)
 
     fun getCurrentDayType(): DayType {
