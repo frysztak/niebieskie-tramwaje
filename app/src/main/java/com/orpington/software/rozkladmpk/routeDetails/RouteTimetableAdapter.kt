@@ -41,6 +41,10 @@ class RouteTimetableAdapter(
         notifyDataSetChanged()
     }
 
+    fun getItem(idx: Int): ViewItem {
+        return items[idx]
+    }
+
     override fun getItemCount(): Int {
         return items.size
     }
