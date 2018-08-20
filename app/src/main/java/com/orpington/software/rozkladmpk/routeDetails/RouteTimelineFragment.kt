@@ -10,6 +10,10 @@ import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.Timeline
+import com.orpington.software.rozkladmpk.utils.forceRippleAnimation
+import com.orpington.software.rozkladmpk.utils.smoothScrollWithOffset
+import com.orpington.software.rozkladmpk.utils.whenScrollStateIdle
+import kotlinx.android.synthetic.main.activity_route_details.*
 import kotlinx.android.synthetic.main.error_view.view.*
 import kotlinx.android.synthetic.main.route_timeline.*
 
@@ -92,10 +96,20 @@ class RouteTimelineFragment : Fragment(), RouteDetailsContract.TimelineView {
         selectDirectionAndTime_textview.visibility = View.GONE
         errorLayout.visibility = View.GONE
         timeline_recyclerview.visibility = View.VISIBLE
+        activity?.appBarLayout?.setExpanded(false, true)
 
         adapter.setItems(timeline.timeline, itemToHighlight)
         if (itemToScrollTo != -1) {
-            layoutManager.scrollToPositionWithOffset(itemToScrollTo, 0)
+            val activity = activity as RouteDetailsActivity?
+            val appBarHeight = activity?.appBarLayout?.height ?: 0
+
+            // 1) smooth scroll to an item
+            // 2) when recyclerview stops scrolling, show ripple animation
+            timeline_recyclerview.whenScrollStateIdle {
+                val v = timeline_recyclerview.findViewHolderForAdapterPosition(itemToScrollTo)?.itemView
+                v?.forceRippleAnimation()
+            }
+            layoutManager.smoothScrollWithOffset(timeline_recyclerview, itemToScrollTo, appBarHeight)
         }
     }
 

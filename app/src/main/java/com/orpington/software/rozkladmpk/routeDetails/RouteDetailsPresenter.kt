@@ -193,6 +193,11 @@ class RouteDetailsPresenter(
                     val itemToHighlight = data.timeline.indexOfFirst { item ->
                         item.departureTime == timeToFind
                     }
+
+                    if (state.currentTimelinePosition == -1) {
+                        state.currentTimelinePosition = itemToHighlight
+                    }
+
                     timelineView?.showTimeline(data, itemToHighlight, state.currentTimelinePosition)
                 }
 
