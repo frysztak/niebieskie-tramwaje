@@ -47,9 +47,9 @@ fun String.stripAccents(): String {
 class StopsAndRoutesHelper {
 
     fun convertModel(data: StopsAndRoutes): List<StopOrRoute> {
-        val items: MutableList<StopOrRoute> = data.stops.map { stopName ->
-            Stop(stopName)
-        }.toMutableList()
+        val items: MutableList<StopOrRoute> = data.stops.map { stop ->
+            Stop(stop.stopName)
+        }.distinct().toMutableList()
 
         items.addAll(
             data.routes.map { route ->
