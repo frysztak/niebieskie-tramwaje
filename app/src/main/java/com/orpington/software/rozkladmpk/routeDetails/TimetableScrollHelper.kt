@@ -3,7 +3,7 @@ package com.orpington.software.rozkladmpk.routeDetails
 import java.util.*
 import com.orpington.software.rozkladmpk.routeDetails.TimetableViewHelper.*
 
-data class TimeIndices(val hourIdx: Int, val minuteIdx: Int)
+data class HourCoordinates(val hourIdx: Int, val rowTag: String)
 
 class TimetableScrollHelper(private val calendar: Calendar) {
     private data class Time(val hour: Int, val minute: Int)
@@ -22,13 +22,13 @@ class TimetableScrollHelper(private val calendar: Calendar) {
         }
     }
 
-    fun calculateRowAndColumnToScrollInto(items: List<ViewItem>): TimeIndices {
+    fun calculateRowToScrollInto(items: List<ViewItem>): HourCoordinates? {
         val dayTypeToFind = getCurrentDayType()
         val headerIndex = items.indexOfFirst { item ->
             item is HeaderItem && item.dayType == dayTypeToFind
         }
 
-        if (headerIndex == -1) return TimeIndices(-1, -1)
+        if (headerIndex == -1) return null
 
         val currentTime = Time(
             calendar.get(Calendar.HOUR_OF_DAY),
@@ -58,11 +58,12 @@ class TimetableScrollHelper(private val calendar: Calendar) {
                 val minute = rowItem.data[minuteIdx].toInt()
                 val time = Time(hour, minute)
                 if (timeComparer(time, currentTime)) {
-                    return TimeIndices(hourIdx, minuteIdx - 1)
+                    val tag = "${dayTypeToFind.prefix}:$hour"
+                    return HourCoordinates(hourIdx, tag)
                 }
             }
         }
 
-        return TimeIndices(-1, -1)
+        return null
     }
 }

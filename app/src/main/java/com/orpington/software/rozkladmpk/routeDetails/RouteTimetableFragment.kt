@@ -12,13 +12,11 @@ import android.widget.TextView
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.R
-import com.orpington.software.rozkladmpk.utils.afterMeasured
-import com.orpington.software.rozkladmpk.utils.forceRippleAnimation
-import com.orpington.software.rozkladmpk.utils.smoothScrollWithOffset
-import com.orpington.software.rozkladmpk.utils.whenScrollStateIdle
+import com.orpington.software.rozkladmpk.utils.*
 import kotlinx.android.synthetic.main.activity_route_details.*
 import kotlinx.android.synthetic.main.error_view.view.*
 import kotlinx.android.synthetic.main.route_timetable.*
+import kotlinx.android.synthetic.main.route_timetable_list_header.view.*
 
 
 class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
@@ -53,6 +51,44 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
         adapter = RouteTimetableAdapter(context!!, presenter!!)
         layoutManager = LinearLayoutManager(context)
 
+        val stickyHeader = object : HeaderItemDecoration.StickyHeaderInterface {
+            override fun isHeader(itemPosition: Int): Boolean {
+                if (adapter.itemCount <= itemPosition) return false
+
+                return adapter.getItem(itemPosition).type == TimetableViewHelper.ViewType.HEADER
+            }
+
+            override fun getHeaderPositionForItem(itemPosition: Int): Int {
+                var headerPosition = 0
+                var itemPos = itemPosition
+                do {
+                    if (this.isHeader(itemPos)) {
+                        headerPosition = itemPos
+                        break
+                    }
+                    itemPos -= 1
+                } while (itemPos >= 0)
+                return headerPosition
+            }
+
+            override fun getHeaderLayout(headerPosition: Int): Int {
+                return R.layout.route_timetable_list_header
+            }
+
+            override fun bindHeaderData(header: View?, headerPosition: Int) {
+                if (adapter.itemCount <= headerPosition) return
+
+                val item = adapter.getItem(headerPosition) as TimetableViewHelper.HeaderItem?
+                    ?: return
+
+                header?.mainText?.text = item.dayType.name
+                header?.additionalText?.text = item.additionalText
+                header?.additionalText?.visibility =
+                    if (item.additionalText.isEmpty()) View.GONE else View.VISIBLE
+            }
+        }
+        timetable_recyclerview.addItemDecoration(HeaderItemDecoration(stickyHeader))
+
         timetable_recyclerview?.adapter = adapter
         timetable_recyclerview?.layoutManager = layoutManager
 
@@ -75,24 +111,25 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
     override fun showTimeTable(
         items: List<TimetableViewHelper.ViewItem>,
         timeToHighlight: String,
-        itemToScrollTo: Int
+        hourToScrollTo: HourCoordinates?
     ) {
         selectDirection_textview.visibility = View.GONE
         errorLayout.visibility = View.GONE
         timetable_recyclerview.visibility = View.VISIBLE
+        activity?.appBarLayout?.setExpanded(false, true)
 
         adapter.setItems(items)
-        if (itemToScrollTo != -1) {
+        if (hourToScrollTo != null) {
             val activity = activity as RouteDetailsActivity?
             val appBarHeight = activity?.appBarLayout?.height ?: 0
 
             // 1) smooth scroll to an item
             // 2) when recyclerview stops scrolling, show ripple animation
             timetable_recyclerview.whenScrollStateIdle {
-                val v = timetable_recyclerview.findViewWithTag<LinearLayout>("SU:13")
+                val v = timetable_recyclerview.findViewWithTag<LinearLayout>(hourToScrollTo.rowTag)
                 v?.forceRippleAnimation()
             }
-            layoutManager.smoothScrollWithOffset(timetable_recyclerview, itemToScrollTo, appBarHeight)
+            layoutManager.smoothScrollWithOffset(timetable_recyclerview, hourToScrollTo.hourIdx, appBarHeight)
         }
 
         if (timeToHighlight.isNotEmpty()) {
@@ -101,6 +138,7 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
             }
         }
     }
+
 
     private var skeletonScreen: SkeletonScreen? = null
     override fun showProgressBar() {

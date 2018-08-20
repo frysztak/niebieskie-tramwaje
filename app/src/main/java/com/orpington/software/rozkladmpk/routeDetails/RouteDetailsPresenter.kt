@@ -117,16 +117,16 @@ class RouteDetailsPresenter(
 
                     val viewItems = helper.processTimeTable(data)
                     val scrollHelper = TimetableScrollHelper(Calendar.getInstance())
-                    val timeToScrollTo = scrollHelper.calculateRowAndColumnToScrollInto(viewItems)
+                    val timeToScrollTo = scrollHelper.calculateRowToScrollInto(viewItems)
 
                     if (state.currentTimetablePosition == -1) {
-                        state.currentTimetablePosition = timeToScrollTo.hourIdx
+                        state.currentTimetablePosition = timeToScrollTo?.hourIdx ?: -1
                     }
 
                     timetableView?.showTimeTable(
                         viewItems,
                         state.currentTimeTag,
-                        state.currentTimetablePosition
+                        timeToScrollTo
                     )
                 }
 
@@ -174,7 +174,7 @@ class RouteDetailsPresenter(
     }
 
     override fun setTimelinePosition(position: Int) {
-       state.currentTimelinePosition = position
+        state.currentTimelinePosition = position
     }
 
     override fun loadTimeline() {
@@ -193,6 +193,11 @@ class RouteDetailsPresenter(
                     val itemToHighlight = data.timeline.indexOfFirst { item ->
                         item.departureTime == timeToFind
                     }
+
+                    if (state.currentTimelinePosition == -1) {
+                        state.currentTimelinePosition = itemToHighlight
+                    }
+
                     timelineView?.showTimeline(data, itemToHighlight, state.currentTimelinePosition)
                 }
 

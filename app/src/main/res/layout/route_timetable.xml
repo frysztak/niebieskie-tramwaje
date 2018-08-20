@@ -13,15 +13,17 @@
         android:fontFamily="sans-serif-light"
         android:gravity="center"
         android:text="@string/select_direction_first"
-        android:textSize="22dp" />
+        android:textSize="22dp"
+        tools:visibility="gone" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/timetable.recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:visibility="gone"
-        tools:listitem="@layout/route_timetable_list_item" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:listitem="@layout/route_timetable_list_item"
+        tools:visibility="visible" />
 
     <include
         android:id="@+id/errorLayout"
