@@ -2,6 +2,7 @@ package com.orpington.software.rozkladmpk
 
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
+import com.orpington.software.rozkladmpk.routeDetails.HourCoordinates
 import com.orpington.software.rozkladmpk.routeDetails.TimetableScrollHelper
 import com.orpington.software.rozkladmpk.routeDetails.TimetableViewHelper
 import com.orpington.software.rozkladmpk.routeDetails.TimetableViewHelper.*
@@ -55,14 +56,13 @@ class TimetableScrollHelperTest {
         private val currentHour: Int,
         private val currentMinute: Int,
         private val items: List<TimetableViewHelper.ViewItem>,
-        private val expectedRowIndex: Int,
-        private val expectedColumnIndex: Int
+        private val expectedCoordinates: HourCoordinates?
     ) {
 
         companion object {
             @JvmStatic
             @Parameterized.Parameters
-            fun data(): Collection<Array<Any>> {
+            fun data(): Collection<Array<out Any?>> {
                 return listOf(
                     // 0: Typical situation
                     arrayOf(Calendar.MONDAY, 12, 6, listOf(
@@ -70,7 +70,7 @@ class TimetableScrollHelperTest {
                         RowItem(DayType.Weekday, arrayListOf("10", "07")),
                         RowItem(DayType.Weekday, arrayListOf("11", "07")),
                         RowItem(DayType.Weekday, arrayListOf("12", "07"))
-                    ), 3, 0),
+                    ), HourCoordinates(3, "WE:12")),
 
                     // 1: Typical situation
                     arrayOf(Calendar.MONDAY, 12, 50, listOf(
@@ -78,7 +78,7 @@ class TimetableScrollHelperTest {
                         RowItem(DayType.Weekday, arrayListOf("10", "07")),
                         RowItem(DayType.Weekday, arrayListOf("11", "07")),
                         RowItem(DayType.Weekday, arrayListOf("12", "07", "12", "24", "36", "48", "54"))
-                    ), 3, 5),
+                    ), HourCoordinates(3, "WE:12")),
 
                     // 2: Typical situation
                     arrayOf(Calendar.MONDAY, 11, 50, listOf(
@@ -86,7 +86,7 @@ class TimetableScrollHelperTest {
                         RowItem(DayType.Weekday, arrayListOf("10", "07")),
                         RowItem(DayType.Weekday, arrayListOf("11", "07")),
                         RowItem(DayType.Weekday, arrayListOf("12", "07", "12", "24", "36", "48", "54"))
-                    ), 3, 0),
+                    ), HourCoordinates(3, "WE:12")),
 
                     // 3: Current hour is past last available one
                     arrayOf(Calendar.MONDAY, 13, 6, listOf(
@@ -94,7 +94,7 @@ class TimetableScrollHelperTest {
                         RowItem(DayType.Weekday, arrayListOf("10", "07")),
                         RowItem(DayType.Weekday, arrayListOf("11", "07")),
                         RowItem(DayType.Weekday, arrayListOf("12", "07"))
-                    ), -1, -1),
+                    ), null),
 
                     // 4: It's sunday but the route only runs on weekdays
                     arrayOf(Calendar.SUNDAY, 13, 6, listOf(
@@ -102,7 +102,7 @@ class TimetableScrollHelperTest {
                         RowItem(DayType.Weekday, arrayListOf("10", "07")),
                         RowItem(DayType.Weekday, arrayListOf("11", "07")),
                         RowItem(DayType.Weekday, arrayListOf("12", "07"))
-                    ), -1, -1)
+                    ), null)
                 )
             }
         }
@@ -116,9 +116,8 @@ class TimetableScrollHelperTest {
             }
 
             val helper = TimetableScrollHelper(calendar)
-            val timeIndices = helper.calculateRowAndColumnToScrollInto(items)
-            Assert.assertEquals(expectedRowIndex, timeIndices.hourIdx)
-            Assert.assertEquals(expectedColumnIndex, timeIndices.minuteIdx)
+            val coords = helper.calculateRowToScrollInto(items)
+            Assert.assertEquals(expectedCoordinates, coords)
         }
 
     }

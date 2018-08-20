@@ -111,7 +111,7 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
     override fun showTimeTable(
         items: List<TimetableViewHelper.ViewItem>,
         timeToHighlight: String,
-        itemToScrollTo: Int
+        hourToScrollTo: HourCoordinates?
     ) {
         selectDirection_textview.visibility = View.GONE
         errorLayout.visibility = View.GONE
@@ -119,17 +119,17 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
         activity?.appBarLayout?.setExpanded(false, true)
 
         adapter.setItems(items)
-        if (itemToScrollTo != -1) {
+        if (hourToScrollTo != null) {
             val activity = activity as RouteDetailsActivity?
             val appBarHeight = activity?.appBarLayout?.height ?: 0
 
             // 1) smooth scroll to an item
             // 2) when recyclerview stops scrolling, show ripple animation
             timetable_recyclerview.whenScrollStateIdle {
-                val v = timetable_recyclerview.findViewWithTag<LinearLayout>("SU:13")
+                val v = timetable_recyclerview.findViewWithTag<LinearLayout>(hourToScrollTo.rowTag)
                 v?.forceRippleAnimation()
             }
-            layoutManager.smoothScrollWithOffset(timetable_recyclerview, itemToScrollTo, appBarHeight)
+            layoutManager.smoothScrollWithOffset(timetable_recyclerview, hourToScrollTo.hourIdx, appBarHeight)
         }
 
         if (timeToHighlight.isNotEmpty()) {
