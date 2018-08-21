@@ -1,7 +1,10 @@
 package com.orpington.software.rozkladmpk.stopsAndRoutes
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.Looper
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
@@ -9,6 +12,9 @@ import android.view.Menu
 import android.view.View
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
+import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationServices.getFusedLocationProviderClient
+import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.about.AboutActivity
@@ -22,6 +28,10 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
     private lateinit var presenter: StopsAndRoutesPresenter
     private lateinit var recyclerAdapter: StopsAndRoutesAdapter
+
+    private lateinit var locationProvider: FusedLocationProviderClient
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +49,53 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         errorLayout.tryAgainButton.setOnClickListener {
             presenter.loadStopsAndRoutes()
         }
+
+        initLocationManager()
+    }
+
+    private fun initLocationManager() {
+        val UPDATE_INTERVAL = 10 * 1000L // 10 seconds
+        val FASTEST_INTERVAL = 2 * 1000L // 2  seconds
+
+        // Create the location request to start receiving updates
+        locationRequest = LocationRequest()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = UPDATE_INTERVAL
+        locationRequest.fastestInterval = FASTEST_INTERVAL
+
+        // Create LocationSettingsRequest object using location request
+        val builder = LocationSettingsRequest.Builder()
+        builder.addLocationRequest(locationRequest)
+        val locationSettingsRequest = builder.build()
+
+        // Check whether location settings are satisfied
+        // https://developers.google.com/android/reference/com/google/android/gms/location/SettingsClient
+        val settingsClient = LocationServices.getSettingsClient(this)
+        settingsClient.checkLocationSettings(locationSettingsRequest)
+
+        // new Google API SDK v11 uses getFusedLocationProviderClient(this)
+        locationProvider = getFusedLocationProviderClient(this)
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(location: LocationResult?) {
+                val loc = location?.lastLocation ?: return
+                presenter.locationChanged(loc.latitude.toFloat(), loc.longitude.toFloat())
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun onResume() {
+        super.onResume()
+
+        runWithPermissions(Manifest.permission.ACCESS_FINE_LOCATION) {
+            locationProvider
+                .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        locationProvider.removeLocationUpdates(locationCallback)
     }
 
     override fun onDestroy() {
@@ -125,6 +182,10 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
     override fun hideProgressBar() {
         skeletonScreen?.hide()
+    }
+
+    override fun displayNearbyStops(data: List<StopOrRoute>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 

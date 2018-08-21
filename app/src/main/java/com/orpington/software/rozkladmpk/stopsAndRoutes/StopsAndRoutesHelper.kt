@@ -1,6 +1,8 @@
 package com.orpington.software.rozkladmpk.stopsAndRoutes
 
 import com.orpington.software.rozkladmpk.data.model.StopsAndRoutes
+import com.orpington.software.rozkladmpk.utils.GeographicDistance
+import com.orpington.software.rozkladmpk.utils.Location
 import com.orpington.software.rozkladmpk.utils.sort
 import me.xdrop.fuzzywuzzy.FuzzySearch
 
@@ -100,5 +102,15 @@ class StopsAndRoutesHelper {
         }.map { pair ->
             pair.first
         }
+    }
+
+    fun filterNearbyStops(stops: List<StopsAndRoutes.Stop>, location: Location): List<Stop> {
+        val distance = GeographicDistance(location, 500)
+        return stops.filter { stop ->
+            val loc = Location(stop.latitude, stop.longitude)
+            distance.isWithinBounds(loc)
+        }.map { stop ->
+            Stop(stop.stopName)
+        }.distinct()
     }
 }

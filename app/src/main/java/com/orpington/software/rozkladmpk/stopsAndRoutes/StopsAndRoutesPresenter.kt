@@ -3,6 +3,8 @@ package com.orpington.software.rozkladmpk.stopsAndRoutes
 import com.orpington.software.rozkladmpk.data.model.StopsAndRoutes
 import com.orpington.software.rozkladmpk.data.source.IDataSource
 import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
+import com.orpington.software.rozkladmpk.utils.GeographicDistance
+import com.orpington.software.rozkladmpk.utils.Location
 
 
 class StopsAndRoutesPresenter(
@@ -18,10 +20,13 @@ class StopsAndRoutesPresenter(
         this.view = null
     }
 
+    // used to show nearby stops
+    private var rawStops: List<StopsAndRoutes.Stop> = emptyList()
     private var stopsAndRoutes: List<StopOrRoute> = emptyList()
     override fun setStopsAndRoutes(data: StopsAndRoutes) {
         val helper = StopsAndRoutesHelper()
         stopsAndRoutes = helper.convertModel(data)
+        rawStops = data.stops
     }
 
     private var shownStopsAndRoutes: List<StopOrRoute> = emptyList()
@@ -67,6 +72,13 @@ class StopsAndRoutesPresenter(
             is Stop -> view?.navigateToRouteVariants(item.stopName)
             is Route -> view?.navigateToStopsForRoute(item.routeID)
         }
+    }
+
+    override fun locationChanged(latitude: Float, longitude: Float) {
+        val location = Location(latitude, longitude)
+        val helper = StopsAndRoutesHelper()
+        val nearbyStops =  helper.filterNearbyStops(rawStops, location)
+        view?.displayNearbyStops(nearbyStops)
     }
 
 }
