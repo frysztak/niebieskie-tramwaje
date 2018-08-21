@@ -9,12 +9,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.orpington.software.rozkladmpk.R
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+import kotlinx.android.synthetic.main.stops_and_routes_list_header.view.*
 import kotlinx.android.synthetic.main.stops_and_routes_list_item.view.*
 
 class StopsAndRoutesAdapter(
     private val context: Context,
     private val presenter: StopsAndRoutesPresenter) :
-    RecyclerView.Adapter<StopsAndRoutesAdapter.ViewHolder>(),
+    RecyclerView.Adapter<RecyclerView.ViewHolder>(),
     FastScrollRecyclerView.SectionedAdapter {
 
     private var items: List<ViewItem> = emptyList()
@@ -24,9 +25,17 @@ class StopsAndRoutesAdapter(
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_list_item, parent, false)
-        return ViewHolder(view, presenter)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            ViewType.HEADER.code -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_list_header, parent, false)
+                HeaderViewHolder(view)
+            }
+            else -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_list_item, parent, false)
+                StopOrRouteViewHolder(view, presenter)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -37,26 +46,38 @@ class StopsAndRoutesAdapter(
         return items[position].type.code
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = items[position]
-        var iconResId = -1
-        var text = ""
 
         when (item.type) {
             ViewType.STOP -> {
-                iconResId = R.drawable.bus_stop
-                text = (item as StopItem).stopName
+                val iconResId = R.drawable.bus_stop
+                val text = (item as StopItem).stopName
+
+                (holder as StopOrRouteViewHolder).apply {
+                    iconImageView.setImageResource(iconResId)
+                    mainNameTextView.text = text
+                }
             }
+
             ViewType.ROUTE -> {
                 val routeItem = item as RouteItem
-                iconResId = if (routeItem.isBus) R.drawable.bus else R.drawable.tram
+                val iconResId = if (routeItem.isBus) R.drawable.bus else R.drawable.tram
                 // e.g. "Route 33"
-                text = "${context.getString(R.string.route)} ${routeItem.routeID}"
+                val text = "${context.getString(R.string.route)} ${routeItem.routeID}"
+
+                (holder as StopOrRouteViewHolder).apply {
+                    iconImageView.setImageResource(iconResId)
+                    mainNameTextView.text = text
+                }
+            }
+
+            ViewType.HEADER -> {
+                val header = item as HeaderItem
+                (holder as HeaderViewHolder).mainText.text = header.title
             }
         }
 
-        holder.iconImageView.setImageResource(iconResId)
-        holder.mainNameTextView.text = text
     }
 
     override fun getSectionName(position: Int): String {
@@ -64,19 +85,22 @@ class StopsAndRoutesAdapter(
         return when (item.type) {
             ViewType.STOP -> (item as StopItem).stopName
             ViewType.ROUTE -> (item as RouteItem).routeID
+            ViewType.HEADER -> "" // TODO?
         }.first().toString()
     }
 
     private fun convertToViewItems(data: List<StopOrRoute>): List<ViewItem> {
-        return data.map { item ->
+        val header: ViewItem = HeaderItem("Stops and routes")
+        val items = data.map { item ->
             when (item) {
                 is Stop -> StopItem(item.stopName)
                 is Route -> RouteItem(item.routeID, item.isBus)
             }
         }
+        return listOf(header) + items
     }
 
-    class ViewHolder(view: View, private val presenter: StopsAndRoutesPresenter) :
+    class StopOrRouteViewHolder(view: View, private val presenter: StopsAndRoutesPresenter) :
         RecyclerView.ViewHolder(view), View.OnClickListener {
 
         val iconImageView: ImageView = view.icon
@@ -91,13 +115,22 @@ class StopsAndRoutesAdapter(
         }
     }
 
+    class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val mainText: TextView = view.mainText
+    }
+
     enum class ViewType(val code: Int) {
-        STOP(0),
-        ROUTE(1)
+        HEADER(0),
+        STOP(1),
+        ROUTE(2)
     }
 
     interface ViewItem {
         val type: ViewType
+    }
+
+    class HeaderItem(val title: String) : ViewItem {
+        override val type: ViewType = ViewType.HEADER
     }
 
     class StopItem(val stopName: String) : ViewItem {
