@@ -143,10 +143,18 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     }
 
     override fun displaySearchResults(data: List<StopOrRoute>) {
+        recyclerView.visibility = View.VISIBLE
+        notFoundLayout.visibility = View.GONE
+        errorLayout.visibility = View.GONE
+
         recyclerAdapter.setSearchResults(data)
     }
 
     override fun displayNearbyStops(data: List<StopOrRoute>) {
+        recyclerView.visibility = View.VISIBLE
+        notFoundLayout.visibility = View.GONE
+        errorLayout.visibility = View.GONE
+
         recyclerAdapter.setNearbyStops(data)
     }
 
