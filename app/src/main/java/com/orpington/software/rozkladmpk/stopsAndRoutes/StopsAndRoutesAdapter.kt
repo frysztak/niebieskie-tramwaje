@@ -25,8 +25,14 @@ class StopsAndRoutesAdapter(
 
     private var items: List<ViewItem> = emptyList()
 
+    private var searchResults: List<StopOrRoute> = emptyList()
+    fun setSearchResults(data: List<StopOrRoute>) {
+        searchResults = data
+        updateItems()
+    }
+
     private var stopsAndRoutes: List<StopOrRoute> = emptyList()
-    fun setItems(data: List<StopOrRoute>) {
+    fun setStopsAndRoutes(data: List<StopOrRoute>) {
         stopsAndRoutes = data
         updateItems()
     }
@@ -38,6 +44,13 @@ class StopsAndRoutesAdapter(
     }
 
     private fun updateItems() {
+        val searchResultsSection: List<ViewItem> = if (searchResults.isEmpty()) {
+            emptyList()
+        } else {
+            val header: ViewItem = HeaderItem(context.getString(R.string.search_results))
+            listOf(header) + convertToViewItems(searchResults)
+        }
+
         val nearbyStopsSection: List<ViewItem> = if (nearbyStops.isEmpty()) {
             emptyList()
         } else {
@@ -45,9 +58,10 @@ class StopsAndRoutesAdapter(
             listOf(header) + convertToViewItems(nearbyStops)
         }
 
-        val stopsAndRoutesHeader = HeaderItem(context.getString(R.string.stops_and_routes))
+        val stopsAndRoutesSection =
+            listOf(HeaderItem(context.getString(R.string.stops_and_routes))) + convertToViewItems(stopsAndRoutes)
 
-        items = nearbyStopsSection + listOf(stopsAndRoutesHeader) + convertToViewItems(stopsAndRoutes)
+        items = searchResultsSection + nearbyStopsSection + stopsAndRoutesSection
         notifyDataSetChanged()
     }
 

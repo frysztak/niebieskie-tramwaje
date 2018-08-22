@@ -139,7 +139,15 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         notFoundLayout.visibility = View.GONE
         errorLayout.visibility = View.GONE
 
-        recyclerAdapter.setItems(data)
+        recyclerAdapter.setStopsAndRoutes(data)
+    }
+
+    override fun displaySearchResults(data: List<StopOrRoute>) {
+        recyclerAdapter.setSearchResults(data)
+    }
+
+    override fun displayNearbyStops(data: List<StopOrRoute>) {
+        recyclerAdapter.setNearbyStops(data)
     }
 
     override fun navigateToRouteVariants(stopName: String) {
@@ -183,10 +191,4 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     override fun hideProgressBar() {
         skeletonScreen?.hide()
     }
-
-    override fun displayNearbyStops(data: List<StopOrRoute>) {
-        recyclerAdapter.setNearbyStops(data)
-    }
-
-
 }

@@ -10,7 +10,6 @@ interface StopsAndRoutesContract {
 
         fun loadStopsAndRoutes()
         fun setStopsAndRoutes(data: StopsAndRoutes)
-        fun setShownStopsAndRoutes(data: List<StopOrRoute>)
 
         fun queryTextChanged(newText: String)
         fun stopClicked(stopName: String)
@@ -24,6 +23,8 @@ interface StopsAndRoutesContract {
         fun navigateToStopsForRoute(routeID: String)
 
         fun displayStopsAndRoutes(data: List<StopOrRoute>)
+
+        fun displaySearchResults(data: List<StopOrRoute>)
         fun showStopNotFound()
 
         fun displayNearbyStops(data: List<StopOrRoute>)

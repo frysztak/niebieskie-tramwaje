@@ -109,8 +109,8 @@ class StopsAndRoutesPresenterTest {
 
         val inOrder = inOrder(view)
         inOrder.verify(view, times(1)).showProgressBar()
-        inOrder.verify(view).displayStopsAndRoutes(any())
-        //inOrder.verify(view).displayStopsAndRoutes(listOf<Stop>("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
+        inOrder.verify(view).displaySearchResults(any())
+        //inOrder.verify(view).displaySearchResults(listOf<Stop>("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
         inOrder.verify(view, times(1)).hideProgressBar()
         //verify(view, never()).reportThatSomethingWentWrong()
     }
@@ -126,7 +126,7 @@ class StopsAndRoutesPresenterTest {
         inOrder.verify(view, times(1)).showProgressBar()
         inOrder.verify(view, times(1)).hideProgressBar()
         inOrder.verify(view, times(1)).reportThatSomethingWentWrong()
-        verify(view, never()).displayStopsAndRoutes(any())
+        verify(view, never()).displaySearchResults(any())
     }
 
     @Test
@@ -143,7 +143,7 @@ class StopsAndRoutesPresenterTest {
 
         presenter.setStopsAndRoutes(data)
         presenter.queryTextChanged("a")
-        verify(view).displayStopsAndRoutes(expected)
+        verify(view).displaySearchResults(expected)
         verify(view, never()).showProgressBar()
         verify(view, never()).hideProgressBar()
         verify(view, never()).reportThatSomethingWentWrong()
@@ -157,7 +157,7 @@ class StopsAndRoutesPresenterTest {
 
         presenter.setStopsAndRoutes(data)
         presenter.queryTextChanged("a")
-        verify(view, never()).displayStopsAndRoutes(any())
+        verify(view, never()).displaySearchResults(any())
         verify(view, never()).showProgressBar()
         verify(view, never()).hideProgressBar()
         verify(view, never()).reportThatSomethingWentWrong()

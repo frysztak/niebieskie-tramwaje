@@ -28,20 +28,14 @@ class StopsAndRoutesPresenter(
         rawStops = data.stops
     }
 
-    private var shownStopsAndRoutes: List<StopOrRoute> = emptyList()
-    override fun setShownStopsAndRoutes(data: List<StopOrRoute>) {
-        shownStopsAndRoutes = data
-    }
-
     override fun loadStopsAndRoutes() {
         //if (allStops.isNotEmpty()) return
         view?.showProgressBar()
         dataSource.getStopsAndRoutes(object : IDataSource.LoadDataCallback<StopsAndRoutes> {
             override fun onDataLoaded(data: StopsAndRoutes) {
                 setStopsAndRoutes(data)
-                setShownStopsAndRoutes(stopsAndRoutes)
                 view?.hideProgressBar()
-                view?.displayStopsAndRoutes(shownStopsAndRoutes)
+                view?.displayStopsAndRoutes(stopsAndRoutes)
             }
 
             override fun onDataNotAvailable() {
@@ -52,12 +46,16 @@ class StopsAndRoutesPresenter(
     }
 
     override fun queryTextChanged(newText: String) {
+        if (newText.isEmpty()) {
+            view?.displaySearchResults(emptyList())
+            return
+        }
 
         val helper = StopsAndRoutesHelper()
-        shownStopsAndRoutes = helper.filterItems(stopsAndRoutes, newText)
+        val searchResults = helper.filterItems(stopsAndRoutes, newText)
 
-        if (shownStopsAndRoutes.isNotEmpty()) {
-            view?.displayStopsAndRoutes(shownStopsAndRoutes)
+        if (searchResults.isNotEmpty()) {
+            view?.displaySearchResults(searchResults)
         } else {
             view?.showStopNotFound()
         }

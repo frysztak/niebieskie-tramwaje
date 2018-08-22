@@ -36,4 +36,5 @@
 
     <string name="nearby_stops">Pobliskie przystanki</string>
     <string name="stops_and_routes">Przystanki i linie</string>
+    <string name="search_results">Wyniki wyszukiwania</string>
 </resources>

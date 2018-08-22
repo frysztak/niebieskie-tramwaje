@@ -34,4 +34,5 @@
     <string name="oss_licenses">Open Source Licenses</string>
     <string name="nearby_stops">Nearby stops</string>
     <string name="stops_and_routes">Stops and routes</string>
+    <string name="search_results">Search results</string>
 </resources>
