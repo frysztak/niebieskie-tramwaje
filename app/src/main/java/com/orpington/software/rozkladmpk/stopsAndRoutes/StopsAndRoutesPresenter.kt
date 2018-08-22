@@ -3,8 +3,7 @@ package com.orpington.software.rozkladmpk.stopsAndRoutes
 import com.orpington.software.rozkladmpk.data.model.StopsAndRoutes
 import com.orpington.software.rozkladmpk.data.source.IDataSource
 import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
-import com.orpington.software.rozkladmpk.utils.GeographicDistance
-import com.orpington.software.rozkladmpk.utils.Location
+import com.orpington.software.rozkladmpk.utils.GeoLocation
 
 
 class StopsAndRoutesPresenter(
@@ -64,20 +63,18 @@ class StopsAndRoutesPresenter(
         }
     }
 
-    override fun listItemClicked(position: Int) {
-        if (position >= shownStopsAndRoutes.size) return
-
-        val item = shownStopsAndRoutes[position]
-        when (item) {
-            is Stop -> view?.navigateToRouteVariants(item.stopName)
-            is Route -> view?.navigateToStopsForRoute(item.routeID)
-        }
+    override fun stopClicked(stopName: String) {
+        view?.navigateToRouteVariants(stopName)
     }
 
-    override fun locationChanged(latitude: Float, longitude: Float) {
-        val location = Location(latitude, longitude)
+    override fun routeClicked(routeID: String) {
+        view?.navigateToStopsForRoute(routeID)
+    }
+
+    override fun locationChanged(latitude: Double, longitude: Double) {
+        val location = GeoLocation.fromDegrees(latitude, longitude)
         val helper = StopsAndRoutesHelper()
-        val nearbyStops =  helper.filterNearbyStops(rawStops, location)
+        val nearbyStops = helper.filterNearbyStops(rawStops, location)
         view?.displayNearbyStops(nearbyStops)
     }
 

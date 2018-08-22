@@ -78,7 +78,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(location: LocationResult?) {
                 val loc = location?.lastLocation ?: return
-                presenter.locationChanged(loc.latitude.toFloat(), loc.longitude.toFloat())
+                presenter.locationChanged(loc.latitude, loc.longitude)
             }
         }
     }
@@ -185,7 +185,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     }
 
     override fun displayNearbyStops(data: List<StopOrRoute>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        recyclerAdapter.setNearbyStops(data)
     }
 
 

@@ -33,4 +33,7 @@
     <string name="about">O aplikacji</string>
     <string name="version">Wersja</string>
     <string name="oss_licenses">Licencje OSS</string>
+
+    <string name="nearby_stops">Pobliskie przystanki</string>
+    <string name="stops_and_routes">Przystanki i linie</string>
 </resources>

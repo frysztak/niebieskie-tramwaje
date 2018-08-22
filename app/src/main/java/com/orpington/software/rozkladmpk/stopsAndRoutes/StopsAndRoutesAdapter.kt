@@ -12,16 +12,42 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import kotlinx.android.synthetic.main.stops_and_routes_list_header.view.*
 import kotlinx.android.synthetic.main.stops_and_routes_list_item.view.*
 
+internal interface ClickListener {
+    fun itemClicked(index: Int)
+}
+
 class StopsAndRoutesAdapter(
     private val context: Context,
     private val presenter: StopsAndRoutesPresenter) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(),
-    FastScrollRecyclerView.SectionedAdapter {
+    FastScrollRecyclerView.SectionedAdapter,
+    ClickListener {
 
     private var items: List<ViewItem> = emptyList()
 
+    private var stopsAndRoutes: List<StopOrRoute> = emptyList()
     fun setItems(data: List<StopOrRoute>) {
-        this.items = convertToViewItems(data)
+        stopsAndRoutes = data
+        updateItems()
+    }
+
+    private var nearbyStops: List<StopOrRoute> = emptyList()
+    fun setNearbyStops(data: List<StopOrRoute>) {
+        nearbyStops = data
+        updateItems()
+    }
+
+    private fun updateItems() {
+        val nearbyStopsSection: List<ViewItem> = if (nearbyStops.isEmpty()) {
+            emptyList()
+        } else {
+            val header: ViewItem = HeaderItem(context.getString(R.string.nearby_stops))
+            listOf(header) + convertToViewItems(nearbyStops)
+        }
+
+        val stopsAndRoutesHeader = HeaderItem(context.getString(R.string.stops_and_routes))
+
+        items = nearbyStopsSection + listOf(stopsAndRoutesHeader) + convertToViewItems(stopsAndRoutes)
         notifyDataSetChanged()
     }
 
@@ -33,7 +59,7 @@ class StopsAndRoutesAdapter(
             }
             else -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_list_item, parent, false)
-                StopOrRouteViewHolder(view, presenter)
+                StopOrRouteViewHolder(view, this)
             }
         }
     }
@@ -85,22 +111,20 @@ class StopsAndRoutesAdapter(
         return when (item.type) {
             ViewType.STOP -> (item as StopItem).stopName
             ViewType.ROUTE -> (item as RouteItem).routeID
-            ViewType.HEADER -> "" // TODO?
+            ViewType.HEADER -> " " // TODO?
         }.first().toString()
     }
 
     private fun convertToViewItems(data: List<StopOrRoute>): List<ViewItem> {
-        val header: ViewItem = HeaderItem("Stops and routes")
-        val items = data.map { item ->
+        return data.map { item ->
             when (item) {
                 is Stop -> StopItem(item.stopName)
                 is Route -> RouteItem(item.routeID, item.isBus)
             }
         }
-        return listOf(header) + items
     }
 
-    class StopOrRouteViewHolder(view: View, private val presenter: StopsAndRoutesPresenter) :
+    internal class StopOrRouteViewHolder(view: View, private val clickListener: ClickListener) :
         RecyclerView.ViewHolder(view), View.OnClickListener {
 
         val iconImageView: ImageView = view.icon
@@ -111,7 +135,15 @@ class StopsAndRoutesAdapter(
         }
 
         override fun onClick(v: View?) {
-            presenter.listItemClicked(adapterPosition)
+            clickListener.itemClicked(adapterPosition)
+        }
+    }
+
+    override fun itemClicked(index: Int) {
+        val item = items[index]
+        when (item.type) {
+            ViewType.STOP -> presenter.stopClicked((item as StopItem).stopName)
+            ViewType.ROUTE -> presenter.routeClicked((item as RouteItem).routeID)
         }
     }
 

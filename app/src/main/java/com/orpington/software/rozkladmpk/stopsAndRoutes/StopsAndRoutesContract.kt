@@ -13,9 +13,10 @@ interface StopsAndRoutesContract {
         fun setShownStopsAndRoutes(data: List<StopOrRoute>)
 
         fun queryTextChanged(newText: String)
-        fun listItemClicked(position: Int)
+        fun stopClicked(stopName: String)
+        fun routeClicked(routeID: String)
 
-        fun locationChanged(latitude: Float, longitude: Float)
+        fun locationChanged(latitude: Double, longitude: Double)
     }
 
     interface View : BaseView {
