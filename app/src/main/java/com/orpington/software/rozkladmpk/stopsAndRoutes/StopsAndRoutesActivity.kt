@@ -88,6 +88,12 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         super.onResume()
 
         runWithPermissions(Manifest.permission.ACCESS_FINE_LOCATION) {
+            locationProvider.lastLocation.addOnSuccessListener { loc ->
+                if (loc != null) {
+                    presenter.locationChanged(loc.latitude, loc.longitude)
+                }
+            }
+
             locationProvider
                 .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
         }
