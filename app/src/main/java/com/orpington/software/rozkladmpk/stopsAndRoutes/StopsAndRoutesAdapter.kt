@@ -52,6 +52,12 @@ class StopsAndRoutesAdapter(
             listOf(header) + convertToViewItems(searchResults)
         }
 
+        if (searchResultsSection.isNotEmpty()) {
+            items = searchResultsSection
+            notifyDataSetChanged()
+            return
+        }
+
         val nearbyStopsSection: List<ViewItem> = if (nearbyStops.isEmpty()) {
             emptyList()
         } else {
