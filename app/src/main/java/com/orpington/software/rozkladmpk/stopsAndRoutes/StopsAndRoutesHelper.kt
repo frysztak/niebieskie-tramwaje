@@ -124,6 +124,6 @@ class StopsAndRoutesHelper {
             distance
         }.distinctBy { (stop, distance) ->
             stop
-        }
+        }.take(3)
     }
 }
