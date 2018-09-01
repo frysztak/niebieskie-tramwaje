@@ -109,14 +109,16 @@ class StopsAndRoutesHelper {
 
         val bounds = location.boundingCoordinates(distance, earthRadius)
 
-        return stops.filter { stop ->
-            val stopLocation = GeoLocation.fromDegrees(stop.latitude, stop.longitude)
-
+        return stops.map { stop ->
+            Pair(stop, GeoLocation.fromDegrees(stop.latitude, stop.longitude))
+        }.filter { (stop, stopLocation) ->
             stopLocation.latitudeInRadians >= bounds[0].latitudeInRadians
                 && stopLocation.latitudeInRadians <= bounds[1].latitudeInRadians
                 && stopLocation.longitudeInRadians >= bounds[0].longitudeInRadians
                 && stopLocation.longitudeInRadians <= bounds[1].longitudeInRadians
-        }.map { stop ->
+        }.sortedBy { (stop, stopLocation) ->
+           stopLocation.distanceTo(location, earthRadius)
+        }.map { (stop, _) ->
             Stop(stop.stopName)
         }.distinct()
     }
