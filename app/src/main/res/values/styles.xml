@@ -33,6 +33,13 @@
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
+    <style name="StopsAndRoutesDistance">
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:textColor">@color/secondary_text</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
     <style name="StopsAndRoutesHeader" parent="TextAppearance.AppCompat.Headline">
         <item name="android:gravity">left</item>
         <item name="android:textSize">26dp</item>

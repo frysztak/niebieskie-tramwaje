@@ -11,6 +11,7 @@ import com.orpington.software.rozkladmpk.R
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import kotlinx.android.synthetic.main.stops_and_routes_list_header.view.*
 import kotlinx.android.synthetic.main.stops_and_routes_list_item.view.*
+import kotlin.math.roundToInt
 
 internal interface ClickListener {
     fun itemClicked(index: Int)
@@ -92,11 +93,17 @@ class StopsAndRoutesAdapter(
         when (item.type) {
             ViewType.STOP -> {
                 val iconResId = R.drawable.bus_stop
-                val text = (item as StopItem).stopName
+                val stop = item as StopItem
 
                 (holder as StopOrRouteViewHolder).apply {
                     iconImageView.setImageResource(iconResId)
-                    mainNameTextView.text = text
+                    mainNameTextView.text = stop.stopName
+
+                    distanceTextView.visibility = View.GONE
+                    if (!stop.distance.isNaN()) {
+                        distanceTextView.visibility = View.VISIBLE
+                        distanceTextView.text = "%d m".format(stop.distance.roundToInt())
+                    }
                 }
             }
 
@@ -132,7 +139,7 @@ class StopsAndRoutesAdapter(
     private fun convertToViewItems(data: List<StopOrRoute>): List<ViewItem> {
         return data.map { item ->
             when (item) {
-                is Stop -> StopItem(item.stopName)
+                is Stop -> StopItem(item.stopName, item.distance)
                 is Route -> RouteItem(item.routeID, item.isBus)
             }
         }
@@ -143,6 +150,7 @@ class StopsAndRoutesAdapter(
 
         val iconImageView: ImageView = view.icon
         val mainNameTextView: TextView = view.mainName
+        val distanceTextView: TextView = view.distance
 
         init {
             view.setOnClickListener(this)
@@ -179,7 +187,7 @@ class StopsAndRoutesAdapter(
         override val type: ViewType = ViewType.HEADER
     }
 
-    class StopItem(val stopName: String) : ViewItem {
+    class StopItem(val stopName: String, val distance: Float) : ViewItem {
         override val type: ViewType = ViewType.STOP
     }
 
