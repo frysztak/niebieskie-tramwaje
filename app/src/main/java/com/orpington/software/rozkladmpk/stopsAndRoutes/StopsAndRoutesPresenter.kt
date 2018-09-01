@@ -35,7 +35,7 @@ class StopsAndRoutesPresenter(
             override fun onDataLoaded(data: StopsAndRoutes) {
                 setStopsAndRoutes(data)
                 view?.hideProgressBar()
-                view?.displayStopsAndRoutes(stopsAndRoutes)
+                view?.setStopsAndRoutes(stopsAndRoutes)
             }
 
             override fun onDataNotAvailable() {
@@ -47,7 +47,7 @@ class StopsAndRoutesPresenter(
 
     override fun queryTextChanged(newText: String) {
         if (newText.isEmpty()) {
-            view?.displaySearchResults(emptyList())
+            view?.setSearchResults(emptyList())
             return
         }
 
@@ -55,7 +55,8 @@ class StopsAndRoutesPresenter(
         val searchResults = helper.filterItems(stopsAndRoutes, newText)
 
         if (searchResults.isNotEmpty()) {
-            view?.displaySearchResults(searchResults)
+            view?.setSearchResults(searchResults)
+            view?.showStopsList()
         } else {
             view?.showStopNotFound()
         }
@@ -73,7 +74,7 @@ class StopsAndRoutesPresenter(
         val location = GeoLocation.fromDegrees(latitude, longitude)
         val helper = StopsAndRoutesHelper()
         val nearbyStops = helper.filterNearbyStops(rawStops, location)
-        view?.displayNearbyStops(nearbyStops)
+        view?.setNearbyStops(nearbyStops)
     }
 
 }

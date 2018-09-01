@@ -22,11 +22,11 @@ interface StopsAndRoutesContract {
         fun navigateToRouteVariants(stopName: String)
         fun navigateToStopsForRoute(routeID: String)
 
-        fun displayStopsAndRoutes(data: List<StopOrRoute>)
+        fun setStopsAndRoutes(data: List<StopOrRoute>)
+        fun setSearchResults(data: List<StopOrRoute>)
+        fun setNearbyStops(data: List<StopOrRoute>)
 
-        fun displaySearchResults(data: List<StopOrRoute>)
         fun showStopNotFound()
-
-        fun displayNearbyStops(data: List<StopOrRoute>)
+        fun showStopsList()
     }
 }

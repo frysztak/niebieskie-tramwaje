@@ -140,27 +140,15 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         return true
     }
 
-    override fun displayStopsAndRoutes(data: List<StopOrRoute>) {
-        recyclerView.visibility = View.VISIBLE
-        notFoundLayout.visibility = View.GONE
-        errorLayout.visibility = View.GONE
-
-        recyclerAdapter.setStopsAndRoutes(data)
-    }
-
-    override fun displaySearchResults(data: List<StopOrRoute>) {
-        recyclerView.visibility = View.VISIBLE
-        notFoundLayout.visibility = View.GONE
-        errorLayout.visibility = View.GONE
-
+    override fun setSearchResults(data: List<StopOrRoute>) {
         recyclerAdapter.setSearchResults(data)
     }
 
-    override fun displayNearbyStops(data: List<StopOrRoute>) {
-        recyclerView.visibility = View.VISIBLE
-        notFoundLayout.visibility = View.GONE
-        errorLayout.visibility = View.GONE
+    override fun setStopsAndRoutes(data: List<StopOrRoute>) {
+        recyclerAdapter.setStopsAndRoutes(data)
+    }
 
+    override fun setNearbyStops(data: List<StopOrRoute>) {
         recyclerAdapter.setNearbyStops(data)
     }
 
@@ -180,6 +168,12 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         recyclerView.visibility = View.GONE
         notFoundLayout.visibility = View.GONE
         errorLayout.visibility = View.VISIBLE
+    }
+
+    override fun showStopsList() {
+        recyclerView.visibility = View.VISIBLE
+        notFoundLayout.visibility = View.GONE
+        errorLayout.visibility = View.GONE
     }
 
     override fun showStopNotFound() {
