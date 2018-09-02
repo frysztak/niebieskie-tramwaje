@@ -37,4 +37,8 @@
     <string name="nearby_stops">Pobliskie przystanki</string>
     <string name="stops_and_routes">Przystanki i linie</string>
     <string name="search_results">Wyniki wyszukiwania</string>
+    <string name="permission_denied">Odmowa</string>
+    <string name="location_rationale">Twoja lokalizacja posłuży do znajdowania najbliższych przystanków i nigdy nie opuści Twojego urządzenia.</string>
+    <string name="ok">OK</string>
+    <string name="no">Nie</string>
 </resources>

@@ -3,8 +3,10 @@ package com.orpington.software.rozkladmpk.stopsAndRoutes
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
@@ -15,6 +17,8 @@ import com.ethanhua.skeleton.SkeletonScreen
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationServices.getFusedLocationProviderClient
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
+import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsOptions
+import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsRequest
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.about.AboutActivity
@@ -24,6 +28,9 @@ import com.orpington.software.rozkladmpk.utils.HeaderItemDecoration
 import kotlinx.android.synthetic.main.activity_stops_and_routes.*
 import kotlinx.android.synthetic.main.error_view.view.*
 import kotlinx.android.synthetic.main.stops_and_routes_list_header.view.*
+import android.support.v4.content.ContextCompat
+
+
 
 
 class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View {
@@ -88,27 +95,15 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         }
 
         initLocationManager()
+        registerLocationListener()
     }
 
     private fun initLocationManager() {
-        val UPDATE_INTERVAL = 10 * 1000L // 10 seconds
-        val FASTEST_INTERVAL = 2 * 1000L // 2  seconds
-
         // Create the location request to start receiving updates
         locationRequest = LocationRequest()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = UPDATE_INTERVAL
-        locationRequest.fastestInterval = FASTEST_INTERVAL
-
-        // Create LocationSettingsRequest object using location request
-        val builder = LocationSettingsRequest.Builder()
-        builder.addLocationRequest(locationRequest)
-        val locationSettingsRequest = builder.build()
-
-        // Check whether location settings are satisfied
-        // https://developers.google.com/android/reference/com/google/android/gms/location/SettingsClient
-        val settingsClient = LocationServices.getSettingsClient(this)
-        settingsClient.checkLocationSettings(locationSettingsRequest)
+        locationRequest.interval = 10 * 1000L // 10 seconds
+        locationRequest.fastestInterval = 2 * 1000L // 2  seconds
 
         // new Google API SDK v11 uses getFusedLocationProviderClient(this)
         locationProvider = getFusedLocationProviderClient(this)
@@ -120,25 +115,46 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         }
     }
 
+    private val quickPermissionsOption = QuickPermissionsOptions(
+        handleRationale = true,
+        rationaleMethod = { rationaleCallback(it) }
+    )
+
+    private fun rationaleCallback(req: QuickPermissionsRequest) {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.permission_denied))
+            .setMessage(getString(R.string.location_rationale))
+            .setPositiveButton(getString(R.string.ok)) { dialog, which -> req.proceed() }
+            .setNegativeButton(getString(R.string.no)) { dialog, which -> req.cancel() }
+            .setCancelable(false)
+            .show()
+    }
+
     @SuppressLint("MissingPermission")
-    override fun onResume() {
-        super.onResume()
-
-        runWithPermissions(Manifest.permission.ACCESS_FINE_LOCATION) {
-            locationProvider.lastLocation.addOnSuccessListener { loc ->
-                if (loc != null) {
-                    presenter.locationChanged(loc.latitude, loc.longitude)
-                }
+    private fun registerLocationListener() = runWithPermissions(Manifest.permission.ACCESS_FINE_LOCATION, options = quickPermissionsOption) {
+        locationProvider.lastLocation.addOnSuccessListener { loc ->
+            if (loc != null) {
+                presenter.locationChanged(loc.latitude, loc.longitude)
             }
-
-            locationProvider
-                .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
         }
+
+        locationProvider
+            .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
     }
 
     override fun onPause() {
         super.onPause()
         locationProvider.removeLocationUpdates(locationCallback)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val permissionLocation = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
+            locationProvider
+                .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+        }
     }
 
     override fun onDestroy() {
