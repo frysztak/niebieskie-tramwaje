@@ -44,11 +44,6 @@ class StopsAndRoutesAdapter(
         updateItems()
     }
 
-    fun getItem(idx: Int): ViewItem {
-        return items[idx]
-    }
-
-
     private fun updateItems() {
         val searchResultsSection: List<ViewItem> = if (searchResults.isEmpty()) {
             emptyList()

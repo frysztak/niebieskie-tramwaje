@@ -28,10 +28,8 @@ import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.about.AboutActivity
 import com.orpington.software.rozkladmpk.routeVariants.RouteVariantsActivity
 import com.orpington.software.rozkladmpk.stopsForRoute.StopsForRouteActivity
-import com.orpington.software.rozkladmpk.utils.HeaderItemDecoration
 import kotlinx.android.synthetic.main.activity_stops_and_routes.*
 import kotlinx.android.synthetic.main.error_view.view.*
-import kotlinx.android.synthetic.main.stops_and_routes_list_header.view.*
 
 
 class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View {
@@ -53,42 +51,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         recyclerAdapter = StopsAndRoutesAdapter(this, presenter)
         presenter.loadStopsAndRoutes()
 
-        val stickyHeader = object : HeaderItemDecoration.StickyHeaderInterface {
-            override fun isHeader(itemPosition: Int): Boolean {
-                if (recyclerAdapter.itemCount <= itemPosition) return false
-
-                return recyclerAdapter.getItem(itemPosition).type == StopsAndRoutesAdapter.ViewType.HEADER
-            }
-
-            override fun getHeaderPositionForItem(itemPosition: Int): Int {
-                var headerPosition = 0
-                var itemPos = itemPosition
-                do {
-                    if (this.isHeader(itemPos)) {
-                        headerPosition = itemPos
-                        break
-                    }
-                    itemPos -= 1
-                } while (itemPos >= 0)
-                return headerPosition
-            }
-
-            override fun getHeaderLayout(headerPosition: Int): Int {
-                return R.layout.stops_and_routes_list_header
-            }
-
-            override fun bindHeaderData(header: View?, headerPosition: Int) {
-                if (recyclerAdapter.itemCount <= headerPosition) return
-
-                val item = recyclerAdapter.getItem(headerPosition) as StopsAndRoutesAdapter.HeaderItem?
-                    ?: return
-
-                header?.mainText?.text = item.title
-            }
-        }
-
         var layoutManager = LinearLayoutManager(this)
-        recyclerView.addItemDecoration(HeaderItemDecoration(stickyHeader))
         recyclerView.layoutManager = layoutManager
 
         errorLayout.tryAgainButton.setOnClickListener {
