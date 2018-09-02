@@ -102,14 +102,14 @@ class StopsAndRoutesPresenterTest {
             .setResponseCode(200)
             .addHeader("Content-Type", "application/json; charset=utf-8")
             .setBody(loadJson("stops_and_routes.json"))
-            //.setBody("{\"Stops\":[\"8 Maja\",\"AUCHAN\"],\"Routes\":[{\"ID\":\"0L\",\"IsBus\":false},{\"ID\":\"103\",\"IsBus\":true}]}")
+        //.setBody("{\"Stops\":[\"8 Maja\",\"AUCHAN\"],\"Routes\":[{\"ID\":\"0L\",\"IsBus\":false},{\"ID\":\"103\",\"IsBus\":true}]}")
         mockServer.enqueue(mockResponse)
 
         presenter.loadStopsAndRoutes()
 
         val inOrder = inOrder(view)
         inOrder.verify(view, times(1)).showProgressBar()
-        inOrder.verify(view).displaySearchResults(any())
+        inOrder.verify(view).setStopsAndRoutes(any())
         //inOrder.verify(view).displaySearchResults(listOf<Stop>("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
         inOrder.verify(view, times(1)).hideProgressBar()
         //verify(view, never()).reportThatSomethingWentWrong()
@@ -126,13 +126,16 @@ class StopsAndRoutesPresenterTest {
         inOrder.verify(view, times(1)).showProgressBar()
         inOrder.verify(view, times(1)).hideProgressBar()
         inOrder.verify(view, times(1)).reportThatSomethingWentWrong()
-        verify(view, never()).displaySearchResults(any())
+        verify(view, never()).setSearchResults(any())
     }
 
     @Test
     fun queryTextChangedTest() {
         val data = StopsAndRoutes(
-            listOf("BISKUPIN", "AUCHAN", "Bierzyce", "Adamieckiego"),
+            listOf(StopsAndRoutes.Stop("BISKUPIN", 0.0, 0.0),
+                StopsAndRoutes.Stop("AUCHAN", 0.0, 0.0),
+                StopsAndRoutes.Stop("Bierzyce", 0.0, 0.0),
+                StopsAndRoutes.Stop("Adamieckiego", 0.0, 0.0)),
             listOf(StopsAndRoutes.Route("33", false))
         )
 
@@ -143,7 +146,7 @@ class StopsAndRoutesPresenterTest {
 
         presenter.setStopsAndRoutes(data)
         presenter.queryTextChanged("a")
-        verify(view).displaySearchResults(expected)
+        verify(view).setSearchResults(expected)
         verify(view, never()).showProgressBar()
         verify(view, never()).hideProgressBar()
         verify(view, never()).reportThatSomethingWentWrong()
@@ -157,77 +160,10 @@ class StopsAndRoutesPresenterTest {
 
         presenter.setStopsAndRoutes(data)
         presenter.queryTextChanged("a")
-        verify(view, never()).displaySearchResults(any())
+        verify(view, never()).setSearchResults(any())
         verify(view, never()).showProgressBar()
         verify(view, never()).hideProgressBar()
         verify(view, never()).reportThatSomethingWentWrong()
         verify(view, times(1)).showStopNotFound()
-    }
-
-    @Test
-    fun stopClicked() {
-        val data = listOf<StopOrRoute>(
-            Stop("8 Maja"),
-            Stop("AUCHAN"),
-            Stop("Adamieckiego")
-        )
-
-        presenter.setShownStopsAndRoutes(data)
-        presenter.listItemClicked(0)
-        verify(view, times(1)).navigateToRouteVariants("8 Maja")
-        verify(view, never()).navigateToStopsForRoute(any())
-    }
-
-    @Test
-    fun routeClicked() {
-        val data = listOf<StopOrRoute>(
-            Stop("8 Maja"),
-            Stop("AUCHAN"),
-            Route("33", false),
-            Stop("Adamieckiego")
-        )
-
-        presenter.setShownStopsAndRoutes(data)
-        presenter.listItemClicked(2)
-        verify(view, times(1)).navigateToStopsForRoute("33")
-        verify(view, never()).navigateToRouteVariants(any())
-    }
-
-    @Test
-    fun listItemClicked_EmptyList() {
-        presenter.setShownStopsAndRoutes(emptyList())
-        presenter.listItemClicked(0)
-        verify(view, never()).navigateToRouteVariants(any())
-        verify(view, never()).navigateToStopsForRoute(any())
-    }
-
-    @Test
-    fun listItemClicked_OutOfRange() {
-        val data = listOf<StopOrRoute>(
-            Stop("8 Maja"),
-            Stop("AUCHAN"),
-            Route("33", false),
-            Stop("Adamieckiego")
-        )
-
-        presenter.setShownStopsAndRoutes(data)
-        presenter.listItemClicked(10)
-        verify(view, never()).navigateToRouteVariants(any())
-        verify(view, never()).navigateToStopsForRoute(any())
-    }
-
-    @Test
-    fun listItemClicked_LastItem() {
-        val data = listOf(
-            Stop("8 Maja"),
-            Stop("AUCHAN"),
-            Route("33", false),
-            Stop("Adamieckiego")
-        )
-
-        presenter.setShownStopsAndRoutes(data)
-        presenter.listItemClicked(3)
-        verify(view, times(1)).navigateToRouteVariants("Adamieckiego")
-        verify(view, never()).navigateToStopsForRoute(any())
     }
 }
