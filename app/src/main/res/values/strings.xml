@@ -32,4 +32,11 @@
     <string name="about">About</string>
     <string name="version">Version</string>
     <string name="oss_licenses">Open Source Licenses</string>
+    <string name="nearby_stops">Nearby stops</string>
+    <string name="stops_and_routes">Stops and routes</string>
+    <string name="search_results">Search results</string>
+    <string name="permission_denied">Permission Denied</string>
+    <string name="location_rationale">Your location will be used to find nearby stops, and won\'t ever leave your device.</string>
+    <string name="ok">OK</string>
+    <string name="no">No</string>
 </resources>

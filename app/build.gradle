@@ -43,6 +43,11 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
+
+    // enabled for QuickPermissions-kotlin
+    dataBinding {
+        enabled = true
+    }
 }
 
 androidExtensions {
@@ -60,8 +65,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'com.nhaarman:mockito-kotlin-kt1.1:1.6.0'
     testImplementation 'com.squareup.okhttp3:mockwebserver:3.10.0'
-    testImplementation 'org.powermock:powermock-api-mockito2:2.0.0-beta.5'
-    testImplementation 'org.powermock:powermock-module-junit4:2.0.0-beta.5'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.22.5'
@@ -80,4 +83,6 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.1'
     implementation 'me.xdrop:fuzzywuzzy:1.1.10'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.github.quickpermissions:quickpermissions-kotlin:0.2.0'
 }

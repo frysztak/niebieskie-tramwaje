@@ -1,6 +1,7 @@
 package com.orpington.software.rozkladmpk.stopsAndRoutes
 
 import com.orpington.software.rozkladmpk.data.model.StopsAndRoutes
+import com.orpington.software.rozkladmpk.utils.GeoLocation
 import com.orpington.software.rozkladmpk.utils.sort
 import me.xdrop.fuzzywuzzy.FuzzySearch
 
@@ -8,7 +9,8 @@ import me.xdrop.fuzzywuzzy.FuzzySearch
 sealed class StopOrRoute
 
 data class Stop(
-    val stopName: String
+    val stopName: String,
+    val distance: Float = Float.NaN
 ) : StopOrRoute()
 
 data class Route(
@@ -47,9 +49,9 @@ fun String.stripAccents(): String {
 class StopsAndRoutesHelper {
 
     fun convertModel(data: StopsAndRoutes): List<StopOrRoute> {
-        val items: MutableList<StopOrRoute> = data.stops.map { stopName ->
-            Stop(stopName)
-        }.toMutableList()
+        val items: MutableList<StopOrRoute> = data.stops.map { stop ->
+            Stop(stop.stopName)
+        }.distinct().toMutableList()
 
         items.addAll(
             data.routes.map { route ->
@@ -100,5 +102,28 @@ class StopsAndRoutesHelper {
         }.map { pair ->
             pair.first
         }
+    }
+
+    fun filterNearbyStops(stops: List<StopsAndRoutes.Stop>, location: GeoLocation): List<Stop> {
+        val earthRadius = 6378.1 * 1000 // in meters
+        val maxDistance = 500.0 // meters
+
+        val bounds = location.boundingCoordinates(maxDistance, earthRadius)
+
+        return stops.map { stop ->
+            Pair(stop, GeoLocation.fromDegrees(stop.latitude, stop.longitude))
+        }.filter { (stop, stopLocation) ->
+            stopLocation.latitudeInRadians >= bounds[0].latitudeInRadians
+                && stopLocation.latitudeInRadians <= bounds[1].latitudeInRadians
+                && stopLocation.longitudeInRadians >= bounds[0].longitudeInRadians
+                && stopLocation.longitudeInRadians <= bounds[1].longitudeInRadians
+        }.map { (stop, stopLocation) ->
+            val distance = stopLocation.distanceTo(location, earthRadius).toFloat()
+            Stop(stop.stopName, distance)
+        }.sortedBy { (stop, distance) ->
+            distance
+        }.distinctBy { (stop, distance) ->
+            stop
+        }.take(3)
     }
 }

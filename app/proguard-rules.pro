@@ -65,3 +65,7 @@
 
 # OkHttp platform used only on JVM and when Conscrypt dependency is available.
 -dontwarn okhttp3.internal.platform.ConscryptPlatform
+
+### QuickPermissions
+-dontwarn android.databinding.**
+-keep class android.databinding.** { *; }

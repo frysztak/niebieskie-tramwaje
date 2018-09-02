@@ -3,6 +3,7 @@ package com.orpington.software.rozkladmpk.stopsAndRoutes
 import com.orpington.software.rozkladmpk.data.model.StopsAndRoutes
 import com.orpington.software.rozkladmpk.data.source.IDataSource
 import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
+import com.orpington.software.rozkladmpk.utils.GeoLocation
 
 
 class StopsAndRoutesPresenter(
@@ -18,26 +19,22 @@ class StopsAndRoutesPresenter(
         this.view = null
     }
 
+    // used to show nearby stops
+    private var rawStops: List<StopsAndRoutes.Stop> = emptyList()
     private var stopsAndRoutes: List<StopOrRoute> = emptyList()
     override fun setStopsAndRoutes(data: StopsAndRoutes) {
         val helper = StopsAndRoutesHelper()
         stopsAndRoutes = helper.convertModel(data)
-    }
-
-    private var shownStopsAndRoutes: List<StopOrRoute> = emptyList()
-    override fun setShownStopsAndRoutes(data: List<StopOrRoute>) {
-        shownStopsAndRoutes = data
+        rawStops = data.stops
     }
 
     override fun loadStopsAndRoutes() {
-        //if (allStops.isNotEmpty()) return
         view?.showProgressBar()
         dataSource.getStopsAndRoutes(object : IDataSource.LoadDataCallback<StopsAndRoutes> {
             override fun onDataLoaded(data: StopsAndRoutes) {
                 setStopsAndRoutes(data)
-                setShownStopsAndRoutes(stopsAndRoutes)
                 view?.hideProgressBar()
-                view?.displayStopsAndRoutes(shownStopsAndRoutes)
+                view?.setStopsAndRoutes(stopsAndRoutes)
             }
 
             override fun onDataNotAvailable() {
@@ -48,25 +45,35 @@ class StopsAndRoutesPresenter(
     }
 
     override fun queryTextChanged(newText: String) {
+        if (newText.isEmpty()) {
+            view?.setSearchResults(emptyList())
+            return
+        }
 
         val helper = StopsAndRoutesHelper()
-        shownStopsAndRoutes = helper.filterItems(stopsAndRoutes, newText)
+        val searchResults = helper.filterItems(stopsAndRoutes, newText)
 
-        if (shownStopsAndRoutes.isNotEmpty()) {
-            view?.displayStopsAndRoutes(shownStopsAndRoutes)
+        if (searchResults.isNotEmpty()) {
+            view?.setSearchResults(searchResults)
+            view?.showStopsList()
         } else {
             view?.showStopNotFound()
         }
     }
 
-    override fun listItemClicked(position: Int) {
-        if (position >= shownStopsAndRoutes.size) return
+    override fun stopClicked(stopName: String) {
+        view?.navigateToRouteVariants(stopName)
+    }
 
-        val item = shownStopsAndRoutes[position]
-        when (item) {
-            is Stop -> view?.navigateToRouteVariants(item.stopName)
-            is Route -> view?.navigateToStopsForRoute(item.routeID)
-        }
+    override fun routeClicked(routeID: String) {
+        view?.navigateToStopsForRoute(routeID)
+    }
+
+    override fun locationChanged(latitude: Double, longitude: Double) {
+        val location = GeoLocation.fromDegrees(latitude, longitude)
+        val helper = StopsAndRoutesHelper()
+        val nearbyStops = helper.filterNearbyStops(rawStops, location)
+        view?.setNearbyStops(nearbyStops)
     }
 
 }

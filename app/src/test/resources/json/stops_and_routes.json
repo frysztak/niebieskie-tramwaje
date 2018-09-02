@@ -1,7 +1,30 @@
 {
   "Stops": [
-    "8 Maja",
-    "AUCHAN"
+    {
+      "Name": "8 Maja",
+      "Latitude": 51.113556,
+      "Longitude": 17.092285
+    },
+    {
+      "Name": "AUCHAN",
+      "Latitude": 51.052063,
+      "Longitude": 16.974054
+    },
+    {
+      "Name": "Adamczewskich",
+      "Latitude": 51.120846,
+      "Longitude": 16.869535
+    },
+    {
+      "Name": "Adamieckiego",
+      "Latitude": 51.07426,
+      "Longitude": 16.962996
+    },
+    {
+      "Name": "Aleja Pracy",
+      "Latitude": 51.09187,
+      "Longitude": 16.985373
+    }
   ],
   "Routes": [
     {
@@ -9,8 +32,16 @@
       "IsBus": false
     },
     {
-      "ID": "103",
-      "IsBus": true
+      "ID": "0P",
+      "IsBus": false
+    },
+    {
+      "ID": "1",
+      "IsBus": false
+    },
+    {
+      "ID": "10",
+      "IsBus": false
     }
   ]
 }
