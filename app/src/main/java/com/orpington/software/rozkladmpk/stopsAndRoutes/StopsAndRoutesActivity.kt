@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -14,7 +15,10 @@ import android.view.Menu
 import android.view.View
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices.getFusedLocationProviderClient
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsOptions
@@ -28,9 +32,6 @@ import com.orpington.software.rozkladmpk.utils.HeaderItemDecoration
 import kotlinx.android.synthetic.main.activity_stops_and_routes.*
 import kotlinx.android.synthetic.main.error_view.view.*
 import kotlinx.android.synthetic.main.stops_and_routes_list_header.view.*
-import android.support.v4.content.ContextCompat
-
-
 
 
 class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View {
@@ -99,13 +100,11 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     }
 
     private fun initLocationManager() {
-        // Create the location request to start receiving updates
         locationRequest = LocationRequest()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 10 * 1000L // 10 seconds
         locationRequest.fastestInterval = 2 * 1000L // 2  seconds
 
-        // new Google API SDK v11 uses getFusedLocationProviderClient(this)
         locationProvider = getFusedLocationProviderClient(this)
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(location: LocationResult?) {
