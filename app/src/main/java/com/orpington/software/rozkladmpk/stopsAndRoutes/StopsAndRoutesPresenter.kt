@@ -29,7 +29,6 @@ class StopsAndRoutesPresenter(
     }
 
     override fun loadStopsAndRoutes() {
-        //if (allStops.isNotEmpty()) return
         view?.showProgressBar()
         dataSource.getStopsAndRoutes(object : IDataSource.LoadDataCallback<StopsAndRoutes> {
             override fun onDataLoaded(data: StopsAndRoutes) {

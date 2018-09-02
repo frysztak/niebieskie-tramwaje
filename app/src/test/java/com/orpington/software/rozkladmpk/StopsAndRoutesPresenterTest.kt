@@ -126,6 +126,7 @@ class StopsAndRoutesPresenterTest {
         presenter.setStopsAndRoutes(data)
         presenter.queryTextChanged("a")
         verify(view).setSearchResults(expected)
+        verify(view).showStopsList()
         verify(view, never()).showProgressBar()
         verify(view, never()).hideProgressBar()
         verify(view, never()).reportThatSomethingWentWrong()
@@ -143,6 +144,21 @@ class StopsAndRoutesPresenterTest {
         verify(view, never()).showProgressBar()
         verify(view, never()).hideProgressBar()
         verify(view, never()).reportThatSomethingWentWrong()
+        verify(view, never()).showStopsList()
         verify(view, times(1)).showStopNotFound()
+    }
+
+    @Test
+    fun locationChangedWhenNoResultsScreenIsVisible() {
+        val data = StopsAndRoutes(
+            emptyList(), emptyList()
+        )
+
+        presenter.setStopsAndRoutes(data)
+        presenter.queryTextChanged("a")
+        verify(view, times(1)).showStopNotFound()
+
+        presenter.locationChanged(0.0, 0.0)
+        verify(view, never()).showStopsList()
     }
 }
