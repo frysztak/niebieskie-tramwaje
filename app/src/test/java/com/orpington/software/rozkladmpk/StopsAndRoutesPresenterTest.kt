@@ -149,6 +149,20 @@ class StopsAndRoutesPresenterTest {
     }
 
     @Test
+    fun backpressWhenNoResultsScreenIsShown() {
+        val data = StopsAndRoutes(
+            emptyList(), emptyList()
+        )
+
+        presenter.setStopsAndRoutes(data)
+        presenter.queryTextChanged("a")
+        val inOrder = inOrder(view)
+        inOrder.verify(view, times(1)).showStopNotFound()
+        presenter.queryTextChanged("") // empty string is sent when user presses "<-" button
+        inOrder.verify(view, times(1)).showStopsList()
+    }
+
+    @Test
     fun locationChangedWhenNoResultsScreenIsVisible() {
         val data = StopsAndRoutes(
             emptyList(), emptyList()

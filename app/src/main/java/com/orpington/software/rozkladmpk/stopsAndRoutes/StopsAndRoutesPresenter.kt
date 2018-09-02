@@ -47,6 +47,7 @@ class StopsAndRoutesPresenter(
     override fun queryTextChanged(newText: String) {
         if (newText.isEmpty()) {
             view?.setSearchResults(emptyList())
+            view?.showStopsList()
             return
         }
 
