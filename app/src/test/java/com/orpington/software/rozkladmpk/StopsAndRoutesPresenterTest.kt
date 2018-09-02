@@ -4,28 +4,23 @@ import com.nhaarman.mockito_kotlin.*
 import com.orpington.software.rozkladmpk.data.model.StopsAndRoutes
 import com.orpington.software.rozkladmpk.data.source.ApiService
 import com.orpington.software.rozkladmpk.data.source.RemoteDataSource
-import com.orpington.software.rozkladmpk.stopsAndRoutes.*
+import com.orpington.software.rozkladmpk.stopsAndRoutes.Stop
+import com.orpington.software.rozkladmpk.stopsAndRoutes.StopOrRoute
+import com.orpington.software.rozkladmpk.stopsAndRoutes.StopsAndRoutesContract
+import com.orpington.software.rozkladmpk.stopsAndRoutes.StopsAndRoutesPresenter
 import com.orpington.software.rozkladmpk.utils.CurrentThreadExecutor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import org.junit.*
-import org.junit.runner.RunWith
-import org.powermock.api.mockito.PowerMockito.*
-import org.powermock.core.classloader.annotations.PowerMockIgnore
-import org.powermock.core.classloader.annotations.PrepareForTest
-import org.powermock.modules.junit4.PowerMockRunner
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
 
 
-@PowerMockIgnore("okhttp3.*", "retrofit2.*")
-@RunWith(PowerMockRunner::class)
-@PrepareForTest(LoggerFactory::class)
 class StopsAndRoutesPresenterTest {
     private lateinit var dataSource: RemoteDataSource
     private lateinit var mockServer: MockWebServer
@@ -33,23 +28,11 @@ class StopsAndRoutesPresenterTest {
     private lateinit var presenter: StopsAndRoutesPresenter
     private lateinit var view: StopsAndRoutesContract.View
 
-    companion object {
-        private lateinit var mockLogger: Logger
-        @BeforeClass
-        @JvmStatic
-        fun setup() {
-            mockStatic(LoggerFactory::class.java)
-            mockLogger = mock(Logger::class.java)
-            `when`(LoggerFactory.getLogger(any<Class<*>>())).thenReturn(mockLogger)
-            `when`(LoggerFactory.getLogger(any<String>())).thenReturn(mockLogger)
-        }
-    }
 
     private fun loadJson(fileName: String): String {
         val url = this.javaClass.classLoader.getResource("json/$fileName")
         val file = File(url.path)
-        val str = String(file.readBytes())
-        return str
+        return String(file.readBytes())
     }
 
     @Throws
@@ -66,7 +49,7 @@ class StopsAndRoutesPresenterTest {
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         val okHttpClient = OkHttpClient.Builder()
-            //.addNetworkInterceptor(interceptor)
+            .addNetworkInterceptor(interceptor)
             .dispatcher(dispatcher)
             .build()
 
@@ -96,23 +79,19 @@ class StopsAndRoutesPresenterTest {
     }
 
     @Test
-    @Ignore // returned content is never set -- why? it used to work.
     fun loadStopsAndRoutes() {
         val mockResponse = MockResponse()
             .setResponseCode(200)
-            .addHeader("Content-Type", "application/json; charset=utf-8")
             .setBody(loadJson("stops_and_routes.json"))
-        //.setBody("{\"Stops\":[\"8 Maja\",\"AUCHAN\"],\"Routes\":[{\"ID\":\"0L\",\"IsBus\":false},{\"ID\":\"103\",\"IsBus\":true}]}")
         mockServer.enqueue(mockResponse)
 
         presenter.loadStopsAndRoutes()
 
         val inOrder = inOrder(view)
         inOrder.verify(view, times(1)).showProgressBar()
-        inOrder.verify(view).setStopsAndRoutes(any())
-        //inOrder.verify(view).displaySearchResults(listOf<Stop>("8 Maja", "AUCHAN", "Adamczewskich", "Adamieckiego"))
         inOrder.verify(view, times(1)).hideProgressBar()
-        //verify(view, never()).reportThatSomethingWentWrong()
+        inOrder.verify(view, times(1)).setStopsAndRoutes(any())
+        verify(view, never()).reportThatSomethingWentWrong()
     }
 
     @Test

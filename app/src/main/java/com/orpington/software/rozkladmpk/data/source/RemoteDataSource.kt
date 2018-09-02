@@ -1,7 +1,6 @@
 package com.orpington.software.rozkladmpk.data.source
 
 import com.orpington.software.rozkladmpk.data.model.*
-import mu.KotlinLogging
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -15,20 +14,16 @@ class RemoteDataSource private constructor(private val service: ApiService) : IR
                 if (response.isSuccessful) {
                     val stopNames = response.body()
                     stopNames?.let {
-                        logger.debug { "${call.request().url()}: success" }
                         callback.onDataLoaded(it)
                     } ?: run {
-                        logger.debug { "${call.request().url()}: received null list. code: ${response.code()}" }
                         callback.onDataNotAvailable()
                     }
                 } else {
-                    logger.debug { "${call.request().url()}: request unsuccessful. code: ${response.code()}" }
                     callback.onDataNotAvailable()
                 }
             }
 
             override fun onFailure(call: Call<T>, t: Throwable) {
-                logger.debug { "${call.request().url()}: request failed. message: ${t.message}" }
                 callback.onDataNotAvailable()
             }
         })
@@ -67,8 +62,6 @@ class RemoteDataSource private constructor(private val service: ApiService) : IR
     }
 
     companion object {
-
-        private val logger = KotlinLogging.logger {}
 
         private var INSTANCE: RemoteDataSource? = null
         fun getInstance(service: ApiService): RemoteDataSource {
