@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Rozkład MPK</string>
+    <string name="app_name">Niebieskie Tramwaje</string>
     <string name="weekdays">Dni robocze</string>
     <string name="saturday">Sobota</string>
     <string name="sunday">Niedziela</string>
@@ -41,4 +41,5 @@
     <string name="location_rationale">Twoja lokalizacja posłuży do znajdowania najbliższych przystanków i nigdy nie opuści Twojego urządzenia.</string>
     <string name="ok">OK</string>
     <string name="no">Nie</string>
+    <string name="blueTramsCredits">\"Wrocławska piosenka\"\nJerzy Harald - muzyka\nKrystyna Wnukowska - słowa</string>
 </resources>

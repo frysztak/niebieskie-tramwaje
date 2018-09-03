@@ -18,81 +18,127 @@
         tools:title="Toolbar" />
 
 
-    <ImageView
-        android:id="@+id/appLogo"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        android:layout_margin="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:srcCompat="@drawable/app_icon" />
-
-    <TextView
-        android:id="@+id/appName"
-        style="@style/Base.TextAppearance.AppCompat.Headline"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:fontFamily="sans-serif-light"
-        android:gravity="center"
-        android:text="@string/app_name"
-        android:textSize="28sp"
-        app:layout_constraintTop_toBottomOf="@id/appLogo" />
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-    <TextView
-        android:id="@+id/appAuthor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:gravity="center"
-        android:text="@string/author_about_page"
-        app:layout_constraintTop_toBottomOf="@id/appName" />
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp">
 
-    <TextView
-        android:id="@+id/appVersion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="6dp"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/appAuthor"
-        tools:text="Version 1.0" />
+            <ImageView
+                android:id="@+id/appLogo"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
+                android:layout_marginTop="8dp"
+                android:layout_margin="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/app_icon" />
 
-    <View
-        android:id="@+id/divider1"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_margin="16dp"
-        android:foreground="@color/divider"
-        app:layout_constraintTop_toBottomOf="@id/appVersion" />
+            <TextView
+                android:id="@+id/appName"
+                style="@style/Base.TextAppearance.AppCompat.Headline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center"
+                android:text="@string/app_name"
+                android:textSize="28sp"
+                app:layout_constraintTop_toBottomOf="@id/appLogo" />
 
-    <TextView
-        android:id="@+id/icons"
-        style="@style/Base.TextAppearance.AppCompat.Subhead"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:gravity="center"
-        android:text="@string/icons_attribution"
-        android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/divider1" />
+            <TextView
+                android:id="@+id/appAuthor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:gravity="center"
+                android:text="@string/author_about_page"
+                app:layout_constraintTop_toBottomOf="@id/appName" />
 
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_margin="16dp"
-        android:foreground="@color/divider"
-        app:layout_constraintTop_toBottomOf="@id/icons" />
+            <TextView
+                android:id="@+id/appVersion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/appAuthor"
+                tools:text="Version 1.0" />
 
-    <Button
-        android:text="@string/oss_licenses"
-        android:id="@+id/licensesButton"
-        android:layout_width="wrap_content"
-        android:gravity="center"
-        android:layout_margin="8dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider2" />
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_margin="16dp"
+                android:foreground="@color/divider"
+                app:layout_constraintTop_toBottomOf="@id/appVersion" />
+
+
+            <TextView
+                android:id="@+id/blueTramsLyrics"
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="@string/blueTrams"
+                app:layout_constraintTop_toBottomOf="@id/divider1" />
+
+            <TextView
+                android:id="@+id/blueTramsCredits"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="@string/blueTramsCredits"
+                app:layout_constraintTop_toBottomOf="@id/blueTramsLyrics" />
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_margin="16dp"
+                android:foreground="@color/divider"
+                app:layout_constraintTop_toBottomOf="@id/blueTramsCredits" />
+
+            <TextView
+                android:id="@+id/icons"
+                style="@style/Base.TextAppearance.AppCompat.Subhead"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:gravity="center"
+                android:text="@string/icons_attribution"
+                android:textSize="18sp"
+                app:layout_constraintTop_toBottomOf="@id/divider2" />
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_margin="16dp"
+                android:foreground="@color/divider"
+                app:layout_constraintTop_toBottomOf="@id/icons" />
+
+            <Button
+                android:id="@+id/licensesButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:gravity="center"
+                android:text="@string/oss_licenses"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider3" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                app:layout_constraintTop_toBottomOf="@id/licensesButton" />
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>
