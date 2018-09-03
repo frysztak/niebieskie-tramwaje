@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Wrocław Public Transport</string>
+    <string name="app_name">Blue Trams</string>
     <string name="weekdays">weekdays</string>
     <string name="saturday">saturday</string>
     <string name="sunday">sunday</string>
@@ -39,4 +39,7 @@
     <string name="location_rationale">Your location will be used to find nearby stops, and won\'t ever leave your device.</string>
     <string name="ok">OK</string>
     <string name="no">No</string>
+    <string name="blueTrams">Wieczór zapada, już noc niedaleko\nJuż gwiazdy migocą na niebie\nSrebrzy się Odra, najmilsza ma rzeka\nI płynie z piosenką do ciebie\n\nMkną po szynach niebieskie tramwaje\nPrzez wrocławskich ulic sto\nTu przechodnia uśmiechem witają\nDzieci, kwiaty i każdy dom\n\nNa przystankach nucą słowiki\nDźwięczy śpiewem stary park\nPrzez Sępolno, Zalesie i Krzyki\nNiesie melodię wrocławski wiatr\n\nA kiedy rankiem fabryczne syreny\nDzień dobry powiedzą znów miastu\nSłonko jak jaskier wykwitnie z zieleni\nDziewczyna zaśpiewa przy pracy:\n\nNa przystankach nucą słowiki\nDźwięczy śpiewem stary park\nPrzez Sępolno, Zalesie i Krzyki\nNiesie melodię wrocławski wiatr\n\nNa przystankach nucą słowiki\nPrzez Sępolno, Zalesie i Krzyki\nNiesie melodię wrocławski\nMelodię wrocławski\nMelodię wrocławski wiatr</string>
+    <string name="blueTramsCredits">\"Wrocławska piosenka\"\nJerzy Harald - music\nKrystyna Wnukowska - lyrics</string>
+
 </resources>

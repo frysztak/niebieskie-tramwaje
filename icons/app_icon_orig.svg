@@ -41,8 +41,8 @@
    fit-margin-right="0"
    fit-margin-bottom="0"
    inkscape:zoom="0.84082031"
-   inkscape:cx="157.35563"
-   inkscape:cy="173.98233"
+   inkscape:cx="152.77403"
+   inkscape:cy="211.72913"
    inkscape:window-x="0"
    inkscape:window-y="20"
    inkscape:window-maximized="0"
@@ -72,12 +72,12 @@
    id="path4643"
    inkscape:connector-curvature="0" />
 <path
-   style="fill:#6898e8;fill-opacity:1"
+   style="fill:#ef6161"
    d="M 365.276,426.902 H 80.724 C 67.069,426.902 56,415.833 56,402.178 V 282.78 h 334 v 119.398 c 0,13.655 -11.069,24.724 -24.724,24.724 z"
    id="path4645"
    inkscape:connector-curvature="0" />
 <path
-   style="fill:#567be5;fill-opacity:1"
+   style="fill:#e63950"
    d="m 359.074,282.78 v 119.415 c 0,13.645 -11.077,24.707 -24.741,24.707 h 30.926 C 378.923,426.902 390,415.84 390,402.195 V 282.78 Z"
    id="path4647"
    inkscape:connector-curvature="0" />
