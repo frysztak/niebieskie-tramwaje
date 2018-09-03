@@ -34,7 +34,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="b4e5fa" />
+                                      <entry key="backgroundColor" value="e2f5fd" />
                                       <entry key="foregroundImage" value="$PROJECT_DIR$/icons/app_icon.svg" />
                                       <entry key="showSafeZone" value="false" />
                                     </map>
