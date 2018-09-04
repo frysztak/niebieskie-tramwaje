@@ -12,7 +12,10 @@ import android.widget.TextView
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.R
-import com.orpington.software.rozkladmpk.utils.*
+import com.orpington.software.rozkladmpk.utils.HeaderItemDecoration
+import com.orpington.software.rozkladmpk.utils.forceRippleAnimation
+import com.orpington.software.rozkladmpk.utils.smoothScrollWithOffset
+import com.orpington.software.rozkladmpk.utils.whenScrollStateIdle
 import kotlinx.android.synthetic.main.activity_route_details.*
 import kotlinx.android.synthetic.main.error_view.view.*
 import kotlinx.android.synthetic.main.route_timetable.*
@@ -120,22 +123,21 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
 
         adapter.setItems(items)
         if (hourToScrollTo != null) {
+
             val activity = activity as RouteDetailsActivity?
             val appBarHeight = activity?.appBarLayout?.height ?: 0
 
             // 1) smooth scroll to an item
             // 2) when recyclerview stops scrolling, show ripple animation
             timetable_recyclerview.whenScrollStateIdle {
+                if (timeToHighlight.isNotEmpty()) {
+                    highlightTime(timeToHighlight)
+                }
+
                 val v = timetable_recyclerview.findViewWithTag<LinearLayout>(hourToScrollTo.rowTag)
                 v?.forceRippleAnimation()
             }
             layoutManager.smoothScrollWithOffset(timetable_recyclerview, hourToScrollTo.hourIdx, appBarHeight)
-        }
-
-        if (timeToHighlight.isNotEmpty()) {
-            timetable_recyclerview.afterMeasured {
-                highlightTime(timeToHighlight)
-            }
         }
     }
 
