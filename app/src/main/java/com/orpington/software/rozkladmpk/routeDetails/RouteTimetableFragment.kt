@@ -105,12 +105,6 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
         presenter?.loadTimeTable()
     }
 
-    override fun onPause() {
-        super.onPause()
-        val position = layoutManager.findFirstVisibleItemPosition()
-        presenter?.setTimetablePosition(position)
-    }
-
     override fun showTimeTable(
         items: List<TimetableViewHelper.ViewItem>,
         timeToHighlight: String,

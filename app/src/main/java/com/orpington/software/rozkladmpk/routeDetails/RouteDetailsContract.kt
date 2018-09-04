@@ -26,7 +26,6 @@ interface RouteDetailsContract {
 
         fun loadTimeTable()
         fun onTimeClicked(time: String)
-        fun setTimetablePosition(position: Int)
 
         fun loadTimeline()
         fun setTimelinePosition(position: Int)

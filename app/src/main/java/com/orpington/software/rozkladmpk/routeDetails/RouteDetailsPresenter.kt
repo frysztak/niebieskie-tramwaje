@@ -119,10 +119,6 @@ class RouteDetailsPresenter(
                     val scrollHelper = TimetableScrollHelper(Calendar.getInstance())
                     val timeToScrollTo = scrollHelper.calculateRowToScrollInto(viewItems)
 
-                    if (state.currentTimetablePosition == -1) {
-                        state.currentTimetablePosition = timeToScrollTo?.hourIdx ?: -1
-                    }
-
                     timetableView?.showTimeTable(
                         viewItems,
                         state.currentTimeTag,
@@ -135,10 +131,6 @@ class RouteDetailsPresenter(
                     timetableView?.reportThatSomethingWentWrong()
                 }
             })
-    }
-
-    override fun setTimetablePosition(position: Int) {
-        state.currentTimetablePosition = position
     }
 
     /// time: PREFIX:HH:MM, e.g.
