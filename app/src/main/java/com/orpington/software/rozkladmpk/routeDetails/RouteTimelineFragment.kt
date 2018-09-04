@@ -55,12 +55,6 @@ class RouteTimelineFragment : Fragment(), RouteDetailsContract.TimelineView {
         presenter?.loadTimeline()
     }
 
-    override fun onPause() {
-        super.onPause()
-        val position = layoutManager.findFirstVisibleItemPosition()
-        presenter?.setTimelinePosition(position)
-    }
-
     private var skeletonScreen: SkeletonScreen? = null
     override fun showProgressBar() {
         selectDirectionAndTime_textview.visibility = View.GONE

@@ -15,7 +15,6 @@ data class RouteDetailsState(
 
     var timetable: TimeTable? = null,
     var currentTimeTag: String = "",
-    var currentTimetablePosition: Int = -1,
 
     var currentTimelinePosition: Int = -1
 ) : Parcelable
