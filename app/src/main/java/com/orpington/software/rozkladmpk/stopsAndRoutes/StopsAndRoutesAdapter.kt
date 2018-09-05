@@ -62,7 +62,7 @@ class StopsAndRoutesAdapter(
             emptyList()
         } else {
             val header: ViewItem = HeaderItem(context.getString(R.string.nearby_stops))
-            listOf(header) + convertToViewItems(nearbyStops)
+            listOf(header) + AskAboutNearbyStops() + convertToViewItems(nearbyStops)
         }
 
         val stopsAndRoutesSection =
@@ -77,6 +77,10 @@ class StopsAndRoutesAdapter(
             ViewType.HEADER.code -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_list_header, parent, false)
                 HeaderViewHolder(view)
+            }
+            ViewType.ASK_ABOUT_NEARBY_STOPS.code -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_location_item, parent, false)
+                AskAboutNearbyStopsViewHolder(view)
             }
             else -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_list_item, parent, false)
@@ -138,7 +142,7 @@ class StopsAndRoutesAdapter(
         return when (item.type) {
             ViewType.STOP -> (item as StopItem).stopName
             ViewType.ROUTE -> (item as RouteItem).routeID
-            ViewType.HEADER -> " " // TODO?
+            else -> " " // TODO?
         }.first().toString()
     }
 
@@ -179,10 +183,13 @@ class StopsAndRoutesAdapter(
         val mainText: TextView = view.mainText
     }
 
+    class AskAboutNearbyStopsViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
     enum class ViewType(val code: Int) {
         HEADER(0),
         STOP(1),
-        ROUTE(2)
+        ROUTE(2),
+        ASK_ABOUT_NEARBY_STOPS(3)
     }
 
     interface ViewItem {
@@ -199,5 +206,9 @@ class StopsAndRoutesAdapter(
 
     class RouteItem(val routeID: String, val isBus: Boolean) : ViewItem {
         override val type: ViewType = ViewType.ROUTE
+    }
+
+    class AskAboutNearbyStops : ViewItem {
+        override val type: ViewType = ViewType.ASK_ABOUT_NEARBY_STOPS
     }
 }

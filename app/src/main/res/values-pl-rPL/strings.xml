@@ -42,4 +42,6 @@
     <string name="ok">OK</string>
     <string name="no">Nie</string>
     <string name="blueTramsCredits">\"Wrocławska piosenka\"\nJerzy Harald - muzyka\nKrystyna Wnukowska - słowa</string>
+    <string name="never">Nigdy</string>
+    <string name="find_nearby_stops">Znajdź pobliskie przystanki?</string>
 </resources>
