@@ -14,6 +14,7 @@ import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteInfo
+import com.orpington.software.rozkladmpk.data.source.ApiClient
 import kotlinx.android.synthetic.main.activity_route_details.*
 import kotlinx.android.synthetic.main.route_details_header.*
 import java.util.*
@@ -46,7 +47,8 @@ class RouteDetailsActivity : AppCompatActivity(),
         routeID = intent.getStringExtra("routeID")
         stopName = intent.getStringExtra("stopName")
 
-        presenter = RouteDetailsPresenter(Injection.provideDataSource(cacheDir))
+        val httpClient = ApiClient.getHttpClient(cacheDir)
+        presenter = RouteDetailsPresenter(Injection.provideDataSource(httpClient))
         presenter.attachInfoView(this)
         if (savedInstanceState == null) {
             presenter.setRouteID(routeID)

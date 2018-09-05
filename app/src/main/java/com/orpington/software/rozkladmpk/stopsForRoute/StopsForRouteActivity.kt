@@ -10,6 +10,7 @@ import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
+import com.orpington.software.rozkladmpk.data.source.ApiClient
 import com.orpington.software.rozkladmpk.routeDetails.RouteDetailsActivity
 import kotlinx.android.synthetic.main.activity_stops_for_route.*
 import kotlinx.android.synthetic.main.error_view.view.*
@@ -28,7 +29,8 @@ class StopsForRouteActivity : AppCompatActivity(), StopsForRouteContract.View {
         val routeID = intent.getStringExtra("routeID")
         title = "${getString(R.string.route)} $routeID"
 
-        presenter = StopsForRoutesPresenter(Injection.provideDataSource(cacheDir))
+        val httpClient = ApiClient.getHttpClient(cacheDir)
+        presenter = StopsForRoutesPresenter(Injection.provideDataSource(httpClient))
         adapter = StopsForRoutesAdapter(this, presenter)
 
         val layoutManager = LinearLayoutManager(this)
