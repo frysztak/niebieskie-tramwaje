@@ -12,6 +12,7 @@ import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.R
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+import kotlinx.android.synthetic.main.stops_and_routes_empty_item.view.*
 import kotlinx.android.synthetic.main.stops_and_routes_list_header.view.*
 import kotlinx.android.synthetic.main.stops_and_routes_list_item.view.*
 import kotlinx.android.synthetic.main.stops_and_routes_location_item.view.*
@@ -222,7 +223,7 @@ class StopsAndRoutesAdapter(
     private var skeletonScreen: SkeletonScreen? = null
 
     class NearbyStopsLoadingViewHolder(view: View, private var skeletonScreen: SkeletonScreen?) : RecyclerView.ViewHolder(view) {
-        val rootView: View = view.rootView
+        val rootView: View = view.root
 
         init {
             skeletonScreen = Skeleton.bind(rootView)

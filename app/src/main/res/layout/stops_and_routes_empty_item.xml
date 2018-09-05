@@ -6,7 +6,7 @@
     <!-- Skeleton library requires our root view to have a parent -->
     <View
         android:layout_width="wrap_content"
-        android:id="@+id/rootView"
+        android:id="@+id/root"
         android:layout_height="wrap_content" />
 
 </android.support.constraint.ConstraintLayout>
