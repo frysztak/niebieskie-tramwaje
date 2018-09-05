@@ -5,21 +5,27 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.ethanhua.skeleton.Skeleton
+import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.R
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import kotlinx.android.synthetic.main.stops_and_routes_list_header.view.*
 import kotlinx.android.synthetic.main.stops_and_routes_list_item.view.*
+import kotlinx.android.synthetic.main.stops_and_routes_location_item.view.*
 import kotlin.math.roundToInt
 
 internal interface ClickListener {
     fun itemClicked(index: Int)
+    fun okButtonClicked()
+    fun neverButtonClicked()
 }
 
 class StopsAndRoutesAdapter(
     private val context: Context,
-    private val presenter: StopsAndRoutesPresenter) :
+    private val presenter: StopsAndRoutesContract.Presenter) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(),
     FastScrollRecyclerView.SectionedAdapter,
     ClickListener {
@@ -58,11 +64,18 @@ class StopsAndRoutesAdapter(
             return
         }
 
-        val nearbyStopsSection: List<ViewItem> = if (nearbyStops.isEmpty()) {
-            emptyList()
-        } else {
-            val header: ViewItem = HeaderItem(context.getString(R.string.nearby_stops))
-            listOf(header) + AskAboutNearbyStops() + convertToViewItems(nearbyStops)
+        skeletonScreen?.hide()
+        skeletonScreen = null
+
+        var nearbyStopsSection: List<ViewItem> = emptyList()
+        if (presenter.shouldShowNearbyStops()) {
+            val header = listOf(HeaderItem(context.getString(R.string.nearby_stops)))
+
+            nearbyStopsSection = when {
+                presenter.shouldShowNearbyStopsPrompt() -> header + AskAboutNearbyStops()
+                nearbyStops.isEmpty() -> header + NearbyStopsLoading()
+                else -> header + convertToViewItems(nearbyStops)
+            }
         }
 
         val stopsAndRoutesSection =
@@ -80,7 +93,11 @@ class StopsAndRoutesAdapter(
             }
             ViewType.ASK_ABOUT_NEARBY_STOPS.code -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_location_item, parent, false)
-                AskAboutNearbyStopsViewHolder(view)
+                AskAboutNearbyStopsViewHolder(view, this)
+            }
+            ViewType.NEARBY_STOPS_LOADING.code -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_empty_item, parent, false)
+                NearbyStopsLoadingViewHolder(view, skeletonScreen)
             }
             else -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_list_item, parent, false)
@@ -179,17 +196,47 @@ class StopsAndRoutesAdapter(
         }
     }
 
+    override fun okButtonClicked() {
+        presenter.agreeToLocationTrackingClicked()
+    }
+
+    override fun neverButtonClicked() {
+        presenter.neverAskAboutLocationTrackingClicked()
+    }
+
     class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val mainText: TextView = view.mainText
     }
 
-    class AskAboutNearbyStopsViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    internal class AskAboutNearbyStopsViewHolder(view: View, private val clickListener: ClickListener) :
+        RecyclerView.ViewHolder(view) {
+        val okButton: Button = view.okButton
+        val neverButton: Button = view.neverButton
+
+        init {
+            okButton.setOnClickListener { clickListener.okButtonClicked() }
+            neverButton.setOnClickListener { clickListener.neverButtonClicked() }
+        }
+    }
+
+    private var skeletonScreen: SkeletonScreen? = null
+
+    class NearbyStopsLoadingViewHolder(view: View, private var skeletonScreen: SkeletonScreen?) : RecyclerView.ViewHolder(view) {
+        val rootView: View = view.rootView
+
+        init {
+            skeletonScreen = Skeleton.bind(rootView)
+                .load(R.layout.stops_and_routes_skeleton_list_item)
+                .show()
+        }
+    }
 
     enum class ViewType(val code: Int) {
         HEADER(0),
         STOP(1),
         ROUTE(2),
-        ASK_ABOUT_NEARBY_STOPS(3)
+        NEARBY_STOPS_LOADING(3),
+        ASK_ABOUT_NEARBY_STOPS(4)
     }
 
     interface ViewItem {
@@ -206,6 +253,10 @@ class StopsAndRoutesAdapter(
 
     class RouteItem(val routeID: String, val isBus: Boolean) : ViewItem {
         override val type: ViewType = ViewType.ROUTE
+    }
+
+    class NearbyStopsLoading : ViewItem {
+        override val type: ViewType = ViewType.NEARBY_STOPS_LOADING
     }
 
     class AskAboutNearbyStops : ViewItem {

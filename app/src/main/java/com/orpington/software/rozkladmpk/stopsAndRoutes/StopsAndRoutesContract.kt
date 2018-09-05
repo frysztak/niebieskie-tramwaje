@@ -16,6 +16,12 @@ interface StopsAndRoutesContract {
         fun routeClicked(routeID: String)
 
         fun locationChanged(latitude: Double, longitude: Double)
+
+        fun shouldShowNearbyStops(): Boolean
+        fun shouldShowNearbyStopsPrompt(): Boolean
+
+        fun agreeToLocationTrackingClicked()
+        fun neverAskAboutLocationTrackingClicked()
     }
 
     interface View : BaseView {
@@ -28,5 +34,10 @@ interface StopsAndRoutesContract {
 
         fun showStopNotFound()
         fun showStopsList()
+
+        fun isLocationPermissionGranted(): Boolean
+        fun isNeverAskForLocationSet(): Boolean
+        fun setNeverAskForLocation(value: Boolean)
+        fun startLocationTracking()
     }
 }
