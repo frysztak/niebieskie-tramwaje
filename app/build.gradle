@@ -17,7 +17,7 @@ android {
 
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.orpington.software.rozkladmpk"
+        applicationId "software.orpington.rozkladmpk"
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
