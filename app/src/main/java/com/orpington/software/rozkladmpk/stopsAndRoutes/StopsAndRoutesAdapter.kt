@@ -31,6 +31,8 @@ class StopsAndRoutesAdapter(
     FastScrollRecyclerView.SectionedAdapter,
     ClickListener {
 
+    private var skeletonScreen: SkeletonScreen? = null
+
     private var items: List<ViewItem> = emptyList()
 
     private var searchResults: List<StopOrRoute> = emptyList()
@@ -91,23 +93,23 @@ class StopsAndRoutesAdapter(
         return when (viewType) {
             ViewItem.ViewType.HEADER.code -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_list_header, parent, false)
-                HeaderViewHolder(view)
+                ViewHolder.Header(view)
             }
             ViewItem.ViewType.ASK_ABOUT_NEARBY_STOPS.code -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_location_item, parent, false)
-                AskAboutNearbyStopsViewHolder(view, this)
+                ViewHolder.AskAboutNearbyStops(view, this)
             }
             ViewItem.ViewType.NEARBY_STOPS_LOADING.code -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_empty_item, parent, false)
-                NearbyStopsLoadingViewHolder(view, skeletonScreen)
+                ViewHolder.NearbyStopsLoading(view, skeletonScreen)
             }
             ViewItem.ViewType.NO_NEARBY_STOPS_FOUND.code -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_nearby_stops_not_found, parent, false)
-                NoNearbyStopsFoundViewHolder(view)
+                ViewHolder.NoNearbyStopsFound(view)
             }
             else -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_list_item, parent, false)
-                StopOrRouteViewHolder(view, this)
+                ViewHolder.StopOrRoute(view, this)
             }
         }
     }
@@ -117,14 +119,14 @@ class StopsAndRoutesAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-       return when(items[position]) {
-           is ViewItem.Stop -> ViewItem.ViewType.STOP
-           is ViewItem.Route -> ViewItem.ViewType.ROUTE
-           is ViewItem.Header -> ViewItem.ViewType.HEADER
-           is ViewItem.AskAboutNearbyStops -> ViewItem.ViewType.ASK_ABOUT_NEARBY_STOPS
-           is ViewItem.NearbyStopsLoading -> ViewItem.ViewType.NEARBY_STOPS_LOADING
-           is ViewItem.NoNearbyStopsFound -> ViewItem.ViewType.NO_NEARBY_STOPS_FOUND
-       }.code
+        return when (items[position]) {
+            is ViewItem.Stop -> ViewItem.ViewType.STOP
+            is ViewItem.Route -> ViewItem.ViewType.ROUTE
+            is ViewItem.Header -> ViewItem.ViewType.HEADER
+            is ViewItem.AskAboutNearbyStops -> ViewItem.ViewType.ASK_ABOUT_NEARBY_STOPS
+            is ViewItem.NearbyStopsLoading -> ViewItem.ViewType.NEARBY_STOPS_LOADING
+            is ViewItem.NoNearbyStopsFound -> ViewItem.ViewType.NO_NEARBY_STOPS_FOUND
+        }.code
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -134,7 +136,7 @@ class StopsAndRoutesAdapter(
             is ViewItem.Stop -> {
                 val iconResId = R.drawable.bus_stop
 
-                (holder as StopOrRouteViewHolder).apply {
+                (holder as ViewHolder.StopOrRoute).apply {
                     iconImageView.setImageResource(iconResId)
                     mainNameTextView.text = item.stopName
 
@@ -151,14 +153,14 @@ class StopsAndRoutesAdapter(
                 // e.g. "Route 33"
                 val text = "${context.getString(R.string.route)} ${item.routeID}"
 
-                (holder as StopOrRouteViewHolder).apply {
+                (holder as ViewHolder.StopOrRoute).apply {
                     iconImageView.setImageResource(iconResId)
                     mainNameTextView.text = text
                 }
             }
 
             is ViewItem.Header -> {
-                (holder as HeaderViewHolder).mainText.text = item.title
+                (holder as ViewHolder.Header).mainText.text = item.title
             }
         }
 
@@ -182,22 +184,6 @@ class StopsAndRoutesAdapter(
         }
     }
 
-    internal class StopOrRouteViewHolder(view: View, private val clickListener: ClickListener) :
-        RecyclerView.ViewHolder(view), View.OnClickListener {
-
-        val iconImageView: ImageView = view.icon
-        val mainNameTextView: TextView = view.mainName
-        val distanceTextView: TextView = view.distance
-
-        init {
-            view.setOnClickListener(this)
-        }
-
-        override fun onClick(v: View?) {
-            clickListener.itemClicked(adapterPosition)
-        }
-    }
-
     override fun itemClicked(index: Int) {
         val item = items[index]
         when (item) {
@@ -214,34 +200,51 @@ class StopsAndRoutesAdapter(
         presenter.neverAskAboutLocationTrackingClicked()
     }
 
-    class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val mainText: TextView = view.mainText
-    }
+    internal sealed class ViewHolder {
+        class StopOrRoute(view: View, private val clickListener: ClickListener) :
+            RecyclerView.ViewHolder(view), View.OnClickListener {
 
-    internal class AskAboutNearbyStopsViewHolder(view: View, private val clickListener: ClickListener) :
-        RecyclerView.ViewHolder(view) {
-        val okButton: Button = view.okButton
-        val neverButton: Button = view.neverButton
+            val iconImageView: ImageView = view.icon
+            val mainNameTextView: TextView = view.mainName
+            val distanceTextView: TextView = view.distance
 
-        init {
-            okButton.setOnClickListener { clickListener.okButtonClicked() }
-            neverButton.setOnClickListener { clickListener.neverButtonClicked() }
+            init {
+                view.setOnClickListener(this)
+            }
+
+            override fun onClick(v: View?) {
+                clickListener.itemClicked(adapterPosition)
+            }
         }
-    }
 
-    private var skeletonScreen: SkeletonScreen? = null
-
-    class NearbyStopsLoadingViewHolder(view: View, private var skeletonScreen: SkeletonScreen?) : RecyclerView.ViewHolder(view) {
-        val rootView: View = view.root
-
-        init {
-            skeletonScreen = Skeleton.bind(rootView)
-                .load(R.layout.stops_and_routes_skeleton_list_item)
-                .show()
+        class Header(view: View) : RecyclerView.ViewHolder(view) {
+            val mainText: TextView = view.mainText
         }
-    }
 
-    class NoNearbyStopsFoundViewHolder(view: View) : RecyclerView.ViewHolder(view)
+        class AskAboutNearbyStops(view: View, private val clickListener: ClickListener) :
+            RecyclerView.ViewHolder(view) {
+            val okButton: Button = view.okButton
+            val neverButton: Button = view.neverButton
+
+            init {
+                okButton.setOnClickListener { clickListener.okButtonClicked() }
+                neverButton.setOnClickListener { clickListener.neverButtonClicked() }
+            }
+        }
+
+        class NearbyStopsLoading(view: View, private var skeletonScreen: SkeletonScreen?) :
+            RecyclerView.ViewHolder(view) {
+            private val rootView: View = view.root
+
+            init {
+                skeletonScreen = Skeleton.bind(rootView)
+                    .load(R.layout.stops_and_routes_skeleton_list_item)
+                    .show()
+            }
+        }
+
+        class NoNearbyStopsFound(view: View) : RecyclerView.ViewHolder(view)
+    }
 
     internal sealed class ViewItem {
         enum class ViewType(val code: Int) {
