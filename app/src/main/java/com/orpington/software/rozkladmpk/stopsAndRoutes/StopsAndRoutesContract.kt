@@ -30,7 +30,7 @@ interface StopsAndRoutesContract {
 
         fun setStopsAndRoutes(data: List<StopOrRoute>)
         fun setSearchResults(data: List<StopOrRoute>)
-        fun setNearbyStops(data: List<StopOrRoute>)
+        fun setNearbyStops(data: List<StopOrRoute>?)
 
         fun showStopNotFound()
         fun showStopsList()

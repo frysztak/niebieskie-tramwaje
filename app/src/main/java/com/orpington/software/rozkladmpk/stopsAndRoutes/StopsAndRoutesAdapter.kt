@@ -45,8 +45,8 @@ class StopsAndRoutesAdapter(
         updateItems()
     }
 
-    private var nearbyStops: List<StopOrRoute> = emptyList()
-    fun setNearbyStops(data: List<StopOrRoute>) {
+    private var nearbyStops: List<StopOrRoute>? = emptyList()
+    fun setNearbyStops(data: List<StopOrRoute>?) {
         nearbyStops = data
         updateItems()
     }
@@ -74,8 +74,9 @@ class StopsAndRoutesAdapter(
 
             nearbyStopsSection = when {
                 presenter.shouldShowNearbyStopsPrompt() -> header + AskAboutNearbyStops()
-                nearbyStops.isEmpty() -> header + NearbyStopsLoading()
-                else -> header + convertToViewItems(nearbyStops)
+                nearbyStops == null -> header + NoNearbyStopsFound()
+                nearbyStops != null && nearbyStops!!.isEmpty() -> header + NearbyStopsLoading()
+                else -> header + convertToViewItems(nearbyStops!!)
             }
         }
 
@@ -99,6 +100,10 @@ class StopsAndRoutesAdapter(
             ViewType.NEARBY_STOPS_LOADING.code -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_empty_item, parent, false)
                 NearbyStopsLoadingViewHolder(view, skeletonScreen)
+            }
+            ViewType.NO_NEARBY_STOPS_FOUND.code -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_nearby_stops_not_found, parent, false)
+                NoNearbyStopsFoundViewHolder(view)
             }
             else -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_list_item, parent, false)
@@ -232,12 +237,15 @@ class StopsAndRoutesAdapter(
         }
     }
 
+    class NoNearbyStopsFoundViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
     enum class ViewType(val code: Int) {
         HEADER(0),
         STOP(1),
         ROUTE(2),
         NEARBY_STOPS_LOADING(3),
-        ASK_ABOUT_NEARBY_STOPS(4)
+        ASK_ABOUT_NEARBY_STOPS(4),
+        NO_NEARBY_STOPS_FOUND(5)
     }
 
     interface ViewItem {
@@ -262,5 +270,9 @@ class StopsAndRoutesAdapter(
 
     class AskAboutNearbyStops : ViewItem {
         override val type: ViewType = ViewType.ASK_ABOUT_NEARBY_STOPS
+    }
+
+    class NoNearbyStopsFound : ViewItem {
+        override val type: ViewType = ViewType.NO_NEARBY_STOPS_FOUND
     }
 }

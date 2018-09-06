@@ -188,7 +188,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         recyclerAdapter.setStopsAndRoutes(data)
     }
 
-    override fun setNearbyStops(data: List<StopOrRoute>) {
+    override fun setNearbyStops(data: List<StopOrRoute>?) {
         recyclerAdapter.setNearbyStops(data)
     }
 

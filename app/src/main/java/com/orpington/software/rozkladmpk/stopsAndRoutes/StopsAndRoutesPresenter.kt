@@ -74,7 +74,13 @@ class StopsAndRoutesPresenter(
         val location = GeoLocation.fromDegrees(latitude, longitude)
         val helper = StopsAndRoutesHelper()
         val nearbyStops = helper.filterNearbyStops(rawStops, location)
-        view?.setNearbyStops(nearbyStops)
+
+        if (rawStops.isNotEmpty() && nearbyStops.isEmpty()) {
+            // no nearby stops found
+            view?.setNearbyStops(null)
+        } else {
+            view?.setNearbyStops(nearbyStops)
+        }
     }
 
     override fun shouldShowNearbyStops(): Boolean {
