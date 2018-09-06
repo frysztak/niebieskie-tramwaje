@@ -27,6 +27,7 @@ import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsReques
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.about.AboutActivity
+import com.orpington.software.rozkladmpk.data.source.ApiClient
 import com.orpington.software.rozkladmpk.routeVariants.RouteVariantsActivity
 import com.orpington.software.rozkladmpk.stopsForRoute.StopsForRouteActivity
 import kotlinx.android.synthetic.main.activity_stops_and_routes.*
@@ -49,9 +50,10 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         setContentView(R.layout.activity_stops_and_routes)
         setSupportActionBar(findViewById(R.id.toolbar))
 
+        val httpClient = ApiClient.getHttpClient(cacheDir)
+        presenter = StopsAndRoutesPresenter(Injection.provideDataSource(httpClient))
         sharedPreferences = getSharedPreferences("PREF", MODE_PRIVATE)
 
-        presenter = StopsAndRoutesPresenter(Injection.provideDataSource(cacheDir))
         presenter.attachView(this)
         recyclerAdapter = StopsAndRoutesAdapter(this, presenter)
         presenter.loadStopsAndRoutes()

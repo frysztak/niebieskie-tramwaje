@@ -11,6 +11,7 @@ import com.ethanhua.skeleton.SkeletonScreen
 import com.orpington.software.rozkladmpk.Injection
 import com.orpington.software.rozkladmpk.R
 import com.orpington.software.rozkladmpk.data.model.RouteVariant
+import com.orpington.software.rozkladmpk.data.source.ApiClient
 import com.orpington.software.rozkladmpk.routeDetails.RouteDetailsActivity
 import com.orpington.software.rozkladmpk.utils.GridSpacingItemDecoration
 import kotlinx.android.synthetic.main.activity_route_variants.*
@@ -30,7 +31,8 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
 
         var stopName = intent.getStringExtra("stopName")
 
-        presenter = RouteVariantsPresenter(Injection.provideDataSource(cacheDir))
+        val httpClient = ApiClient.getHttpClient(cacheDir)
+        presenter = RouteVariantsPresenter(Injection.provideDataSource(httpClient))
         recyclerAdapter = RoutesRecyclerViewAdapter(this, presenter)
 
         var layoutManager = GridLayoutManager(this, 2)
