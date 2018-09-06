@@ -24,14 +24,14 @@ import com.google.android.gms.location.LocationServices.getFusedLocationProvider
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsOptions
 import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsRequest
+import kotlinx.android.synthetic.main.activity_stops_and_routes.*
+import kotlinx.android.synthetic.main.error_view.view.*
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.about.AboutActivity
 import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.routeVariants.RouteVariantsActivity
 import software.orpington.rozkladmpk.stopsForRoute.StopsForRouteActivity
-import kotlinx.android.synthetic.main.activity_stops_and_routes.*
-import kotlinx.android.synthetic.main.error_view.view.*
 
 
 class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View {
@@ -41,7 +41,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
     private lateinit var locationProvider: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: LocationCallback
+    private var locationCallback: LocationCallback? = null
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -66,6 +66,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         }
 
         initLocationManager()
+        initLocationCallback()
         if (isLocationPermissionGranted()) {
             registerLocationListener()
         }
@@ -78,6 +79,9 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         locationRequest.fastestInterval = 2 * 1000L // 2  seconds
 
         locationProvider = getFusedLocationProviderClient(this)
+    }
+
+    private fun initLocationCallback() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(location: LocationResult?) {
                 val loc = location?.lastLocation ?: return
@@ -116,12 +120,14 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     override fun onPause() {
         super.onPause()
         locationProvider.removeLocationUpdates(locationCallback)
+        locationCallback = null
     }
 
     @SuppressLint("MissingPermission")
     override fun onResume() {
         super.onResume()
 
+        initLocationCallback()
         if (isLocationPermissionGranted()) {
             locationProvider
                 .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
