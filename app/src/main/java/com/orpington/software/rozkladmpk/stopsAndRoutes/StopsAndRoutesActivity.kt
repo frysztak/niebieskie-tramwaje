@@ -3,6 +3,7 @@ package com.orpington.software.rozkladmpk.stopsAndRoutes
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
@@ -42,6 +43,8 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
 
+    private lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stops_and_routes)
@@ -49,6 +52,8 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
         val httpClient = ApiClient.getHttpClient(cacheDir)
         presenter = StopsAndRoutesPresenter(Injection.provideDataSource(httpClient))
+        sharedPreferences = getSharedPreferences("PREF", MODE_PRIVATE)
+
         presenter.attachView(this)
         recyclerAdapter = StopsAndRoutesAdapter(this, presenter)
         presenter.loadStopsAndRoutes()
@@ -61,7 +66,9 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         }
 
         initLocationManager()
-        registerLocationListener()
+        if (isLocationPermissionGranted()) {
+            registerLocationListener()
+        }
     }
 
     private fun initLocationManager() {
@@ -111,14 +118,32 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         locationProvider.removeLocationUpdates(locationCallback)
     }
 
+    @SuppressLint("MissingPermission")
     override fun onResume() {
         super.onResume()
 
-        val permissionLocation = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-        if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
+        if (isLocationPermissionGranted()) {
             locationProvider
                 .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
         }
+    }
+
+    override fun isLocationPermissionGranted(): Boolean {
+        val permissionLocation = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        return permissionLocation == PackageManager.PERMISSION_GRANTED
+    }
+
+    private val neverAskKey = "NEVER_ASK_FOR_LOCATION"
+    override fun isNeverAskForLocationSet(): Boolean {
+        return sharedPreferences.getBoolean(neverAskKey, false)
+    }
+
+    override fun setNeverAskForLocation(value: Boolean) {
+        sharedPreferences.edit().putBoolean(neverAskKey, value).apply()
+    }
+
+    override fun startLocationTracking() {
+        registerLocationListener()
     }
 
     override fun onDestroy() {
@@ -165,7 +190,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         recyclerAdapter.setStopsAndRoutes(data)
     }
 
-    override fun setNearbyStops(data: List<StopOrRoute>) {
+    override fun setNearbyStops(data: List<StopOrRoute>?) {
         recyclerAdapter.setNearbyStops(data)
     }
 

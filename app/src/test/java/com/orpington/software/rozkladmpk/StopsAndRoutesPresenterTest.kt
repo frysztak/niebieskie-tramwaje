@@ -14,6 +14,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Retrofit
@@ -163,6 +164,19 @@ class StopsAndRoutesPresenterTest {
     }
 
     @Test
+    fun nearbyStopsNotFound() {
+        val data = StopsAndRoutes(
+            listOf(
+                StopsAndRoutes.Stop("KOZANÓW", 50.0, 20.0)
+            ), emptyList()
+        )
+
+        presenter.setStopsAndRoutes(data)
+        presenter.locationChanged(0.0, 0.0)
+        verify(view).setNearbyStops(null)
+    }
+
+    @Test
     fun locationChangedWhenNoResultsScreenIsVisible() {
         val data = StopsAndRoutes(
             emptyList(), emptyList()
@@ -174,5 +188,37 @@ class StopsAndRoutesPresenterTest {
 
         presenter.locationChanged(0.0, 0.0)
         verify(view, never()).showStopsList()
+    }
+
+
+    @Test
+    fun shouldShowNearbyStopsPrompt() {
+        view = mock {
+            on { isNeverAskForLocationSet() } doReturn false
+            on { isLocationPermissionGranted() } doReturn false
+        }
+        presenter.attachView(view)
+        assertEquals(true, presenter.shouldShowNearbyStopsPrompt())
+
+        view = mock {
+            on { isNeverAskForLocationSet() } doReturn true
+            on { isLocationPermissionGranted() } doReturn false
+        }
+        presenter.attachView(view)
+        assertEquals(false, presenter.shouldShowNearbyStopsPrompt())
+
+        view = mock {
+            on { isNeverAskForLocationSet() } doReturn true
+            on { isLocationPermissionGranted() } doReturn true
+        }
+        presenter.attachView(view)
+        assertEquals(false, presenter.shouldShowNearbyStopsPrompt())
+
+        view = mock {
+            on { isNeverAskForLocationSet() } doReturn false
+            on { isLocationPermissionGranted() } doReturn true
+        }
+        presenter.attachView(view)
+        assertEquals(false, presenter.shouldShowNearbyStopsPrompt())
     }
 }

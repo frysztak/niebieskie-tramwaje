@@ -74,7 +74,31 @@ class StopsAndRoutesPresenter(
         val location = GeoLocation.fromDegrees(latitude, longitude)
         val helper = StopsAndRoutesHelper()
         val nearbyStops = helper.filterNearbyStops(rawStops, location)
-        view?.setNearbyStops(nearbyStops)
+
+        if (rawStops.isNotEmpty() && nearbyStops.isEmpty()) {
+            // no nearby stops found
+            view?.setNearbyStops(null)
+        } else {
+            view?.setNearbyStops(nearbyStops)
+        }
+    }
+
+    override fun shouldShowNearbyStops(): Boolean {
+        return view?.isNeverAskForLocationSet() != true
+    }
+
+    override fun shouldShowNearbyStopsPrompt(): Boolean {
+        val v = view ?: return false
+        return !v.isNeverAskForLocationSet() && !v.isLocationPermissionGranted()
+    }
+
+    override fun agreeToLocationTrackingClicked() {
+        view?.startLocationTracking()
+    }
+
+    override fun neverAskAboutLocationTrackingClicked() {
+        view?.setNeverAskForLocation(true)
+        view?.setNearbyStops(emptyList())
     }
 
 }
