@@ -32,6 +32,7 @@ import software.orpington.rozkladmpk.about.AboutActivity
 import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.routeVariants.RouteVariantsActivity
 import software.orpington.rozkladmpk.stopsForRoute.StopsForRouteActivity
+import software.orpington.rozkladmpk.utils.InputMethodManagerLeakFix
 
 
 class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View {
@@ -49,6 +50,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stops_and_routes)
         setSupportActionBar(findViewById(R.id.toolbar))
+        InputMethodManagerLeakFix.fixInputMethod(this)
 
         val httpClient = ApiClient.getHttpClient(cacheDir)
         presenter = StopsAndRoutesPresenter(Injection.provideDataSource(httpClient))
