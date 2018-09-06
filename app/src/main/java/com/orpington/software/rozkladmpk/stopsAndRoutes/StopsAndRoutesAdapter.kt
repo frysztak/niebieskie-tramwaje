@@ -55,7 +55,7 @@ class StopsAndRoutesAdapter(
         val searchResultsSection: List<ViewItem> = if (searchResults.isEmpty()) {
             emptyList()
         } else {
-            val header: ViewItem = HeaderItem(context.getString(R.string.search_results))
+            val header: ViewItem = ViewItem.Header(context.getString(R.string.search_results))
             listOf(header) + convertToViewItems(searchResults)
         }
 
@@ -70,18 +70,18 @@ class StopsAndRoutesAdapter(
 
         var nearbyStopsSection: List<ViewItem> = emptyList()
         if (presenter.shouldShowNearbyStops()) {
-            val header = listOf(HeaderItem(context.getString(R.string.nearby_stops)))
+            val header = listOf(ViewItem.Header(context.getString(R.string.nearby_stops)))
 
             nearbyStopsSection = when {
-                presenter.shouldShowNearbyStopsPrompt() -> header + AskAboutNearbyStops()
-                nearbyStops == null -> header + NoNearbyStopsFound()
-                nearbyStops != null && nearbyStops!!.isEmpty() -> header + NearbyStopsLoading()
+                presenter.shouldShowNearbyStopsPrompt() -> header + ViewItem.AskAboutNearbyStops
+                nearbyStops == null -> header + ViewItem.NoNearbyStopsFound
+                nearbyStops != null && nearbyStops!!.isEmpty() -> header + ViewItem.NearbyStopsLoading
                 else -> header + convertToViewItems(nearbyStops!!)
             }
         }
 
         val stopsAndRoutesSection =
-            listOf(HeaderItem(context.getString(R.string.stops_and_routes))) + convertToViewItems(stopsAndRoutes)
+            listOf(ViewItem.Header(context.getString(R.string.stops_and_routes))) + convertToViewItems(stopsAndRoutes)
 
         items = searchResultsSection + nearbyStopsSection + stopsAndRoutesSection
         notifyDataSetChanged()
@@ -89,19 +89,19 @@ class StopsAndRoutesAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            ViewType.HEADER.code -> {
+            ViewItem.ViewType.HEADER.code -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_list_header, parent, false)
                 HeaderViewHolder(view)
             }
-            ViewType.ASK_ABOUT_NEARBY_STOPS.code -> {
+            ViewItem.ViewType.ASK_ABOUT_NEARBY_STOPS.code -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_location_item, parent, false)
                 AskAboutNearbyStopsViewHolder(view, this)
             }
-            ViewType.NEARBY_STOPS_LOADING.code -> {
+            ViewItem.ViewType.NEARBY_STOPS_LOADING.code -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_empty_item, parent, false)
                 NearbyStopsLoadingViewHolder(view, skeletonScreen)
             }
-            ViewType.NO_NEARBY_STOPS_FOUND.code -> {
+            ViewItem.ViewType.NO_NEARBY_STOPS_FOUND.code -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_nearby_stops_not_found, parent, false)
                 NoNearbyStopsFoundViewHolder(view)
             }
@@ -117,34 +117,39 @@ class StopsAndRoutesAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return items[position].type.code
+       return when(items[position]) {
+           is ViewItem.Stop -> ViewItem.ViewType.STOP
+           is ViewItem.Route -> ViewItem.ViewType.ROUTE
+           is ViewItem.Header -> ViewItem.ViewType.HEADER
+           is ViewItem.AskAboutNearbyStops -> ViewItem.ViewType.ASK_ABOUT_NEARBY_STOPS
+           is ViewItem.NearbyStopsLoading -> ViewItem.ViewType.NEARBY_STOPS_LOADING
+           is ViewItem.NoNearbyStopsFound -> ViewItem.ViewType.NO_NEARBY_STOPS_FOUND
+       }.code
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = items[position]
 
-        when (item.type) {
-            ViewType.STOP -> {
+        when (item) {
+            is ViewItem.Stop -> {
                 val iconResId = R.drawable.bus_stop
-                val stop = item as StopItem
 
                 (holder as StopOrRouteViewHolder).apply {
                     iconImageView.setImageResource(iconResId)
-                    mainNameTextView.text = stop.stopName
+                    mainNameTextView.text = item.stopName
 
                     distanceTextView.visibility = View.GONE
-                    if (!stop.distance.isNaN()) {
+                    if (!item.distance.isNaN()) {
                         distanceTextView.visibility = View.VISIBLE
-                        distanceTextView.text = "%d m".format(stop.distance.roundToInt())
+                        distanceTextView.text = "%d m".format(item.distance.roundToInt())
                     }
                 }
             }
 
-            ViewType.ROUTE -> {
-                val routeItem = item as RouteItem
-                val iconResId = if (routeItem.isBus) R.drawable.bus else R.drawable.tram
+            is ViewItem.Route -> {
+                val iconResId = if (item.isBus) R.drawable.bus else R.drawable.tram
                 // e.g. "Route 33"
-                val text = "${context.getString(R.string.route)} ${routeItem.routeID}"
+                val text = "${context.getString(R.string.route)} ${item.routeID}"
 
                 (holder as StopOrRouteViewHolder).apply {
                     iconImageView.setImageResource(iconResId)
@@ -152,9 +157,8 @@ class StopsAndRoutesAdapter(
                 }
             }
 
-            ViewType.HEADER -> {
-                val header = item as HeaderItem
-                (holder as HeaderViewHolder).mainText.text = header.title
+            is ViewItem.Header -> {
+                (holder as HeaderViewHolder).mainText.text = item.title
             }
         }
 
@@ -162,9 +166,9 @@ class StopsAndRoutesAdapter(
 
     override fun getSectionName(position: Int): String {
         val item = items[position]
-        return when (item.type) {
-            ViewType.STOP -> (item as StopItem).stopName
-            ViewType.ROUTE -> (item as RouteItem).routeID
+        return when (item) {
+            is ViewItem.Stop -> item.stopName
+            is ViewItem.Route -> item.routeID
             else -> " " // TODO?
         }.first().toString()
     }
@@ -172,8 +176,8 @@ class StopsAndRoutesAdapter(
     private fun convertToViewItems(data: List<StopOrRoute>): List<ViewItem> {
         return data.map { item ->
             when (item) {
-                is Stop -> StopItem(item.stopName, item.distance)
-                is Route -> RouteItem(item.routeID, item.isBus)
+                is Stop -> ViewItem.Stop(item.stopName, item.distance)
+                is Route -> ViewItem.Route(item.routeID, item.isBus)
             }
         }
     }
@@ -196,9 +200,9 @@ class StopsAndRoutesAdapter(
 
     override fun itemClicked(index: Int) {
         val item = items[index]
-        when (item.type) {
-            ViewType.STOP -> presenter.stopClicked((item as StopItem).stopName)
-            ViewType.ROUTE -> presenter.routeClicked((item as RouteItem).routeID)
+        when (item) {
+            is ViewItem.Stop -> presenter.stopClicked(item.stopName)
+            is ViewItem.Route -> presenter.routeClicked(item.routeID)
         }
     }
 
@@ -239,40 +243,22 @@ class StopsAndRoutesAdapter(
 
     class NoNearbyStopsFoundViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
-    enum class ViewType(val code: Int) {
-        HEADER(0),
-        STOP(1),
-        ROUTE(2),
-        NEARBY_STOPS_LOADING(3),
-        ASK_ABOUT_NEARBY_STOPS(4),
-        NO_NEARBY_STOPS_FOUND(5)
-    }
+    internal sealed class ViewItem {
+        enum class ViewType(val code: Int) {
+            HEADER(0),
+            STOP(1),
+            ROUTE(2),
+            NEARBY_STOPS_LOADING(3),
+            ASK_ABOUT_NEARBY_STOPS(4),
+            NO_NEARBY_STOPS_FOUND(5)
+        }
 
-    interface ViewItem {
-        val type: ViewType
-    }
+        class Header(val title: String) : ViewItem()
+        class Stop(val stopName: String, val distance: Float) : ViewItem()
+        class Route(val routeID: String, val isBus: Boolean) : ViewItem()
 
-    class HeaderItem(val title: String) : ViewItem {
-        override val type: ViewType = ViewType.HEADER
-    }
-
-    class StopItem(val stopName: String, val distance: Float) : ViewItem {
-        override val type: ViewType = ViewType.STOP
-    }
-
-    class RouteItem(val routeID: String, val isBus: Boolean) : ViewItem {
-        override val type: ViewType = ViewType.ROUTE
-    }
-
-    class NearbyStopsLoading : ViewItem {
-        override val type: ViewType = ViewType.NEARBY_STOPS_LOADING
-    }
-
-    class AskAboutNearbyStops : ViewItem {
-        override val type: ViewType = ViewType.ASK_ABOUT_NEARBY_STOPS
-    }
-
-    class NoNearbyStopsFound : ViewItem {
-        override val type: ViewType = ViewType.NO_NEARBY_STOPS_FOUND
+        object NearbyStopsLoading : ViewItem()
+        object AskAboutNearbyStops : ViewItem()
+        object NoNearbyStopsFound : ViewItem()
     }
 }
