@@ -84,7 +84,11 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
                 val item = adapter.getItem(headerPosition) as TimetableViewHelper.HeaderItem?
                     ?: return
 
-                header?.mainText?.text = item.dayType.name
+                header?.mainText?.text = when (item.dayType) {
+                    TimetableViewHelper.DayType.Weekday -> getString(R.string.weekdays)
+                    TimetableViewHelper.DayType.Saturday -> getString(R.string.saturday)
+                    TimetableViewHelper.DayType.Sunday -> getString(R.string.sunday)
+                }
                 header?.additionalText?.visibility =
                     if (item.today) View.VISIBLE else View.GONE
             }

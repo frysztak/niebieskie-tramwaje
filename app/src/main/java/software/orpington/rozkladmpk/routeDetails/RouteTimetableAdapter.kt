@@ -59,9 +59,9 @@ class RouteTimetableAdapter(
                 val viewHolder = holder as HeaderViewHolder
                 val item = items[position] as HeaderItem
                 viewHolder.mainTextView.text = when (item.dayType) {
-                    DayType.Weekday -> "Weekday"
-                    DayType.Saturday -> "Saturday"
-                    DayType.Sunday -> "Sunday"
+                    DayType.Weekday -> context.getString(R.string.weekdays)
+                    DayType.Saturday -> context.getString(R.string.saturday)
+                    DayType.Sunday -> context.getString(R.string.sunday)
                 }
                 viewHolder.additionalTextView.visibility =
                     if (item.today) View.VISIBLE else View.GONE

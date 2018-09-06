@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Blue Trams</string>
-    <string name="weekdays">weekdays</string>
-    <string name="saturday">saturday</string>
-    <string name="sunday">sunday</string>
+    <string name="weekdays">Weekday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
 
     <string name="searchHint">Stop or route name…</string>
 
