@@ -21,7 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
 ### My own
--keep class android.support.v7.widget.SearchView { *; }
+-keep class android.support.v7.widget.** { *; }
 
 ### Moshi
 -dontwarn okio.**
