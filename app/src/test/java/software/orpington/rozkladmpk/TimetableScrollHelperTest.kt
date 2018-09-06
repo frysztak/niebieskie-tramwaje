@@ -66,7 +66,7 @@ class TimetableScrollHelperTest {
                 return listOf(
                     // 0: Typical situation
                     arrayOf(Calendar.MONDAY, 12, 6, listOf(
-                        HeaderItem(DayType.Weekday, ""),
+                        HeaderItem(DayType.Weekday, false),
                         RowItem(DayType.Weekday, arrayListOf("10", "07")),
                         RowItem(DayType.Weekday, arrayListOf("11", "07")),
                         RowItem(DayType.Weekday, arrayListOf("12", "07"))
@@ -74,7 +74,7 @@ class TimetableScrollHelperTest {
 
                     // 1: Typical situation
                     arrayOf(Calendar.MONDAY, 12, 50, listOf(
-                        HeaderItem(DayType.Weekday, ""),
+                        HeaderItem(DayType.Weekday, false),
                         RowItem(DayType.Weekday, arrayListOf("10", "07")),
                         RowItem(DayType.Weekday, arrayListOf("11", "07")),
                         RowItem(DayType.Weekday, arrayListOf("12", "07", "12", "24", "36", "48", "54"))
@@ -82,7 +82,7 @@ class TimetableScrollHelperTest {
 
                     // 2: Typical situation
                     arrayOf(Calendar.MONDAY, 11, 50, listOf(
-                        HeaderItem(DayType.Weekday, ""),
+                        HeaderItem(DayType.Weekday, false),
                         RowItem(DayType.Weekday, arrayListOf("10", "07")),
                         RowItem(DayType.Weekday, arrayListOf("11", "07")),
                         RowItem(DayType.Weekday, arrayListOf("12", "07", "12", "24", "36", "48", "54"))
@@ -90,7 +90,7 @@ class TimetableScrollHelperTest {
 
                     // 3: Current hour is past last available one
                     arrayOf(Calendar.MONDAY, 13, 6, listOf(
-                        HeaderItem(DayType.Weekday, ""),
+                        HeaderItem(DayType.Weekday, false),
                         RowItem(DayType.Weekday, arrayListOf("10", "07")),
                         RowItem(DayType.Weekday, arrayListOf("11", "07")),
                         RowItem(DayType.Weekday, arrayListOf("12", "07"))
@@ -98,7 +98,7 @@ class TimetableScrollHelperTest {
 
                     // 4: It's sunday but the route only runs on weekdays
                     arrayOf(Calendar.SUNDAY, 13, 6, listOf(
-                        HeaderItem(DayType.Weekday, ""),
+                        HeaderItem(DayType.Weekday, false),
                         RowItem(DayType.Weekday, arrayListOf("10", "07")),
                         RowItem(DayType.Weekday, arrayListOf("11", "07")),
                         RowItem(DayType.Weekday, arrayListOf("12", "07"))

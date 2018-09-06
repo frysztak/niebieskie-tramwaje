@@ -44,5 +44,6 @@
     <string name="never">Never</string>
     <string name="find_nearby_stops">Find nearby stops?</string>
     <string name="no_nearby_stops_found">No nearby stops found</string>
+    <string name="today">today</string>
 
 </resources>

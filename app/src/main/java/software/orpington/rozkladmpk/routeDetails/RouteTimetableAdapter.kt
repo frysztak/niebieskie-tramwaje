@@ -63,9 +63,8 @@ class RouteTimetableAdapter(
                     DayType.Saturday -> "Saturday"
                     DayType.Sunday -> "Sunday"
                 }
-                viewHolder.additionalTextView.text = item.additionalText
                 viewHolder.additionalTextView.visibility =
-                    if (item.additionalText.isEmpty()) View.GONE else View.VISIBLE
+                    if (item.today) View.VISIBLE else View.GONE
             }
             ViewType.ROW.code -> {
                 val viewHolder = holder as RowViewHolder

@@ -18,7 +18,7 @@ class TimetableViewHelper {
         val type: ViewType
     }
 
-    class HeaderItem(val dayType: DayType, val additionalText: String) : ViewItem {
+    class HeaderItem(val dayType: DayType, val today: Boolean) : ViewItem {
         override val type: ViewType = ViewType.HEADER
     }
 
@@ -41,7 +41,7 @@ class TimetableViewHelper {
         val addHeaderAndRows =
             { dayType: DayType, timeTableEntries: List<TimeTableEntry> ->
                 if (timeTableEntries.isNotEmpty()) {
-                    items.add(HeaderItem(dayType, getHeaderAdditionalInfo(day, dayType)))
+                    items.add(HeaderItem(dayType, isTimetableDayToday(day, dayType)))
                     processSingleTimeTable(dayType, timeTableEntries, items)
                 }
             }
@@ -78,7 +78,7 @@ class TimetableViewHelper {
         }
     }
 
-    private fun getHeaderAdditionalInfo(currentDay: Int, timetableDay: DayType): String {
+    private fun isTimetableDayToday(currentDay: Int, timetableDay: DayType): Boolean {
         val weekdays = listOf(Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY,
             Calendar.THURSDAY, Calendar.FRIDAY)
         val saturday = Calendar.SATURDAY
@@ -86,16 +86,16 @@ class TimetableViewHelper {
 
         when (timetableDay) {
             DayType.Weekday -> {
-                if (weekdays.contains(currentDay)) return "today"
+                if (weekdays.contains(currentDay)) return true
             }
             DayType.Saturday -> {
-                if (currentDay == saturday) return "today"
+                if (currentDay == saturday) return true
             }
             DayType.Sunday -> {
-                if (currentDay == sunday) return "today"
+                if (currentDay == sunday) return true
             }
         }
 
-        return ""
+        return false
     }
 }

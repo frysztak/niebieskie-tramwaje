@@ -85,9 +85,8 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
                     ?: return
 
                 header?.mainText?.text = item.dayType.name
-                header?.additionalText?.text = item.additionalText
                 header?.additionalText?.visibility =
-                    if (item.additionalText.isEmpty()) View.GONE else View.VISIBLE
+                    if (item.today) View.VISIBLE else View.GONE
             }
         }
         timetable_recyclerview.addItemDecoration(HeaderItemDecoration(stickyHeader))

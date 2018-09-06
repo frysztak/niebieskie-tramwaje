@@ -69,7 +69,7 @@ class StopsAndRoutesActivityTest {
             .check(matches(not(isDisplayed())))
 
         onView(withId(R.id.recyclerView))
-            .check(matches(withItemCount(10)))
+            .check(matches(withItemCount(12)))
     }
 
     @Test
