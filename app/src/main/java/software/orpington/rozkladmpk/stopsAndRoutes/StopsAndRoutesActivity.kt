@@ -2,9 +2,9 @@ package software.orpington.rozkladmpk.stopsAndRoutes
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
@@ -116,6 +116,25 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         return locationMode != Settings.Secure.LOCATION_MODE_OFF
     }
 
+    private var locationSettingsReceiver: BroadcastReceiver? = null
+    private fun registerLocationSettingListener() {
+        locationSettingsReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                if (intent.action!!.matches("android.location.PROVIDERS_CHANGED".toRegex())) {
+                    presenter.setLocationIsDisabled(!isLocationEnabled())
+                }
+            }
+        }
+        registerReceiver(locationSettingsReceiver, IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION))
+    }
+
+    private fun unregisterLocationSettingListener() {
+        if (locationSettingsReceiver != null) {
+            unregisterReceiver(locationSettingsReceiver)
+            locationSettingsReceiver = null
+        }
+    }
+
     private val quickPermissionsOption = QuickPermissionsOptions(
         handleRationale = true,
         rationaleMethod = { rationaleCallback(it) }
@@ -147,6 +166,8 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         super.onPause()
         locationProvider.removeLocationUpdates(locationCallback)
         locationCallback = null
+
+        unregisterLocationSettingListener()
     }
 
     @SuppressLint("MissingPermission")
@@ -157,6 +178,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         if (isLocationPermissionGranted()) {
             presenter.setLocationIsDisabled(!isLocationEnabled())
             registerLocationListener()
+            registerLocationSettingListener()
         }
     }
 
