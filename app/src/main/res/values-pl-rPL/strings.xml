@@ -47,4 +47,6 @@
     <string name="no_nearby_stops_found">Nie znaleziono pobliskich przystanków</string>
     <string name="today">dzisiaj</string>
     <string name="google_play_error_msg">Nie moge znaleźć Twojej lokalizacji, Google Play Services są niezainstalowane bądź nieaktualne.</string>
+    <string name="location_is_disabled">Lokalizacja jest wyłączona</string>
+    <string name="enable">WŁĄCZ</string>
 </resources>

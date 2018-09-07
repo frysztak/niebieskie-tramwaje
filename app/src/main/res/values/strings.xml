@@ -46,5 +46,7 @@
     <string name="no_nearby_stops_found">No nearby stops found</string>
     <string name="today">today</string>
     <string name="google_play_error_msg">Unable to find your location, Google Play Services are missing or out of date.</string>
+    <string name="location_is_disabled">Location is disabled</string>
+    <string name="enable">ENABLE</string>
 
 </resources>

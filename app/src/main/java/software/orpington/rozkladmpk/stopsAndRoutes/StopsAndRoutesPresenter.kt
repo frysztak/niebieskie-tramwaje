@@ -87,6 +87,10 @@ class StopsAndRoutesPresenter(
         view?.setNearbyStopsGooglePlayError()
     }
 
+    override fun setLocationIsDisabled(isDisabled: Boolean) {
+        view?.setLocationIsDisabled(isDisabled)
+    }
+
     override fun shouldShowNearbyStops(): Boolean {
         return view?.isNeverAskForLocationSet() != true
     }
@@ -103,6 +107,10 @@ class StopsAndRoutesPresenter(
     override fun neverAskAboutLocationTrackingClicked() {
         view?.setNeverAskForLocation(true)
         view?.setNearbyStops(emptyList())
+    }
+
+    override fun enableLocationClicked() {
+        view?.showLocationSettings()
     }
 
 }

@@ -17,12 +17,14 @@ interface StopsAndRoutesContract {
 
         fun locationChanged(latitude: Double, longitude: Double)
         fun locationGooglePlayError()
+        fun setLocationIsDisabled(isDisabled: Boolean)
 
         fun shouldShowNearbyStops(): Boolean
         fun shouldShowNearbyStopsPrompt(): Boolean
 
         fun agreeToLocationTrackingClicked()
         fun neverAskAboutLocationTrackingClicked()
+        fun enableLocationClicked()
     }
 
     interface View : BaseView {
@@ -33,6 +35,7 @@ interface StopsAndRoutesContract {
         fun setSearchResults(data: List<StopOrRoute>)
         fun setNearbyStops(data: List<StopOrRoute>?)
         fun setNearbyStopsGooglePlayError()
+        fun setLocationIsDisabled(isDisabled: Boolean)
 
         fun showStopNotFound()
         fun showStopsList()
@@ -41,5 +44,6 @@ interface StopsAndRoutesContract {
         fun isNeverAskForLocationSet(): Boolean
         fun setNeverAskForLocation(value: Boolean)
         fun startLocationTracking()
+        fun showLocationSettings()
     }
 }

@@ -10,18 +10,20 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
-import software.orpington.rozkladmpk.R
 import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
 import kotlinx.android.synthetic.main.stops_and_routes_empty_item.view.*
 import kotlinx.android.synthetic.main.stops_and_routes_list_header.view.*
 import kotlinx.android.synthetic.main.stops_and_routes_list_item.view.*
+import kotlinx.android.synthetic.main.stops_and_routes_location_disabled.view.*
 import kotlinx.android.synthetic.main.stops_and_routes_location_item.view.*
+import software.orpington.rozkladmpk.R
 import kotlin.math.roundToInt
 
 internal interface ClickListener {
     fun itemClicked(index: Int)
     fun okButtonClicked()
     fun neverButtonClicked()
+    fun enableLocationButtonClicked()
 }
 
 class StopsAndRoutesAdapter(
@@ -59,6 +61,14 @@ class StopsAndRoutesAdapter(
         updateItems()
     }
 
+    private var locationIsDisabled = false
+    fun setLocationIsDisabled(isDisabled: Boolean) {
+        if (locationIsDisabled != isDisabled) {
+            locationIsDisabled = isDisabled
+            updateItems()
+        }
+    }
+
     private fun updateItems() {
         val searchResultsSection: List<ViewItem> = if (searchResults.isEmpty()) {
             emptyList()
@@ -82,6 +92,7 @@ class StopsAndRoutesAdapter(
 
             nearbyStopsSection = when {
                 showGooglePlayError -> header + ViewItem.GooglePlayError
+                locationIsDisabled -> header + ViewItem.LocationIsDisabled
                 presenter.shouldShowNearbyStopsPrompt() -> header + ViewItem.AskAboutNearbyStops
                 nearbyStops == null -> header + ViewItem.NoNearbyStopsFound
                 nearbyStops != null && nearbyStops!!.isEmpty() -> header + ViewItem.NearbyStopsLoading
@@ -118,6 +129,10 @@ class StopsAndRoutesAdapter(
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_google_play_error, parent, false)
                 ViewHolder.GooglePlayError(view)
             }
+            ViewItem.ViewType.LOCATION_IS_DISABLED.code -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_location_disabled, parent, false)
+                ViewHolder.LocationIsDisabled(view, this)
+            }
             else -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_list_item, parent, false)
                 ViewHolder.StopOrRoute(view, this)
@@ -138,6 +153,7 @@ class StopsAndRoutesAdapter(
             is ViewItem.NearbyStopsLoading -> ViewItem.ViewType.NEARBY_STOPS_LOADING
             is ViewItem.NoNearbyStopsFound -> ViewItem.ViewType.NO_NEARBY_STOPS_FOUND
             is ViewItem.GooglePlayError -> ViewItem.ViewType.GOOGLE_PLAY_ERROR
+            is ViewItem.LocationIsDisabled -> ViewItem.ViewType.LOCATION_IS_DISABLED
         }.code
     }
 
@@ -212,6 +228,10 @@ class StopsAndRoutesAdapter(
         presenter.neverAskAboutLocationTrackingClicked()
     }
 
+    override fun enableLocationButtonClicked() {
+        presenter.enableLocationClicked()
+    }
+
     internal sealed class ViewHolder {
         class StopOrRoute(view: View, private val clickListener: ClickListener) :
             RecyclerView.ViewHolder(view), View.OnClickListener {
@@ -258,6 +278,15 @@ class StopsAndRoutesAdapter(
         class NoNearbyStopsFound(view: View) : RecyclerView.ViewHolder(view)
 
         class GooglePlayError(view: View) : RecyclerView.ViewHolder(view)
+
+        class LocationIsDisabled(view: View, private val clickListener: ClickListener) :
+            RecyclerView.ViewHolder(view) {
+            val enableButton: Button = view.enableButton
+
+            init {
+                enableButton.setOnClickListener { clickListener.enableLocationButtonClicked() }
+            }
+        }
     }
 
     internal sealed class ViewItem {
@@ -268,7 +297,8 @@ class StopsAndRoutesAdapter(
             NEARBY_STOPS_LOADING(3),
             ASK_ABOUT_NEARBY_STOPS(4),
             NO_NEARBY_STOPS_FOUND(5),
-            GOOGLE_PLAY_ERROR(6)
+            GOOGLE_PLAY_ERROR(6),
+            LOCATION_IS_DISABLED(7)
         }
 
         class Header(val title: String) : ViewItem()
@@ -279,5 +309,6 @@ class StopsAndRoutesAdapter(
         object AskAboutNearbyStops : ViewItem()
         object NoNearbyStopsFound : ViewItem()
         object GooglePlayError : ViewItem()
+        object LocationIsDisabled : ViewItem()
     }
 }

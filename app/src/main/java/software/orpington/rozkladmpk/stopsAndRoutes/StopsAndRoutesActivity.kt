@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Looper
+import android.provider.Settings
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -83,8 +84,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     }
 
     private fun initLocationManager() {
-        val result = checkPlayServices()
-        if (!result) {
+        if (!checkPlayServices()) {
             presenter.locationGooglePlayError()
         }
 
@@ -103,6 +103,17 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
                 presenter.locationChanged(loc.latitude, loc.longitude)
             }
         }
+    }
+
+    private fun isLocationEnabled(): Boolean {
+        var locationMode = 0
+
+        try {
+            locationMode = Settings.Secure.getInt(contentResolver, Settings.Secure.LOCATION_MODE)
+        } catch (e: Settings.SettingNotFoundException) {
+            e.printStackTrace()
+        }
+        return locationMode != Settings.Secure.LOCATION_MODE_OFF
     }
 
     private val quickPermissionsOption = QuickPermissionsOptions(
@@ -144,6 +155,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
         initLocationCallback()
         if (isLocationPermissionGranted()) {
+            presenter.setLocationIsDisabled(!isLocationEnabled())
             registerLocationListener()
         }
     }
@@ -164,6 +176,14 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
     override fun startLocationTracking() {
         registerLocationListener()
+    }
+
+    override fun showLocationSettings() {
+        startActivity(Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+    }
+
+    override fun setLocationIsDisabled(isDisabled: Boolean) {
+        recyclerAdapter.setLocationIsDisabled(isDisabled)
     }
 
     override fun onDestroy() {
