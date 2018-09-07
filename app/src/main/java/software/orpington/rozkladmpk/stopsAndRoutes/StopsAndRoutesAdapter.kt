@@ -53,6 +53,12 @@ class StopsAndRoutesAdapter(
         updateItems()
     }
 
+    private var showGooglePlayError = false
+    fun setNearbyStopsGooglePlayError() {
+        showGooglePlayError = true
+        updateItems()
+    }
+
     private fun updateItems() {
         val searchResultsSection: List<ViewItem> = if (searchResults.isEmpty()) {
             emptyList()
@@ -75,6 +81,7 @@ class StopsAndRoutesAdapter(
             val header = listOf(ViewItem.Header(context.getString(R.string.nearby_stops)))
 
             nearbyStopsSection = when {
+                showGooglePlayError -> header + ViewItem.GooglePlayError
                 presenter.shouldShowNearbyStopsPrompt() -> header + ViewItem.AskAboutNearbyStops
                 nearbyStops == null -> header + ViewItem.NoNearbyStopsFound
                 nearbyStops != null && nearbyStops!!.isEmpty() -> header + ViewItem.NearbyStopsLoading
@@ -107,6 +114,10 @@ class StopsAndRoutesAdapter(
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_nearby_stops_not_found, parent, false)
                 ViewHolder.NoNearbyStopsFound(view)
             }
+            ViewItem.ViewType.GOOGLE_PLAY_ERROR.code -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_google_play_error, parent, false)
+                ViewHolder.GooglePlayError(view)
+            }
             else -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_list_item, parent, false)
                 ViewHolder.StopOrRoute(view, this)
@@ -126,6 +137,7 @@ class StopsAndRoutesAdapter(
             is ViewItem.AskAboutNearbyStops -> ViewItem.ViewType.ASK_ABOUT_NEARBY_STOPS
             is ViewItem.NearbyStopsLoading -> ViewItem.ViewType.NEARBY_STOPS_LOADING
             is ViewItem.NoNearbyStopsFound -> ViewItem.ViewType.NO_NEARBY_STOPS_FOUND
+            is ViewItem.GooglePlayError -> ViewItem.ViewType.GOOGLE_PLAY_ERROR
         }.code
     }
 
@@ -244,6 +256,8 @@ class StopsAndRoutesAdapter(
         }
 
         class NoNearbyStopsFound(view: View) : RecyclerView.ViewHolder(view)
+
+        class GooglePlayError(view: View) : RecyclerView.ViewHolder(view)
     }
 
     internal sealed class ViewItem {
@@ -253,7 +267,8 @@ class StopsAndRoutesAdapter(
             ROUTE(2),
             NEARBY_STOPS_LOADING(3),
             ASK_ABOUT_NEARBY_STOPS(4),
-            NO_NEARBY_STOPS_FOUND(5)
+            NO_NEARBY_STOPS_FOUND(5),
+            GOOGLE_PLAY_ERROR(6)
         }
 
         class Header(val title: String) : ViewItem()
@@ -263,5 +278,6 @@ class StopsAndRoutesAdapter(
         object NearbyStopsLoading : ViewItem()
         object AskAboutNearbyStops : ViewItem()
         object NoNearbyStopsFound : ViewItem()
+        object GooglePlayError : ViewItem()
     }
 }

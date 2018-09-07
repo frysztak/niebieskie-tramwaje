@@ -16,6 +16,8 @@ import android.view.Menu
 import android.view.View
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -74,7 +76,18 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         }
     }
 
+    private fun checkPlayServices(): Boolean {
+        val googleAPI = GoogleApiAvailability.getInstance()
+        val result = googleAPI.isGooglePlayServicesAvailable(this)
+        return result == ConnectionResult.SUCCESS
+    }
+
     private fun initLocationManager() {
+        val result = checkPlayServices()
+        if (!result) {
+            presenter.locationGooglePlayError()
+        }
+
         locationRequest = LocationRequest()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 10 * 1000L // 10 seconds
@@ -131,8 +144,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
         initLocationCallback()
         if (isLocationPermissionGranted()) {
-            locationProvider
-                .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+            registerLocationListener()
         }
     }
 
@@ -200,6 +212,10 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
     override fun setNearbyStops(data: List<StopOrRoute>?) {
         recyclerAdapter.setNearbyStops(data)
+    }
+
+    override fun setNearbyStopsGooglePlayError() {
+        recyclerAdapter.setNearbyStopsGooglePlayError()
     }
 
     override fun navigateToRouteVariants(stopName: String) {

@@ -83,6 +83,10 @@ class StopsAndRoutesPresenter(
         }
     }
 
+    override fun locationGooglePlayError() {
+        view?.setNearbyStopsGooglePlayError()
+    }
+
     override fun shouldShowNearbyStops(): Boolean {
         return view?.isNeverAskForLocationSet() != true
     }
