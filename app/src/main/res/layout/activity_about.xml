@@ -35,8 +35,8 @@
                 android:id="@+id/appLogo"
                 android:layout_width="128dp"
                 android:layout_height="128dp"
-                android:layout_marginTop="8dp"
                 android:layout_margin="8dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:srcCompat="@drawable/app_icon" />
@@ -63,12 +63,21 @@
                 app:layout_constraintTop_toBottomOf="@id/appName" />
 
             <TextView
+                android:id="@+id/appUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:autoLink="web"
+                android:text="www.orpington.software"
+                app:layout_constraintTop_toBottomOf="@id/appAuthor" />
+
+            <TextView
                 android:id="@+id/appVersion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
                 android:gravity="center"
-                app:layout_constraintTop_toBottomOf="@id/appAuthor"
+                app:layout_constraintTop_toBottomOf="@id/appUrl"
                 tools:text="Version 1.0" />
 
             <View
@@ -76,9 +85,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_margin="16dp"
-                android:foreground="@color/divider"
+                android:background="@color/divider"
                 app:layout_constraintTop_toBottomOf="@id/appVersion" />
-
 
             <TextView
                 android:id="@+id/blueTramsLyrics"
@@ -121,7 +129,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_margin="16dp"
-                android:foreground="@color/divider"
+                android:background="@color/divider"
                 app:layout_constraintTop_toBottomOf="@id/icons" />
 
             <Button

@@ -8,7 +8,9 @@ import okhttp3.OkHttpClient
 
 object Injection {
 
-    fun provideDataSource(httpClient: OkHttpClient, baseUrl: String = "http://88.198.99.142:8080"): RemoteDataSource {
+    private const val url = "https://orpington.software/apps/rozkladmpk/"
+
+    fun provideDataSource(httpClient: OkHttpClient, baseUrl: String = url): RemoteDataSource {
         val apiService = ApiClient.get(httpClient, baseUrl).create(ApiService::class.java)
         return RemoteDataSource.getInstance(apiService)
     }
