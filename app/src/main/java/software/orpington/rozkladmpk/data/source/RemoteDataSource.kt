@@ -61,6 +61,10 @@ class RemoteDataSource private constructor(private val service: ApiService) : IR
         makeACall(service.getTripTimeline(tripID), callback)
     }
 
+    override fun getRouteShapes(routeID: String, stopName: String, direction: String, callback: IDataSource.LoadDataCallback<Shapes>) {
+        makeACall(service.getRouteShapes(routeID, stopName, direction), callback)
+    }
+
     companion object {
 
         private var INSTANCE: RemoteDataSource? = null

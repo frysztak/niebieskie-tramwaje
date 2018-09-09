@@ -4,6 +4,7 @@ import software.orpington.rozkladmpk.BaseView
 import software.orpington.rozkladmpk.data.model.RouteDirections
 import software.orpington.rozkladmpk.data.model.RouteInfo
 import software.orpington.rozkladmpk.data.model.Timeline
+import software.orpington.rozkladmpk.data.source.IDataSource
 
 interface RouteDetailsContract {
     interface Presenter {
@@ -29,6 +30,8 @@ interface RouteDetailsContract {
 
         fun loadTimeline()
         fun setTimelinePosition(position: Int)
+
+        fun mapClicked()
 
         fun getState(): RouteDetailsState
         fun setState(state: RouteDetailsState)
@@ -60,6 +63,12 @@ interface RouteDetailsContract {
 
         fun highlightTime(tag: String)
         fun unhighlightTime(tag: String)
+
+        fun navigateToMap(
+            routeID: String,
+            direction: String,
+            stopName: String
+        )
     }
 
     interface TimelineView: BaseView {
