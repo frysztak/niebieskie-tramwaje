@@ -1,6 +1,6 @@
 package software.orpington.rozkladmpk.routeMap
 
-import software.orpington.rozkladmpk.data.model.Shape
+import software.orpington.rozkladmpk.data.model.MapData
 
 interface RouteMapContract {
     interface Presenter {
@@ -11,6 +11,6 @@ interface RouteMapContract {
     }
 
     interface View {
-        fun displayShapes(shapes: List<Shape>)
+        fun displayMapData(mapData: MapData)
     }
 }

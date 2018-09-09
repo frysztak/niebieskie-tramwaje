@@ -1,6 +1,6 @@
 package software.orpington.rozkladmpk.routeMap
 
-import software.orpington.rozkladmpk.data.model.Shapes
+import software.orpington.rozkladmpk.data.model.MapData
 import software.orpington.rozkladmpk.data.source.IDataSource
 import software.orpington.rozkladmpk.data.source.RemoteDataSource
 
@@ -17,9 +17,9 @@ class RouteMapPresenter(
     }
 
     override fun loadShapes(routeID: String, direction: String, stopName: String) {
-        dataSource.getRouteShapes(routeID, stopName, direction, object : IDataSource.LoadDataCallback<Shapes> {
-            override fun onDataLoaded(data: Shapes) {
-                processShapes(data)
+        dataSource.getRouteMapData(routeID, stopName, direction, object : IDataSource.LoadDataCallback<MapData> {
+            override fun onDataLoaded(data: MapData) {
+                processMapData(data)
             }
 
             override fun onDataNotAvailable() {
@@ -28,7 +28,7 @@ class RouteMapPresenter(
         })
     }
 
-    private fun processShapes(shapes: Shapes) {
-        view?.displayShapes(shapes.shapes)
+    private fun processMapData(mapData: MapData) {
+        view?.displayMapData(mapData)
     }
 }

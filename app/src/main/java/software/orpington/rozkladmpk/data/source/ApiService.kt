@@ -33,8 +33,8 @@ interface ApiService {
     @GET("trip/{tripID}/timeline")
     fun getTripTimeline(@Path("tripID") tripID: Int): Call<Timeline>
 
-    @GET("route/{routeID}/shapes/at/{stopName}/direction/{direction}")
-    fun getRouteShapes(@Path("routeID") routeID: String,
-                       @Path("stopName") stopName: String,
-                       @Path("direction") direction: String): Call<Shapes>
+    @GET("route/{routeID}/map/at/{stopName}/direction/{direction}")
+    fun getRouteMap(@Path("routeID") routeID: String,
+                    @Path("stopName") stopName: String,
+                    @Path("direction") direction: String): Call<MapData>
 }

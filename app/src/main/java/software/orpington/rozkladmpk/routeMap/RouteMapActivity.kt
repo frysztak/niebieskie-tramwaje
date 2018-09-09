@@ -9,9 +9,11 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
+import software.orpington.rozkladmpk.data.model.MapData
 import software.orpington.rozkladmpk.data.model.Shape
 import software.orpington.rozkladmpk.data.source.ApiClient
 import java.util.*
@@ -60,17 +62,17 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         updateMap()
     }
 
-    private var shapes: List<Shape>? = null
-    override fun displayShapes(shapes: List<Shape>) {
-        this.shapes = shapes
+    private var mapData: MapData?= null
+    override fun displayMapData(mapData: MapData) {
+        this.mapData = mapData
         updateMap()
     }
 
     private fun updateMap() {
-        if (!mapReady || shapes == null) return
+        if (!mapReady || mapData == null) return
 
         val rnd = Random()
-        for (shape in shapes!!) {
+        for (shape in mapData!!.shapes) {
             val coords = shape.points.map { point ->
                 LatLng(point.latitude, point.longitude)
             }
@@ -81,6 +83,13 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
                 .addAll(coords)
             map?.addPolyline(polyline)
             map?.moveCamera(CameraUpdateFactory.newLatLngZoom(coords.first(), 2.0f))
+        }
+
+        for (stop in mapData!!.stops) {
+            val marker = MarkerOptions()
+                .position(LatLng(stop.latitude, stop.longitude))
+                .title(stop.stopName)
+            map?.addMarker(marker)
         }
     }
 

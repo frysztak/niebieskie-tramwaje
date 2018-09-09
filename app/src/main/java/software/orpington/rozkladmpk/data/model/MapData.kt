@@ -5,8 +5,9 @@ import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
-data class Shapes(
-    @Json(name = "Shapes") val shapes: List<Shape>
+data class MapData(
+    @Json(name = "Shapes") val shapes: List<Shape>,
+    @Json(name = "Stops") val stops: List<StopsAndRoutes.Stop>
 )
 
 @JsonClass(generateAdapter = true)
