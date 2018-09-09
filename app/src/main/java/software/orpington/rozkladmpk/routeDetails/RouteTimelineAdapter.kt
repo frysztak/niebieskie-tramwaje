@@ -53,6 +53,8 @@ class RouteTimelineAdapter(private val context: Context) :
             itemCount - 1 -> holder.verticalLineBottomHalf.visibility = View.INVISIBLE
         }
 
+        holder.onDemand.visibility = if (item.onDemand) View.VISIBLE else View.GONE
+
         if (position == itemIndexToHighlight) {
             holder.highlight()
         } else {
@@ -74,6 +76,7 @@ class RouteTimelineAdapter(private val context: Context) :
         val time: TextView = view.time_textview
         val verticalLineTopHalf: View = view.lineTopHalf
         val verticalLineBottomHalf: View = view.lineBottomHalf
+        val onDemand: TextView = view.onDemand_textview
 
         fun highlight() {
             stopName.setTextColor(highlightColor)
