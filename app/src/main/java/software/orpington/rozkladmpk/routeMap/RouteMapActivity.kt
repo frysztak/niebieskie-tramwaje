@@ -1,30 +1,26 @@
 package software.orpington.rozkladmpk.routeMap
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.view.LayoutInflater
 import android.view.MenuItem
+import android.widget.TextView
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.*
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.model.MapData
-import software.orpington.rozkladmpk.data.model.Shape
 import software.orpington.rozkladmpk.data.source.ApiClient
+import software.orpington.rozkladmpk.utils.convertToBitmap
 import java.util.*
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
-import com.google.android.gms.maps.model.BitmapDescriptor
-
-
 
 
 class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContract.View {
@@ -70,7 +66,7 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         updateMap()
     }
 
-    private var mapData: MapData?= null
+    private var mapData: MapData? = null
     override fun displayMapData(mapData: MapData) {
         this.mapData = mapData
         updateMap()
@@ -80,17 +76,19 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         if (!mapReady || mapData == null) return
 
         val rnd = Random()
+        val boundsBuilder = LatLngBounds.builder()
         for (shape in mapData!!.shapes) {
-            val coords = shape.points.map { point ->
-                LatLng(point.latitude, point.longitude)
-            }
-
             val color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
             val polyline = PolylineOptions()
                 .color(color)
-                .addAll(coords)
+
+            for (point in shape.points) {
+                val coords = LatLng(point.latitude, point.longitude)
+                polyline.add(coords)
+                boundsBuilder.include(coords)
+            }
+
             map?.addPolyline(polyline)
-            map?.moveCamera(CameraUpdateFactory.newLatLngZoom(coords.first(), 2.0f))
         }
 
         val drawable = ContextCompat.getDrawable(this, R.drawable.map_marker)
@@ -98,10 +96,23 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         for (stop in mapData!!.stops) {
             val marker = MarkerOptions()
                 .position(LatLng(stop.latitude, stop.longitude))
-                .title(stop.stopName)
-                .icon(icon)
+
+            if (stop.firstOrLast) {
+                val specialMarkerView = LayoutInflater.from(this).inflate(R.layout.map_marker, null, false)
+                specialMarkerView.findViewById<TextView>(R.id.stopName)?.text = stop.stopName
+                val specialMarkerIcon = specialMarkerView.convertToBitmap()
+
+                marker
+                    .icon(BitmapDescriptorFactory.fromBitmap(specialMarkerIcon))
+            } else {
+                marker
+                    .title(stop.stopName)
+                    .icon(icon)
+            }
             map?.addMarker(marker)
         }
+
+        map?.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 50))
     }
 
     private fun getMarkerIconFromDrawable(drawable: Drawable): BitmapDescriptor {

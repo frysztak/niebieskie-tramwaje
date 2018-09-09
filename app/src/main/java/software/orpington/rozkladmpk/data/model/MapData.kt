@@ -7,8 +7,16 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class MapData(
     @Json(name = "Shapes") val shapes: List<Shape>,
-    @Json(name = "Stops") val stops: List<StopsAndRoutes.Stop>
-)
+    @Json(name = "Stops") val stops: List<Stop>
+) {
+    @JsonClass(generateAdapter = true)
+    data class Stop(
+        @Json(name = "Name") val stopName: String,
+        @Json(name = "Latitude") val latitude: Double,
+        @Json(name = "Longitude") val longitude: Double,
+        @Json(name = "FirstOrLast") val firstOrLast: Boolean
+    )
+}
 
 @JsonClass(generateAdapter = true)
 data class Shape(
