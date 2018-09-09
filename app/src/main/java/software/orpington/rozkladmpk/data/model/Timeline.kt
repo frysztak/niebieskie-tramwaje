@@ -13,6 +13,7 @@ data class Timeline(
     @JsonClass(generateAdapter = true)
     data class TimelineEntry(
         @Json(name = "StopName") val stopName: String,
-        @Json(name = "DepartureTime") val departureTime: String
+        @Json(name = "DepartureTime") val departureTime: String,
+        @Json(name = "OnDemand") val onDemand: Boolean = false
     )
 }
