@@ -8,6 +8,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
@@ -17,6 +18,13 @@ import software.orpington.rozkladmpk.data.model.MapData
 import software.orpington.rozkladmpk.data.model.Shape
 import software.orpington.rozkladmpk.data.source.ApiClient
 import java.util.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import android.support.v4.content.ContextCompat
+import com.google.android.gms.maps.model.BitmapDescriptor
+
+
 
 
 class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContract.View {
@@ -85,12 +93,24 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
             map?.moveCamera(CameraUpdateFactory.newLatLngZoom(coords.first(), 2.0f))
         }
 
+        val drawable = ContextCompat.getDrawable(this, R.drawable.map_marker)
+        val icon = getMarkerIconFromDrawable(drawable!!)
         for (stop in mapData!!.stops) {
             val marker = MarkerOptions()
                 .position(LatLng(stop.latitude, stop.longitude))
                 .title(stop.stopName)
+                .icon(icon)
             map?.addMarker(marker)
         }
+    }
+
+    private fun getMarkerIconFromDrawable(drawable: Drawable): BitmapDescriptor {
+        val canvas = Canvas()
+        val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        canvas.setBitmap(bitmap)
+        drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+        drawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
