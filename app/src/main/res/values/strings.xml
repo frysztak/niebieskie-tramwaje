@@ -50,5 +50,6 @@
     <string name="enable">ENABLE</string>
     <string name="on_demand">on demand</string>
     <string name="failed_to_load_map_data">Failed to load map data</string>
+    <string name="you">You</string>
 
 </resources>

@@ -1,7 +1,13 @@
 package software.orpington.rozkladmpk.routeMap
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.Typeface
+import android.location.Location
 import android.os.Bundle
+import android.os.Looper
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
@@ -9,6 +15,13 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices.getFusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -26,6 +39,10 @@ import software.orpington.rozkladmpk.utils.getBitmapDescriptor
 class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContract.View {
 
     private lateinit var presenter: RouteMapContract.Presenter
+
+    private lateinit var locationProvider: FusedLocationProviderClient
+    private lateinit var locationRequest: LocationRequest
+    private var locationCallback: LocationCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +77,12 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         }
 
         loadData(routeID, direction, stopName)
+
+        initLocationManager()
+        initLocationCallback()
+        if (isLocationPermissionGranted()) {
+            registerLocationListener()
+        }
     }
 
     private fun loadData(routeID: String, direction: String, stopName: String) {
@@ -70,15 +93,25 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         )
     }
 
-    override fun onResume() {
-        super.onResume()
-        presenter.attachView(this)
-    }
-
     override fun onPause() {
         super.onPause()
         presenter.detachView()
+
+        locationProvider.removeLocationUpdates(locationCallback)
+        locationCallback = null
     }
+
+    @SuppressLint("MissingPermission")
+    override fun onResume() {
+        super.onResume()
+        presenter.attachView(this)
+
+        initLocationCallback()
+        if (isLocationPermissionGranted()) {
+            registerLocationListener()
+        }
+    }
+
 
     private var mapReady: Boolean = false
     private var map: GoogleMap? = null
@@ -143,6 +176,7 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         return color
     }
 
+    private var userMarker: Marker? = null
     private fun updateMap() {
         if (!mapReady || mapData == null) return
         colorCounter = 0
@@ -168,6 +202,7 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         val onDemandIcon = ContextCompat
             .getDrawable(this, R.drawable.map_marker_on_demand)
             ?.getBitmapDescriptor() ?: return
+
 
         for (stop in mapData!!.stops) {
             val marker = MarkerOptions()
@@ -219,5 +254,74 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
             }
             else -> return super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun checkPlayServices(): Boolean {
+        val googleAPI = GoogleApiAvailability.getInstance()
+        val result = googleAPI.isGooglePlayServicesAvailable(this)
+        return result == ConnectionResult.SUCCESS
+    }
+
+    private fun initLocationManager() {
+        if (!checkPlayServices()) return
+
+        locationRequest = LocationRequest()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 2 * 1000L // 2 seconds
+
+        locationProvider = getFusedLocationProviderClient(this)
+    }
+
+    private fun initLocationCallback() {
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(location: LocationResult?) {
+                val loc = location?.lastLocation ?: return
+                locationChanged(loc)
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun registerLocationListener() {
+        if (!isLocationPermissionGranted()) return
+
+        locationProvider.lastLocation.addOnSuccessListener { loc ->
+            if (loc != null) {
+                locationChanged(loc)
+            }
+        }
+
+        locationProvider
+            .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+    }
+
+    private fun isLocationPermissionGranted(): Boolean {
+        val permissionLocation = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        return permissionLocation == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun locationChanged(location: Location) {
+        if (!mapReady) return
+
+        if (userMarker == null) {
+            val specialMarkerView = LayoutInflater.from(this).inflate(R.layout.map_marker, null, false)
+            val tv = specialMarkerView
+                .findViewById<TextView>(R.id.stopName)
+            tv.text = getString(R.string.you)
+            tv.setTypeface(tv.typeface, Typeface.BOLD)
+
+            specialMarkerView
+                .findViewById<ImageView>(R.id.circle)
+                .setImageResource(R.drawable.map_marker_user)
+
+            val icon = BitmapDescriptorFactory.fromBitmap(specialMarkerView.convertToBitmap())
+
+            val opt = MarkerOptions()
+                .position(LatLng(location.latitude, location.longitude))
+                .icon(icon)
+            userMarker = map?.addMarker(opt)
+        }
+
+        userMarker?.position = LatLng(location.latitude, location.longitude)
     }
 }
