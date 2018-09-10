@@ -5,38 +5,65 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/stopName"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/textViews"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:paddingEnd="8dp"
-        android:paddingStart="8dp"
-        android:paddingTop="4dp"
-        android:textColor="@color/primary_text"
-        android:textSize="14sp"
-        android:translationZ="1dp"
-        tools:text="Zajezdnia BOREK" />
+        android:translationZ="1dp">
+
+        <TextView
+            android:id="@+id/stopName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:textColor="@color/primary_text"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Katedra" />
+
+        <TextView
+            android:id="@+id/onDemand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:text="@string/on_demand"
+            android:textColor="@color/accent"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/stopName"
+            app:layout_constraintStart_toStartOf="@id/stopName"
+            app:layout_constraintTop_toBottomOf="@id/stopName"
+            tools:visibility="visible" />
+    </android.support.constraint.ConstraintLayout>
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="wrap_content"
+        android:layout_height="8dp"
+        app:layout_constraintTop_toBottomOf="@id/textViews" />
 
     <ImageView
         android:id="@+id/bubble"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:padding="2dp"
         android:adjustViewBounds="true"
+        android:padding="2dp"
         android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="@id/stopName"
-        app:layout_constraintEnd_toEndOf="@id/stopName"
-        app:layout_constraintStart_toStartOf="@id/stopName"
-        app:layout_constraintTop_toTopOf="@id/stopName"
+        app:layout_constraintBottom_toBottomOf="@id/space"
+        app:layout_constraintEnd_toEndOf="@id/textViews"
+        app:layout_constraintStart_toStartOf="@id/textViews"
+        app:layout_constraintTop_toTopOf="@id/textViews"
         app:srcCompat="@drawable/map_bubble_shadow" />
 
     <ImageView
         android:id="@+id/circle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@id/stopName"
-        app:layout_constraintStart_toStartOf="@id/stopName"
+        app:layout_constraintEnd_toEndOf="@id/textViews"
+        app:layout_constraintStart_toStartOf="@id/textViews"
         app:layout_constraintTop_toBottomOf="@id/bubble"
         app:srcCompat="@drawable/map_marker" />
 

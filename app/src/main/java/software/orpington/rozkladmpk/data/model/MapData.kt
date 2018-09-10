@@ -14,7 +14,8 @@ data class MapData(
         @Json(name = "Name") val stopName: String,
         @Json(name = "Latitude") val latitude: Double,
         @Json(name = "Longitude") val longitude: Double,
-        @Json(name = "FirstOrLast") val firstOrLast: Boolean
+        @Json(name = "FirstOrLast") val firstOrLast: Boolean,
+        @Json(name = "OnDemand") val onDemand: Boolean
     )
 }
 

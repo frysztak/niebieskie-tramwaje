@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
@@ -23,6 +24,7 @@ import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.model.MapData
 import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.utils.convertToBitmap
+import software.orpington.rozkladmpk.utils.getBitmapDescriptor
 import java.util.*
 
 
@@ -92,6 +94,10 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
                     .findViewById<TextView>(R.id.stopName)
                     ?.text = marker.title
 
+                 contentsView!!
+                    .findViewById<TextView>(R.id.onDemand)
+                    ?.visibility = if (marker.snippet == null) View.GONE else View.VISIBLE
+
                 return contentsView!!
             }
 
@@ -147,8 +153,14 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
             map?.addPolyline(polyline)
         }
 
-        val drawable = ContextCompat.getDrawable(this, R.drawable.map_marker)
-        val icon = getMarkerIconFromDrawable(drawable!!)
+        val regularIcon = ContextCompat
+            .getDrawable(this, R.drawable.map_marker)
+            ?.getBitmapDescriptor() ?: return
+
+        val onDemandIcon = ContextCompat
+            .getDrawable(this, R.drawable.map_marker_on_demand)
+            ?.getBitmapDescriptor() ?: return
+
         for (stop in mapData!!.stops) {
             val marker = MarkerOptions()
                 .position(LatLng(stop.latitude, stop.longitude))
@@ -157,29 +169,23 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
                 val specialMarkerView = LayoutInflater.from(this).inflate(R.layout.map_marker, null, false)
                 val stopNameTextView = specialMarkerView.findViewById<TextView>(R.id.stopName)
                 stopNameTextView.text = stop.stopName
-                ViewCompat.setTranslationZ(stopNameTextView, 1.0f) // translationZ in XML is only for API 21+
-                val specialMarkerIcon = specialMarkerView.convertToBitmap()
 
-                marker
-                    .icon(BitmapDescriptorFactory.fromBitmap(specialMarkerIcon))
+                val textViews = specialMarkerView.findViewById<ConstraintLayout>(R.id.textViews)
+                ViewCompat.setTranslationZ(textViews, 1.0f) // translationZ in XML is only for API 21+
+
+                marker.icon(BitmapDescriptorFactory.fromBitmap(specialMarkerView.convertToBitmap()))
             } else {
+                val icon = if (stop.onDemand) onDemandIcon else regularIcon
+                val snippet = if(stop.onDemand) "" else null
                 marker
                     .title(stop.stopName)
                     .icon(icon)
+                    .snippet(snippet)
             }
             map?.addMarker(marker)
         }
 
-        map?.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 50))
-    }
-
-    private fun getMarkerIconFromDrawable(drawable: Drawable): BitmapDescriptor {
-        val canvas = Canvas()
-        val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-        canvas.setBitmap(bitmap)
-        drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
-        drawable.draw(canvas)
-        return BitmapDescriptorFactory.fromBitmap(bitmap)
+        map?.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 60))
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
