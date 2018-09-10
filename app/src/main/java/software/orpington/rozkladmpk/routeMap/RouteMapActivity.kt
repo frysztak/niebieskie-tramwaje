@@ -63,6 +63,7 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
     override fun onResume() {
         super.onResume()
         presenter.attachView(this)
+        colorCounter = 0
     }
 
     override fun onPause() {
@@ -108,15 +109,34 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         updateMap()
     }
 
+    private val lineColors = listOf<Int>(
+        Color.parseColor("#E91E63"),
+        Color.parseColor("#673AB7"),
+        Color.parseColor("#2196F3"),
+        Color.parseColor("#00BCD4"),
+        Color.parseColor("#4CAF50"),
+        Color.parseColor("#CDDC39"),
+        Color.parseColor("#FFC107"),
+        Color.parseColor("#FF5722"),
+        Color.parseColor("#9E9E9E")
+    )
+
+    private var colorCounter = 0
+    private fun getNextColor(): Int {
+        val color = lineColors[colorCounter]
+
+        colorCounter = (colorCounter + 1) % lineColors.size
+
+        return color
+    }
+
     private fun updateMap() {
         if (!mapReady || mapData == null) return
 
-        val rnd = Random()
         val boundsBuilder = LatLngBounds.builder()
         for (shape in mapData!!.shapes) {
-            val color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
             val polyline = PolylineOptions()
-                .color(color)
+                .color(getNextColor())
 
             for (point in shape.points) {
                 val coords = LatLng(point.latitude, point.longitude)
