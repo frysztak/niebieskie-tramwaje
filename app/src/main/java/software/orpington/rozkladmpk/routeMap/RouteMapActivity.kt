@@ -34,8 +34,17 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
+        // https://issuetracker.google.com/issues/66402372#comment4
+        lateinit var mapFragment: SupportMapFragment
+        if (savedInstanceState != null) {
+            mapFragment = supportFragmentManager.findFragmentByTag("map") as SupportMapFragment
+        } else {
+            mapFragment = SupportMapFragment.newInstance()
+            supportFragmentManager
+                .beginTransaction()
+                .add(R.id.root, mapFragment, "map")
+                .commit()
+        }
         mapFragment.getMapAsync(this)
 
         val httpClient = ApiClient.getHttpClient(cacheDir)
