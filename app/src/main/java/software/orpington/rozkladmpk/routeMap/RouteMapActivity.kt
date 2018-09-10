@@ -16,6 +16,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import kotlinx.android.synthetic.main.activity_route_map.*
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.model.MapData
@@ -56,6 +57,14 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         val stopName = intent.getStringExtra("stopName")
         title = "${getString(R.string.route)} $routeID — $stopName"
 
+        retryButton.setOnClickListener {
+            loadData(routeID, direction, stopName)
+        }
+
+        loadData(routeID, direction, stopName)
+    }
+
+    private fun loadData(routeID: String, direction: String, stopName: String) {
         presenter.loadShapes(
             routeID,
             direction,
@@ -78,6 +87,11 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
     override fun onMapReady(googleMap: GoogleMap?) {
         map = googleMap
         mapReady = true
+
+        statusBar.bringToFront()
+        statusBar.invalidate()
+        progressBar.bringToFront()
+        progressBar.invalidate()
 
         map?.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
             private var contentsView: View? = null
@@ -187,6 +201,24 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         }
 
         map?.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 60))
+    }
+
+    override fun showProgressBar() {
+        progressBar.visibility = View.VISIBLE
+        errorLayout.visibility = View.GONE
+        progressBar.show()
+    }
+
+    override fun hideProgressBar() {
+        progressBar.hide()
+
+        statusBar.visibility = View.GONE
+    }
+
+    override fun reportError() {
+        statusBar.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
+        errorLayout.visibility = View.VISIBLE
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

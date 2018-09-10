@@ -17,18 +17,17 @@ class RouteMapPresenter(
     }
 
     override fun loadShapes(routeID: String, direction: String, stopName: String) {
+        view?.showProgressBar()
         dataSource.getRouteMapData(routeID, stopName, direction, object : IDataSource.LoadDataCallback<MapData> {
             override fun onDataLoaded(data: MapData) {
-                processMapData(data)
+                view?.hideProgressBar()
+                view?.displayMapData(data)
             }
 
             override fun onDataNotAvailable() {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                view?.hideProgressBar()
+                view?.reportError()
             }
         })
-    }
-
-    private fun processMapData(mapData: MapData) {
-        view?.displayMapData(mapData)
     }
 }

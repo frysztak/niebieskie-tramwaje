@@ -11,6 +11,10 @@ interface RouteMapContract {
     }
 
     interface View {
+        fun showProgressBar()
+        fun hideProgressBar()
+        fun reportError()
+
         fun displayMapData(mapData: MapData)
     }
 }

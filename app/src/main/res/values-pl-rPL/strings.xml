@@ -50,4 +50,5 @@
     <string name="location_is_disabled">Lokalizacja jest wyłączona</string>
     <string name="enable">WŁĄCZ</string>
     <string name="on_demand">na życzenie</string>
+    <string name="failed_to_load_map_data">Nie udało się wczytać danych</string>
 </resources>
