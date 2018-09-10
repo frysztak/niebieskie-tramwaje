@@ -1,6 +1,7 @@
 package software.orpington.rozkladmpk.routeMap
 
 import software.orpington.rozkladmpk.data.model.MapData
+import software.orpington.rozkladmpk.data.model.VehiclePositions
 import software.orpington.rozkladmpk.data.source.IDataSource
 import software.orpington.rozkladmpk.data.source.RemoteDataSource
 
@@ -27,6 +28,17 @@ class RouteMapPresenter(
             override fun onDataNotAvailable() {
                 view?.hideProgressBar()
                 view?.reportError()
+            }
+        })
+    }
+
+    override fun updateVehiclePosition(routeID: String) {
+        dataSource.getVehiclePosition(routeID, object : IDataSource.LoadDataCallback<VehiclePositions> {
+            override fun onDataLoaded(data: VehiclePositions) {
+                view?.displayVehiclePositions(data)
+            }
+
+            override fun onDataNotAvailable() {
             }
         })
     }

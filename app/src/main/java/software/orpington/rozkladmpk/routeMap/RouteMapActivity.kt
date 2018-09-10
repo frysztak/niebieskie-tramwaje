@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -31,6 +32,7 @@ import kotlinx.android.synthetic.main.activity_route_map.*
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.model.MapData
+import software.orpington.rozkladmpk.data.model.VehiclePositions
 import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.utils.LocationCallbackReference
 import software.orpington.rozkladmpk.utils.convertToBitmap
@@ -100,6 +102,8 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
 
         locationProvider.removeLocationUpdates(locationCallback)
         locationCallback = null
+
+        vehicleLocationHandler.removeCallbacksAndMessages(null)
     }
 
     @SuppressLint("MissingPermission")
@@ -111,6 +115,9 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         if (isLocationPermissionGranted()) {
             registerLocationListener()
         }
+
+        val routeID = intent.getStringExtra("routeID")
+        updateVehicleLocation(routeID)
     }
 
     private var mapReady: Boolean = false
@@ -323,5 +330,44 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         }
 
         userMarker?.position = LatLng(location.latitude, location.longitude)
+    }
+
+    private val vehicleLocationHandler = Handler()
+    private fun updateVehicleLocation(routeID: String) {
+        val runnableCode = object : Runnable {
+            override fun run() {
+                presenter.updateVehiclePosition(routeID)
+                vehicleLocationHandler.postDelayed(this, 500)
+            }
+        }
+
+        vehicleLocationHandler.post(runnableCode)
+    }
+
+    private var vehicleMarkers: List<Marker> = emptyList()
+    override fun displayVehiclePositions(data: VehiclePositions) {
+        if (!mapReady) return
+
+        vehicleMarkers.forEach { marker ->
+            marker.remove()
+        }
+        vehicleMarkers =
+            data.map { position ->
+                val specialMarkerView = LayoutInflater.from(this).inflate(R.layout.map_marker, null, false)
+
+                val tv = specialMarkerView
+                    .findViewById<TextView>(R.id.stopName)
+                tv.text = position.name.toUpperCase()
+                tv.setTypeface(tv.typeface, Typeface.BOLD)
+
+                specialMarkerView
+                    .findViewById<ImageView>(R.id.circle)
+                    .setImageResource(R.drawable.map_marker_vehicle)
+
+                val opt = MarkerOptions()
+                    .position(LatLng(position.x, position.y))
+                    .icon(BitmapDescriptorFactory.fromBitmap(specialMarkerView.convertToBitmap()))
+                map?.addMarker(opt)!!
+            }
     }
 }
