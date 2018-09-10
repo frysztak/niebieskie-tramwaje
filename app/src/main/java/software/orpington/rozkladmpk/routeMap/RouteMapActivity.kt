@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -99,7 +100,9 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
 
             if (stop.firstOrLast) {
                 val specialMarkerView = LayoutInflater.from(this).inflate(R.layout.map_marker, null, false)
-                specialMarkerView.findViewById<TextView>(R.id.stopName)?.text = stop.stopName
+                val stopNameTextView = specialMarkerView.findViewById<TextView>(R.id.stopName)
+                stopNameTextView.text = stop.stopName
+                ViewCompat.setTranslationZ(stopNameTextView, 1.0f) // translationZ in XML is only for API 21+
                 val specialMarkerIcon = specialMarkerView.convertToBitmap()
 
                 marker

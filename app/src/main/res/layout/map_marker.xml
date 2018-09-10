@@ -9,27 +9,27 @@
         android:id="@+id/stopName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="6dp"
-        android:paddingEnd="6dp"
-        android:paddingStart="6dp"
-        android:paddingTop="2dp"
-        android:fontFamily="sans-serif-light"
+        android:paddingBottom="8dp"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
         android:textColor="@color/primary_text"
         android:textSize="14sp"
         android:translationZ="1dp"
-        tools:text="PILCZYCE" />
+        tools:text="Zajezdnia BOREK" />
 
     <ImageView
         android:id="@+id/bubble"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:padding="2dp"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="@id/stopName"
         app:layout_constraintEnd_toEndOf="@id/stopName"
         app:layout_constraintStart_toStartOf="@id/stopName"
         app:layout_constraintTop_toTopOf="@id/stopName"
-        app:srcCompat="@drawable/ic_map_bubble" />
+        app:srcCompat="@drawable/map_bubble_shadow" />
 
     <ImageView
         android:layout_width="wrap_content"

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="6.7360053mm"
+   height="2.192687mm"
+   viewBox="0 0 6.7360055 2.192687"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.2 2405546, 2018-03-11"
+   sodipodi:docname="map_bubble_shadow.svg"
+   inkscape:export-filename="/home/sebastian/repo/RozkladMPK/icons/map_bubble_shadow.png"
+   inkscape:export-xdpi="961.46875"
+   inkscape:export-ydpi="961.46875">
+  <defs
+     id="defs2">
+    <inkscape:path-effect
+       effect="simplify"
+       id="path-effect4531"
+       is_visible="true"
+       steps="1"
+       threshold="0.002"
+       smooth_angles="0"
+       helper_size="5"
+       simplify_individual_paths="false"
+       simplify_just_coalesce="false" />
+    <inkscape:path-effect
+       effect="vonkoch"
+       id="path-effect4529"
+       is_visible="true"
+       ref_path="M 10.772322,12.66741 H 42.144344"
+       generator="m 10.772322,17.10863 h 10.457341 m 10.45734,0 h 10.457341"
+       similar_only="false"
+       nbgenerations="1"
+       drawall="true"
+       maxComplexity="1000" />
+    <inkscape:path-effect
+       effect="sketch"
+       id="path-effect4527"
+       is_visible="true"
+       nbiter_approxstrokes="0"
+       strokelength="100"
+       strokelength_rdm="0.3;1"
+       strokeoverlap="0.3"
+       strokeoverlap_rdm="0.3;1"
+       ends_tolerance="0.1;1"
+       parallel_offset="5;1"
+       tremble_size="5;1"
+       tremble_frequency="1"
+       nbtangents="5"
+       tgt_places_rdmness="1;1"
+       tgtscale="10"
+       tgtlength="100"
+       tgtlength_rdm="0.3;1" />
+    <inkscape:path-effect
+       effect="bend_path"
+       id="path-effect818"
+       is_visible="true"
+       bendpath="M 10.772322,12.66741 H 42.144344"
+       prop_scale="1"
+       scale_y_rel="false"
+       vertical="false" />
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter1257"
+       x="-0.0078892503"
+       width="1.0157785"
+       y="-0.02997263"
+       height="1.0599453">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.021798564"
+         id="feGaussianBlur1259" />
+    </filter>
+    <filter
+       inkscape:collect="always"
+       style="color-interpolation-filters:sRGB"
+       id="filter1261"
+       x="-0.046241738"
+       width="1.0924835"
+       y="-0.046241738"
+       height="1.0924835">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="0.021798564"
+         id="feGaussianBlur1263" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="31.678384"
+     inkscape:cx="10.341652"
+     inkscape:cy="6.0802592"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer2"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1060"
+     inkscape:window-x="0"
+     inkscape:window-y="20"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="shadow"
+     transform="translate(-0.99212384,-1.1382834)"
+     style="display:inline">
+    <rect
+       style="display:inline;opacity:1;fill:#0d0d0d;fill-opacity:1;stroke:none;stroke-width:0.25660938;stroke-opacity:1;filter:url(#filter1257)"
+       id="rect1202-9"
+       width="6.631372"
+       height="1.7454777"
+       x="1.0444404"
+       y="1.1905999"
+       rx="0.19410317"
+       ry="0.098841541" />
+    <rect
+       style="display:inline;opacity:1;fill:#0d0d0d;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1;filter:url(#filter1261)"
+       id="rect1204-1"
+       width="0.80000001"
+       height="0.80000001"
+       x="10.28037"
+       y="-3.1419663"
+       transform="rotate(45,0.93555908,-7.6437087)" />
+  </g>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-5.3079845,-6.6371433)"
+     style="display:inline">
+    <rect
+       style="opacity:1;fill:#f0f0f0;fill-opacity:1;stroke:none;stroke-width:0.25660938;stroke-opacity:1"
+       id="rect1202"
+       width="6.631372"
+       height="1.7454777"
+       x="5.3603005"
+       y="6.6894598"
+       rx="0.19410317"
+       ry="0.098841533" />
+    <rect
+       style="opacity:1;fill:#f0f0f0;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
+       id="rect1204"
+       width="0.80000001"
+       height="0.80000001"
+       x="11.541489"
+       y="-0.7282089"
+       transform="rotate(45)" />
+  </g>
+</svg>
