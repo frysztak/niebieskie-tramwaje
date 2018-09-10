@@ -1,9 +1,6 @@
 package software.orpington.rozkladmpk.routeMap
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.v4.content.ContextCompat
@@ -25,7 +22,6 @@ import software.orpington.rozkladmpk.data.model.MapData
 import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.utils.convertToBitmap
 import software.orpington.rozkladmpk.utils.getBitmapDescriptor
-import java.util.*
 
 
 class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContract.View {
@@ -55,10 +51,15 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         presenter = RouteMapPresenter(Injection.provideDataSource(httpClient))
         presenter.attachView(this)
 
+        val routeID = intent.getStringExtra("routeID")
+        val direction = intent.getStringExtra("direction")
+        val stopName = intent.getStringExtra("stopName")
+        title = "${getString(R.string.route)} $routeID — $stopName"
+
         presenter.loadShapes(
-            intent.getStringExtra("routeID"),
-            intent.getStringExtra("direction"),
-            intent.getStringExtra("stopName")
+            routeID,
+            direction,
+            stopName
         )
     }
 
@@ -93,7 +94,7 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
                     .findViewById<TextView>(R.id.stopName)
                     ?.text = marker.title
 
-                 contentsView!!
+                contentsView!!
                     .findViewById<TextView>(R.id.onDemand)
                     ?.visibility = if (marker.snippet == null) View.GONE else View.VISIBLE
 
@@ -176,7 +177,7 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
                 marker.icon(BitmapDescriptorFactory.fromBitmap(specialMarkerView.convertToBitmap()))
             } else {
                 val icon = if (stop.onDemand) onDemandIcon else regularIcon
-                val snippet = if(stop.onDemand) "" else null
+                val snippet = if (stop.onDemand) "" else null
                 marker
                     .title(stop.stopName)
                     .icon(icon)
