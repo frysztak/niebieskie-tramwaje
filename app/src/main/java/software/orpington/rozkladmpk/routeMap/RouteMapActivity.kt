@@ -32,6 +32,7 @@ import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.model.MapData
 import software.orpington.rozkladmpk.data.source.ApiClient
+import software.orpington.rozkladmpk.utils.LocationCallbackReference
 import software.orpington.rozkladmpk.utils.convertToBitmap
 import software.orpington.rozkladmpk.utils.getBitmapDescriptor
 
@@ -111,7 +112,6 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
             registerLocationListener()
         }
     }
-
 
     private var mapReady: Boolean = false
     private var map: GoogleMap? = null
@@ -273,12 +273,12 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
     }
 
     private fun initLocationCallback() {
-        locationCallback = object : LocationCallback() {
+        locationCallback = LocationCallbackReference(object : LocationCallback() {
             override fun onLocationResult(location: LocationResult?) {
                 val loc = location?.lastLocation ?: return
                 locationChanged(loc)
             }
-        }
+        })
     }
 
     @SuppressLint("MissingPermission")
