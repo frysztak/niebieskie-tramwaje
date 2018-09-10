@@ -10,6 +10,8 @@ import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -73,6 +75,30 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
     override fun onMapReady(googleMap: GoogleMap?) {
         map = googleMap
         mapReady = true
+
+        map?.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
+            private var contentsView: View? = null
+
+            override fun getInfoWindow(marker: Marker): View? {
+                if (marker.title == null) return null
+
+                if (contentsView == null) {
+                    contentsView = layoutInflater.inflate(R.layout.map_marker, null)
+                    contentsView?.findViewById<ImageView>(R.id.circle)?.visibility = View.GONE
+                }
+
+                contentsView!!
+                    .findViewById<TextView>(R.id.stopName)
+                    ?.text = marker.title
+
+                return contentsView!!
+            }
+
+            override fun getInfoContents(marker: Marker): View? {
+                return null
+            }
+        })
+
         updateMap()
     }
 
