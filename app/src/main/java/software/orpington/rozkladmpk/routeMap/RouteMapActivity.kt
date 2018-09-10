@@ -2,9 +2,7 @@ package software.orpington.rozkladmpk.routeMap
 
 import android.graphics.Color
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
 import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -43,7 +41,7 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
             mapFragment = SupportMapFragment.newInstance()
             supportFragmentManager
                 .beginTransaction()
-                .add(R.id.root, mapFragment, "map")
+                .replace(R.id.container, mapFragment, "map")
                 .commit()
         }
         mapFragment.getMapAsync(this)
@@ -87,11 +85,6 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
     override fun onMapReady(googleMap: GoogleMap?) {
         map = googleMap
         mapReady = true
-
-        statusBar.bringToFront()
-        statusBar.invalidate()
-        progressBar.bringToFront()
-        progressBar.invalidate()
 
         map?.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
             private var contentsView: View? = null
@@ -184,9 +177,6 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
                 val specialMarkerView = LayoutInflater.from(this).inflate(R.layout.map_marker, null, false)
                 val stopNameTextView = specialMarkerView.findViewById<TextView>(R.id.stopName)
                 stopNameTextView.text = stop.stopName
-
-                val textViews = specialMarkerView.findViewById<ConstraintLayout>(R.id.textViews)
-                ViewCompat.setTranslationZ(textViews, 1.0f) // translationZ in XML is only for API 21+
 
                 marker.icon(BitmapDescriptorFactory.fromBitmap(specialMarkerView.convertToBitmap()))
             } else {
