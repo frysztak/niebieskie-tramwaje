@@ -65,7 +65,6 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
     override fun onResume() {
         super.onResume()
         presenter.attachView(this)
-        colorCounter = 0
     }
 
     override fun onPause() {
@@ -138,6 +137,7 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
 
     private fun updateMap() {
         if (!mapReady || mapData == null) return
+        colorCounter = 0
 
         val boundsBuilder = LatLngBounds.builder()
         for (shape in mapData!!.shapes) {
