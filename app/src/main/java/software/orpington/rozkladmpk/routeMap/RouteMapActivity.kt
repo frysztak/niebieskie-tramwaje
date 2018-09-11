@@ -3,6 +3,7 @@ package software.orpington.rozkladmpk.routeMap
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Typeface
 import android.location.Location
@@ -126,6 +127,13 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
     override fun onMapReady(googleMap: GoogleMap?) {
         map = googleMap
         mapReady = true
+
+        try {
+            map?.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(
+                    this, R.raw.map_style))
+        } catch (e: Resources.NotFoundException) {
+        }
 
         map?.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
             private var contentsView: View? = null
