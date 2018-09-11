@@ -36,6 +36,7 @@ import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.utils.LocationCallbackReference
 import software.orpington.rozkladmpk.utils.convertToBitmap
 import software.orpington.rozkladmpk.utils.getBitmapDescriptor
+import kotlin.math.roundToInt
 
 
 class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContract.View {
@@ -266,7 +267,14 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
             map?.addMarker(marker)
         }
 
-        map?.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 60))
+        // can't call
+        //map?.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 60))
+        // because of https://github.com/googlemaps/android-samples/issues/10
+
+        val width = resources.displayMetrics.widthPixels
+        val height = resources.displayMetrics.heightPixels
+        val padding = (width * 0.12).roundToInt()
+        map?.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), width, height, padding))
     }
 
     override fun showProgressBar() {
