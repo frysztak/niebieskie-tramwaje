@@ -346,7 +346,7 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         val runnableCode = object : Runnable {
             override fun run() {
                 presenter.updateVehiclePosition(routeID)
-                vehicleLocationHandler.postDelayed(this, 500)
+                vehicleLocationHandler.postDelayed(this, 1000)
             }
         }
 
