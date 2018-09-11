@@ -38,6 +38,7 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
 
         var layoutManager = GridLayoutManager(this, 2)
         recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = recyclerAdapter
         val itemDecoration = GridSpacingItemDecoration(2, 50, true)
         recyclerView.addItemDecoration(itemDecoration)
 
