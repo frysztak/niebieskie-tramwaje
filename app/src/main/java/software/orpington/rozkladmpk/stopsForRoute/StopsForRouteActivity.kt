@@ -48,6 +48,7 @@ class StopsForRouteActivity : AppCompatActivity(), StopsForRouteContract.View {
 
     override fun onDestroy() {
         presenter.detachView()
+        progressBarHandler.removeCallbacksAndMessages(null)
         skeletonScreen = null
         super.onDestroy()
     }

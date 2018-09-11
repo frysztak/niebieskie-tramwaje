@@ -213,6 +213,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
     override fun onDestroy() {
         presenter.detachView()
+        progressBarHandler.removeCallbacksAndMessages(null)
         skeletonScreen = null
         super.onDestroy()
     }
