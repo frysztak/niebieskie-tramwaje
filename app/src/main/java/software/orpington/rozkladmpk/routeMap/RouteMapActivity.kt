@@ -32,6 +32,7 @@ import kotlinx.android.synthetic.main.activity_route_map.*
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.model.MapData
+import software.orpington.rozkladmpk.data.model.VehiclePosition
 import software.orpington.rozkladmpk.data.model.VehiclePositions
 import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.utils.LocationCallbackReference
@@ -347,27 +348,44 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
     private var vehicleMarkers: List<Marker> = emptyList()
     override fun displayVehiclePositions(data: VehiclePositions) {
         if (!mapReady) return
+        if (data.isEmpty()) return
 
-        vehicleMarkers.forEach { marker ->
-            marker.remove()
+        val addNewMarker = { position: VehiclePosition ->
+            val specialMarkerView = LayoutInflater.from(this).inflate(R.layout.map_marker, null, false)
+
+            val tv = specialMarkerView
+                .findViewById<TextView>(R.id.stopName)
+            tv.text = position.name.toUpperCase()
+            tv.setTypeface(tv.typeface, Typeface.BOLD)
+
+            specialMarkerView
+                .findViewById<ImageView>(R.id.circle)
+                .setImageResource(R.drawable.map_marker_vehicle)
+
+            val opt = MarkerOptions()
+                .position(LatLng(position.x, position.y))
+                .icon(BitmapDescriptorFactory.fromBitmap(specialMarkerView.convertToBitmap()))
+            map?.addMarker(opt)!!
         }
-        vehicleMarkers =
-            data.map { position ->
-                val specialMarkerView = LayoutInflater.from(this).inflate(R.layout.map_marker, null, false)
 
-                val tv = specialMarkerView
-                    .findViewById<TextView>(R.id.stopName)
-                tv.text = position.name.toUpperCase()
-                tv.setTypeface(tv.typeface, Typeface.BOLD)
+        val newMarkers: MutableList<Marker> = arrayListOf()
+        // first make sure we have enough markers
+        while (data.size > vehicleMarkers.size + newMarkers.size) {
+            newMarkers.add(addNewMarker(data.first()))
+        }
 
-                specialMarkerView
-                    .findViewById<ImageView>(R.id.circle)
-                    .setImageResource(R.drawable.map_marker_vehicle)
+        vehicleMarkers += newMarkers
 
-                val opt = MarkerOptions()
-                    .position(LatLng(position.x, position.y))
-                    .icon(BitmapDescriptorFactory.fromBitmap(specialMarkerView.convertToBitmap()))
-                map?.addMarker(opt)!!
-            }
+        // update markers with new positions
+        for ((position, marker) in data zip vehicleMarkers) {
+            marker.position = LatLng(position.x, position.y)
+        }
+
+        // remove unused markers
+        while (vehicleMarkers.size > data.size) {
+            vehicleMarkers.last().remove()
+            vehicleMarkers = vehicleMarkers.dropLast(1)
+        }
+
     }
 }
