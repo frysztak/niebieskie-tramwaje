@@ -44,7 +44,8 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
 
     private lateinit var locationProvider: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
-    private var locationCallback: LocationCallback? = null
+    private lateinit var locationCallback: LocationCallback
+    private lateinit var locationCallbackReference: LocationCallbackReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,12 +90,6 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
 
         initLocationManager()
         initLocationCallback()
-        if (isLocationPermissionGranted()) {
-            registerLocationListener()
-            myLocationFAB.visibility = View.VISIBLE
-        } else {
-            myLocationFAB.visibility = View.GONE
-        }
     }
 
     private fun loadData(routeID: String, direction: String, stopName: String) {
@@ -107,11 +102,9 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
 
     override fun onPause() {
         super.onPause()
+
         presenter.detachView()
-
-        locationProvider.removeLocationUpdates(locationCallback)
-        locationCallback = null
-
+        locationProvider.removeLocationUpdates(locationCallbackReference)
         vehicleLocationHandler.removeCallbacksAndMessages(null)
     }
 
@@ -120,7 +113,6 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         super.onResume()
         presenter.attachView(this)
 
-        initLocationCallback()
         if (isLocationPermissionGranted()) {
             registerLocationListener()
             myLocationFAB.visibility = View.VISIBLE
@@ -132,11 +124,33 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         updateVehicleLocation(routeID)
     }
 
+    override fun onDestroy() {
+        // there are two fragments: explicitly added SupportMapFragment
+        // and some internal Google Play Services one.
+        // both need to be removed to avoid memory leaks.
+        for (frag in supportFragmentManager.fragments) {
+            supportFragmentManager
+                .beginTransaction()
+                .remove(frag)
+                .commitAllowingStateLoss()
+        }
+
+        for (marker in vehicleMarkers) {
+            marker.remove()
+        }
+        vehicleMarkers = emptyList()
+        userMarker?.remove()
+        userMarker = null
+        map?.clear()
+        map = null
+
+        super.onDestroy()
+    }
+
     private var mapReady: Boolean = false
     private var map: GoogleMap? = null
     override fun onMapReady(googleMap: GoogleMap?) {
         map = googleMap
-        mapReady = true
 
         try {
             map?.setMapStyle(
@@ -172,6 +186,7 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
             }
         })
 
+        mapReady = true
         updateMap()
     }
 
@@ -294,17 +309,19 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         locationRequest = LocationRequest()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 2 * 1000L // 2 seconds
+        locationRequest.fastestInterval = 5 * 100L // 0.5 second
 
         locationProvider = getFusedLocationProviderClient(this)
     }
 
     private fun initLocationCallback() {
-        locationCallback = LocationCallbackReference(object : LocationCallback() {
+        locationCallback = object : LocationCallback() {
             override fun onLocationResult(location: LocationResult?) {
                 val loc = location?.lastLocation ?: return
                 locationChanged(loc)
             }
-        })
+        }
+        locationCallbackReference = LocationCallbackReference(locationCallback)
     }
 
     @SuppressLint("MissingPermission")
@@ -318,7 +335,7 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         }
 
         locationProvider
-            .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+            .requestLocationUpdates(locationRequest, locationCallbackReference, Looper.myLooper())
     }
 
     private fun isLocationPermissionGranted(): Boolean {
