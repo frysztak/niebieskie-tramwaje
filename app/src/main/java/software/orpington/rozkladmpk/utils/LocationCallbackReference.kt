@@ -6,16 +6,12 @@ import java.lang.ref.WeakReference
 
 
 // https://github.com/googlesamples/android-play-location/issues/26#issuecomment-356234500
-class LocationCallbackReference internal constructor(locationCallback: LocationCallback) : LocationCallback() {
-    private val locationCallbackRef: WeakReference<LocationCallback>?
-
-    init {
-        locationCallbackRef = WeakReference(locationCallback)
-    }
+class LocationCallbackReference(locationCallback: LocationCallback) : LocationCallback() {
+    private val locationCallbackRef = WeakReference(locationCallback)
 
     override fun onLocationResult(locationResult: LocationResult?) {
         super.onLocationResult(locationResult)
-        if (locationCallbackRef?.get() != null) {
+        if (locationCallbackRef.get() != null) {
             locationCallbackRef.get()?.onLocationResult(locationResult)
         }
     }
