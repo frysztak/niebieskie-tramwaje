@@ -2,18 +2,19 @@ package software.orpington.rozkladmpk.stopsForRoute
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
+import kotlinx.android.synthetic.main.activity_stops_for_route.*
+import kotlinx.android.synthetic.main.error_view.view.*
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.routeDetails.RouteDetailsActivity
-import kotlinx.android.synthetic.main.activity_stops_for_route.*
-import kotlinx.android.synthetic.main.error_view.view.*
 
 class StopsForRouteActivity : AppCompatActivity(), StopsForRouteContract.View {
 
@@ -47,24 +48,30 @@ class StopsForRouteActivity : AppCompatActivity(), StopsForRouteContract.View {
 
     override fun onDestroy() {
         presenter.detachView()
+        progressBarHandler.removeCallbacksAndMessages(null)
         skeletonScreen = null
         super.onDestroy()
     }
 
     private var skeletonScreen: SkeletonScreen? = null
+    private val progressBarHandler = Handler()
     override fun showProgressBar() {
 
         recyclerView.visibility = View.VISIBLE
         errorLayout.visibility = View.GONE
 
-        skeletonScreen = Skeleton.bind(recyclerView)
-            .adapter(adapter)
-            .load(R.layout.stops_and_routes_skeleton_list_item)
-            .show()
+        val runnable = Runnable {
+            skeletonScreen = Skeleton.bind(recyclerView)
+                .adapter(adapter)
+                .load(R.layout.stops_and_routes_skeleton_list_item)
+                .show()
+        }
 
+        progressBarHandler.postDelayed(runnable, 500)
     }
 
     override fun hideProgressBar() {
+        progressBarHandler.removeCallbacksAndMessages(null)
         skeletonScreen?.hide()
     }
 

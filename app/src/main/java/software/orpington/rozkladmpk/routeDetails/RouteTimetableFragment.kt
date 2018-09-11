@@ -2,6 +2,7 @@ package software.orpington.rozkladmpk.routeDetails
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
@@ -44,6 +45,7 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
 
     override fun onDestroyView() {
         presenter?.detachTimetableView()
+        progressBarHandler.removeCallbacksAndMessages(null)
         super.onDestroyView()
     }
 
@@ -146,16 +148,20 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
 
 
     private var skeletonScreen: SkeletonScreen? = null
+    private val progressBarHandler = Handler()
     override fun showProgressBar() {
         selectDirection_textview.visibility = View.GONE
         errorLayout.visibility = View.GONE
         timetable_recyclerview.visibility = View.VISIBLE
 
-        skeletonScreen = Skeleton
-            .bind(timetable_recyclerview)
-            .adapter(adapter)
-            .load(R.layout.route_timetable_skeleton_list_item)
-            .show()
+        val runnable = Runnable {
+            skeletonScreen = Skeleton
+                .bind(timetable_recyclerview)
+                .adapter(adapter)
+                .load(R.layout.route_timetable_skeleton_list_item)
+                .show()
+        }
+        progressBarHandler.postDelayed(runnable, 500)
     }
 
     override fun hideProgressBar() {
@@ -163,6 +169,7 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
         errorLayout.visibility = View.GONE
         timetable_recyclerview.visibility = View.VISIBLE
 
+        progressBarHandler.removeCallbacksAndMessages(null)
         skeletonScreen?.hide()
     }
 

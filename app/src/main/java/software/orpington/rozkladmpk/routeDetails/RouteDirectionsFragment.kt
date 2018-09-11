@@ -1,18 +1,18 @@
 package software.orpington.rozkladmpk.routeDetails
 
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
-import software.orpington.rozkladmpk.R
-import software.orpington.rozkladmpk.utils.afterMeasured
 import kotlinx.android.synthetic.main.error_view.view.*
 import kotlinx.android.synthetic.main.route_directions.*
+import software.orpington.rozkladmpk.R
+import software.orpington.rozkladmpk.utils.afterMeasured
 
 class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView {
 
@@ -31,6 +31,7 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
 
     override fun onDestroyView() {
         presenter?.detachDirectionsView()
+        progressBarHandler.removeCallbacksAndMessages(null)
         super.onDestroyView()
     }
 
@@ -65,22 +66,27 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
     }
 
     private var skeletonScreen: SkeletonScreen? = null
+    private val progressBarHandler = Handler()
     override fun showProgressBar() {
         routeDirections_recyclerview?.visibility = View.VISIBLE
         errorLayout?.visibility = View.GONE
 
-        skeletonScreen = Skeleton
-            .bind(routeDirections_recyclerview)
-            .adapter(adapter)
-            .load(R.layout.route_directions_skeleton_list_item)
-            .count(4)
-            .show()
+        val runnable = Runnable {
+            skeletonScreen = Skeleton
+                .bind(routeDirections_recyclerview)
+                .adapter(adapter)
+                .load(R.layout.route_directions_skeleton_list_item)
+                .count(4)
+                .show()
+        }
+        progressBarHandler.postDelayed(runnable, 500)
     }
 
     override fun hideProgressBar() {
         routeDirections_recyclerview?.visibility = View.VISIBLE
         errorLayout?.visibility = View.GONE
 
+        progressBarHandler.removeCallbacksAndMessages(null)
         skeletonScreen?.hide()
     }
 

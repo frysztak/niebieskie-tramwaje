@@ -6,6 +6,7 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.support.v4.content.ContextCompat
@@ -66,6 +67,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
         var layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = recyclerAdapter
 
         errorLayout.tryAgainButton.setOnClickListener {
             presenter.loadStopsAndRoutes()
@@ -211,6 +213,7 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
     override fun onDestroy() {
         presenter.detachView()
+        progressBarHandler.removeCallbacksAndMessages(null)
         skeletonScreen = null
         super.onDestroy()
     }
@@ -292,20 +295,24 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     }
 
     private var skeletonScreen: SkeletonScreen? = null
+    private val progressBarHandler = Handler()
     override fun showProgressBar() {
-
         recyclerView.visibility = View.VISIBLE
         notFoundLayout.visibility = View.GONE
         errorLayout.visibility = View.GONE
 
-        skeletonScreen = Skeleton.bind(recyclerView)
-            .adapter(recyclerAdapter)
-            .load(R.layout.stops_and_routes_skeleton_list_item)
-            .show()
+        val runnable = Runnable {
+            skeletonScreen = Skeleton.bind(recyclerView)
+                .adapter(recyclerAdapter)
+                .load(R.layout.stops_and_routes_skeleton_list_item)
+                .show()
+        }
 
+        progressBarHandler.postDelayed(runnable, 500)
     }
 
     override fun hideProgressBar() {
+        progressBarHandler.removeCallbacksAndMessages(null)
         skeletonScreen?.hide()
     }
 }
