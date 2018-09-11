@@ -24,10 +24,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices.getFusedLocationProviderClient
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.activity_route_map.*
 import software.orpington.rozkladmpk.Injection
@@ -60,7 +57,10 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         if (savedInstanceState != null) {
             mapFragment = supportFragmentManager.findFragmentByTag("map") as SupportMapFragment
         } else {
-            mapFragment = SupportMapFragment.newInstance()
+            val opt = GoogleMapOptions().camera(
+                CameraPosition.fromLatLngZoom(LatLng(51.110415, 17.032925), 13f)
+            )
+            mapFragment = SupportMapFragment.newInstance(opt)
             supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.container, mapFragment, "map")
