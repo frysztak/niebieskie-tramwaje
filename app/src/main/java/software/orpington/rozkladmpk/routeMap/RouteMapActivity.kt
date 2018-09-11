@@ -81,12 +81,19 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
             loadData(routeID, direction, stopName)
         }
 
+        myLocationFAB.setOnClickListener {
+            centerToUserLocation()
+        }
+
         loadData(routeID, direction, stopName)
 
         initLocationManager()
         initLocationCallback()
         if (isLocationPermissionGranted()) {
             registerLocationListener()
+            myLocationFAB.visibility = View.VISIBLE
+        } else {
+            myLocationFAB.visibility = View.GONE
         }
     }
 
@@ -116,6 +123,9 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         initLocationCallback()
         if (isLocationPermissionGranted()) {
             registerLocationListener()
+            myLocationFAB.visibility = View.VISIBLE
+        } else {
+            myLocationFAB.visibility = View.GONE
         }
 
         val routeID = intent.getStringExtra("routeID")
@@ -339,6 +349,16 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         }
 
         userMarker?.position = LatLng(location.latitude, location.longitude)
+        myLocationFAB.visibility = if (userMarker == null) View.GONE else View.VISIBLE
+    }
+
+    private fun centerToUserLocation() {
+        val marker = userMarker ?: return
+
+        map?.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(marker.position, 14.0f)
+        )
+
     }
 
     private val vehicleLocationHandler = Handler()
