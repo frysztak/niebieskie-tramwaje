@@ -2,6 +2,7 @@ package software.orpington.rozkladmpk.routeVariants
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.view.MenuItem
@@ -51,6 +52,7 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
 
     override fun onDestroy() {
         presenter.detachView()
+        progressBarHandler.removeCallbacksAndMessages(null)
         super.onDestroy()
     }
 
@@ -62,17 +64,22 @@ class RouteVariantsActivity : AppCompatActivity(), RouteVariantsContract.View {
     }
 
     private var skeletonScreen: SkeletonScreen? = null
+    private val progressBarHandler = Handler()
     override fun showProgressBar() {
         recyclerView.visibility = View.VISIBLE
         errorLayout.visibility = View.GONE
 
-        skeletonScreen = Skeleton.bind(recyclerView)
-            .adapter(recyclerAdapter)
-            .load(R.layout.route_skeleton_card_view)
-            .show()
+        val runnable = Runnable {
+            skeletonScreen = Skeleton.bind(recyclerView)
+                .adapter(recyclerAdapter)
+                .load(R.layout.route_skeleton_card_view)
+                .show()
+        }
+        progressBarHandler.postDelayed(runnable, 500)
     }
 
     override fun hideProgressBar() {
+        progressBarHandler.removeCallbacksAndMessages(null)
         skeletonScreen?.hide()
 
         recyclerView.visibility = View.VISIBLE
