@@ -47,7 +47,8 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
     private lateinit var locationProvider: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
-    private var locationCallback: LocationCallback? = null
+    private lateinit var locationCallback: LocationCallback
+    private lateinit var locationCallbackReference: LocationCallbackReference
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -75,9 +76,6 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
         initLocationManager()
         initLocationCallback()
-        if (isLocationPermissionGranted()) {
-            registerLocationListener()
-        }
     }
 
     private fun checkPlayServices(): Boolean {
@@ -100,12 +98,13 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     }
 
     private fun initLocationCallback() {
-        locationCallback = LocationCallbackReference(object : LocationCallback() {
+        locationCallback = object : LocationCallback() {
             override fun onLocationResult(location: LocationResult?) {
                 val loc = location?.lastLocation ?: return
                 presenter.locationChanged(loc.latitude, loc.longitude)
             }
-        })
+        }
+        locationCallbackReference = LocationCallbackReference(locationCallback)
     }
 
     private fun isLocationEnabled(): Boolean {
@@ -162,14 +161,13 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
         }
 
         locationProvider
-            .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+            .requestLocationUpdates(locationRequest, locationCallbackReference, Looper.myLooper())
     }
 
     override fun onPause() {
         super.onPause()
-        locationProvider.removeLocationUpdates(locationCallback)
-        locationCallback = null
 
+        locationProvider.removeLocationUpdates(locationCallbackReference)
         unregisterLocationSettingListener()
     }
 
@@ -177,12 +175,19 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     override fun onResume() {
         super.onResume()
 
-        initLocationCallback()
         if (isLocationPermissionGranted()) {
             presenter.setLocationIsDisabled(!isLocationEnabled())
             registerLocationListener()
             registerLocationSettingListener()
         }
+    }
+
+    override fun onDestroy() {
+        presenter.detachView()
+        progressBarHandler.removeCallbacksAndMessages(null)
+        skeletonScreen = null
+
+        super.onDestroy()
     }
 
     override fun isLocationPermissionGranted(): Boolean {
@@ -209,13 +214,6 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
 
     override fun setLocationIsDisabled(isDisabled: Boolean) {
         recyclerAdapter.setLocationIsDisabled(isDisabled)
-    }
-
-    override fun onDestroy() {
-        presenter.detachView()
-        progressBarHandler.removeCallbacksAndMessages(null)
-        skeletonScreen = null
-        super.onDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
