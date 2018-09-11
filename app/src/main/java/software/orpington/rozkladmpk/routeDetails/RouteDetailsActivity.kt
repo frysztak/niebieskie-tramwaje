@@ -2,6 +2,7 @@ package software.orpington.rozkladmpk.routeDetails
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -11,12 +12,12 @@ import android.view.View
 import android.view.animation.AlphaAnimation
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
+import kotlinx.android.synthetic.main.activity_route_details.*
+import kotlinx.android.synthetic.main.route_details_header.*
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.model.RouteInfo
 import software.orpington.rozkladmpk.data.source.ApiClient
-import kotlinx.android.synthetic.main.activity_route_details.*
-import kotlinx.android.synthetic.main.route_details_header.*
 import java.util.*
 
 
@@ -88,6 +89,7 @@ class RouteDetailsActivity : AppCompatActivity(),
 
     override fun onDestroy() {
         presenter.detachInfoView()
+        progressBarHandler.removeCallbacksAndMessages(null)
         super.onDestroy()
     }
 
@@ -112,13 +114,18 @@ class RouteDetailsActivity : AppCompatActivity(),
     }
 
     private var skeletonScreen: SkeletonScreen? = null
+    private val progressBarHandler = Handler()
     override fun showProgressBar() {
-        skeletonScreen = Skeleton.bind(headerLayout)
-            .load(R.layout.route_details_skeleton_header)
-            .show()
+        val runnable = Runnable {
+            skeletonScreen = Skeleton.bind(headerLayout)
+                .load(R.layout.route_details_skeleton_header)
+                .show()
+        }
+        progressBarHandler.postDelayed(runnable, 500)
     }
 
     override fun hideProgressBar() {
+        progressBarHandler.removeCallbacksAndMessages(null)
         skeletonScreen?.hide()
     }
 
