@@ -1,9 +1,9 @@
 package software.orpington.rozkladmpk.data.source
 
-import software.orpington.rozkladmpk.data.model.*
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
+import software.orpington.rozkladmpk.data.model.*
 
 interface ApiService {
     @GET("stops/and/routes")
@@ -32,4 +32,9 @@ interface ApiService {
 
     @GET("trip/{tripID}/timeline")
     fun getTripTimeline(@Path("tripID") tripID: Int): Call<Timeline>
+
+    @GET("route/{routeID}/map/at/{stopName}/direction/{direction}")
+    fun getRouteMap(@Path("routeID") routeID: String,
+                    @Path("stopName") stopName: String,
+                    @Path("direction") direction: String): Call<MapData>
 }

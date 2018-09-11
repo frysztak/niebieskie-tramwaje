@@ -3,7 +3,7 @@
     package="software.orpington.rozkladmpk">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".RozkladMPK"
@@ -13,10 +13,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD03wdn4bzb_Lc2c9Rr2E5Ph2l0z4xxTXA"/>
 
         <activity
             android:name=".stopsAndRoutes.StopsAndRoutesActivity"
@@ -37,7 +40,8 @@
         <activity
             android:name=".stopsForRoute.StopsForRouteActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".about.AboutActivity"></activity>
+        <activity android:name=".about.AboutActivity" />
+        <activity android:name=".routeMap.RouteMapActivity"></activity>
     </application>
 
 </manifest>

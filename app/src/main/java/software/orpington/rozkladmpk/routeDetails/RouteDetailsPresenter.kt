@@ -200,6 +200,15 @@ class RouteDetailsPresenter(
             })
     }
 
+    override fun mapClicked() {
+        val direction = state.routeDirections[state.currentRouteDirection]
+        timetableView?.navigateToMap(
+            state.routeID,
+            direction,
+            state.stopName
+        )
+    }
+
     override fun getState(): RouteDetailsState {
         return state
     }

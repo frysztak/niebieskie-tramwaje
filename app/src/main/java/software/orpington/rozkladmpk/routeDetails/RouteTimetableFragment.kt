@@ -1,5 +1,6 @@
 package software.orpington.rozkladmpk.routeDetails
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -20,6 +21,7 @@ import kotlinx.android.synthetic.main.activity_route_details.*
 import kotlinx.android.synthetic.main.error_view.view.*
 import kotlinx.android.synthetic.main.route_timetable.*
 import kotlinx.android.synthetic.main.route_timetable_list_header.view.*
+import software.orpington.rozkladmpk.routeMap.RouteMapActivity
 
 
 class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
@@ -101,6 +103,10 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
         errorLayout.tryAgainButton.setOnClickListener {
             presenter?.loadTimeTable()
         }
+
+        mapFab.setOnClickListener {
+            presenter?.mapClicked()
+        }
     }
 
     override fun onResume() {
@@ -176,6 +182,16 @@ class RouteTimetableFragment : Fragment(), RouteDetailsContract.TimetableView {
         val textView =
             timetable_recyclerview?.findViewWithTag<TextView>(tag)
         textView?.setTextColor(normalColor)
+    }
+
+    override fun navigateToMap(routeID: String, direction: String, stopName: String) {
+        val intent = Intent(context, RouteMapActivity::class.java)
+        intent.apply {
+            putExtra("routeID", routeID)
+            putExtra("direction", direction)
+            putExtra("stopName", stopName)
+        }
+        startActivity(intent)
     }
 
     companion object {

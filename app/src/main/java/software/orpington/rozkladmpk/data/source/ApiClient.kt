@@ -10,7 +10,8 @@ import java.io.File
 
 class ApiClient {
     companion object {
-        private var sRetrofit: Retrofit? = null
+        private var retrofitMPK: Retrofit? = null
+        private var retrofitGPS: Retrofit? = null
         private var okHttpClient: OkHttpClient? = null
 
         fun getHttpClient(cacheDir: File): OkHttpClient {
@@ -31,11 +32,11 @@ class ApiClient {
             return okHttpClient!!
         }
 
-        fun get(client: OkHttpClient, baseUrl: String): Retrofit {
-            if (sRetrofit == null) {
+        fun getMPK(client: OkHttpClient, baseUrl: String): Retrofit {
+            if (retrofitMPK == null) {
                 synchronized(Retrofit::class.java) {
-                    if (sRetrofit == null) {
-                        sRetrofit = Retrofit.Builder()
+                    if (retrofitMPK == null) {
+                        retrofitMPK = Retrofit.Builder()
                             .baseUrl(baseUrl)
                             .addConverterFactory(MoshiConverterFactory.create())
                             .client(client)
@@ -43,7 +44,23 @@ class ApiClient {
                     }
                 }
             }
-            return sRetrofit!!
+            return retrofitMPK!!
+        }
+
+        fun getGPS(client: OkHttpClient): Retrofit {
+            val baseUrl = "http://pasazer.mpk.wroc.pl/"
+            if (retrofitGPS == null) {
+                synchronized(Retrofit::class.java) {
+                    if (retrofitGPS == null) {
+                        retrofitGPS = Retrofit.Builder()
+                            .baseUrl(baseUrl)
+                            .addConverterFactory(MoshiConverterFactory.create())
+                            .client(client)
+                            .build()
+                    }
+                }
+            }
+            return retrofitGPS!!
         }
     }
 

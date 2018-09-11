@@ -36,6 +36,7 @@ import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.routeVariants.RouteVariantsActivity
 import software.orpington.rozkladmpk.stopsForRoute.StopsForRouteActivity
 import software.orpington.rozkladmpk.utils.InputMethodManagerLeakFix
+import software.orpington.rozkladmpk.utils.LocationCallbackReference
 
 
 class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View {
@@ -97,12 +98,12 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     }
 
     private fun initLocationCallback() {
-        locationCallback = object : LocationCallback() {
+        locationCallback = LocationCallbackReference(object : LocationCallback() {
             override fun onLocationResult(location: LocationResult?) {
                 val loc = location?.lastLocation ?: return
                 presenter.locationChanged(loc.latitude, loc.longitude)
             }
-        }
+        })
     }
 
     private fun isLocationEnabled(): Boolean {
