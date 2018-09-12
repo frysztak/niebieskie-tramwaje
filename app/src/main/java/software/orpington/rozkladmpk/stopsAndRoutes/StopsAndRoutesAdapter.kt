@@ -1,6 +1,7 @@
 package software.orpington.rozkladmpk.stopsAndRoutes
 
 import android.content.Context
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -103,8 +104,11 @@ class StopsAndRoutesAdapter(
         val stopsAndRoutesSection =
             listOf(ViewItem.Header(context.getString(R.string.stops_and_routes))) + convertToViewItems(stopsAndRoutes)
 
+        val oldItems = items
         items = searchResultsSection + nearbyStopsSection + stopsAndRoutesSection
-        notifyDataSetChanged()
+
+        val diffCallback = ViewItemDiffCallback(oldItems, items)
+        DiffUtil.calculateDiff(diffCallback).dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -310,5 +314,42 @@ class StopsAndRoutesAdapter(
         object NoNearbyStopsFound : ViewItem()
         object GooglePlayError : ViewItem()
         object LocationIsDisabled : ViewItem()
+    }
+
+    internal class ViewItemDiffCallback(
+        private val oldList: List<ViewItem>,
+        private val newList: List<ViewItem>
+    ) : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int = oldList.size
+        override fun getNewListSize(): Int = newList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val oldItem = oldList[oldItemPosition]
+            val newItem = newList[newItemPosition]
+            return oldItem.javaClass == newItem.javaClass
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val oldItem = oldList[oldItemPosition]
+            val newItem = newList[newItemPosition]
+            if (oldItem.javaClass != newItem.javaClass) return false
+
+            return when (oldItem) {
+                is ViewItem.Header -> oldItem.title == (newItem as ViewItem.Header).title
+                is ViewItem.Stop -> {
+                    oldItem.stopName == (newItem as ViewItem.Stop).stopName
+                        && ((oldItem.distance == newItem.distance)
+                            || (oldItem.distance.isNaN() && newItem.distance.isNaN())
+                        )
+                }
+                is ViewItem.Route -> {
+                    oldItem.routeID == (newItem as ViewItem.Route).routeID
+                        && oldItem.isBus == newItem.isBus
+                }
+                else -> false
+            }
+        }
+
     }
 }
