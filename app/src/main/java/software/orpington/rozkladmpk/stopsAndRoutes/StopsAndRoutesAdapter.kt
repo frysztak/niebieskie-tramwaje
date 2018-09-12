@@ -17,7 +17,10 @@ import kotlinx.android.synthetic.main.stops_and_routes_list_header.view.*
 import kotlinx.android.synthetic.main.stops_and_routes_list_item.view.*
 import kotlinx.android.synthetic.main.stops_and_routes_location_disabled.view.*
 import kotlinx.android.synthetic.main.stops_and_routes_location_item.view.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 import software.orpington.rozkladmpk.R
+import java.util.*
 import kotlin.math.roundToInt
 
 internal interface ClickListener {
@@ -37,6 +40,7 @@ class StopsAndRoutesAdapter(
     private var skeletonScreen: SkeletonScreen? = null
 
     private var items: List<ViewItem> = emptyList()
+    private val pendingUpdates: Deque<List<ViewItem>> = ArrayDeque()
 
     private var searchResults: List<StopOrRoute> = emptyList()
     fun setSearchResults(data: List<StopOrRoute>) {
@@ -79,8 +83,11 @@ class StopsAndRoutesAdapter(
         }
 
         if (searchResultsSection.isNotEmpty()) {
-            items = searchResultsSection
-            notifyDataSetChanged()
+            val newItems = searchResultsSection
+            pendingUpdates.push(newItems)
+            if (pendingUpdates.size == 1) {
+                updateItemsInternal(newItems)
+            }
             return
         }
 
@@ -104,11 +111,31 @@ class StopsAndRoutesAdapter(
         val stopsAndRoutesSection =
             listOf(ViewItem.Header(context.getString(R.string.stops_and_routes))) + convertToViewItems(stopsAndRoutes)
 
-        val oldItems = items
-        items = searchResultsSection + nearbyStopsSection + stopsAndRoutesSection
+        val newItems = searchResultsSection + nearbyStopsSection + stopsAndRoutesSection
+        pendingUpdates.push(newItems)
+        if (pendingUpdates.size == 1) {
+            updateItemsInternal(newItems)
+        }
+    }
 
-        val diffCallback = ViewItemDiffCallback(oldItems, items)
-        DiffUtil.calculateDiff(diffCallback).dispatchUpdatesTo(this)
+    private fun updateItemsInternal(newItems: List<ViewItem>) = launch {
+        val diffCallback = ViewItemDiffCallback(items, newItems)
+        val diff = DiffUtil.calculateDiff(diffCallback)
+        launch(UI) {
+            applyDiffResult(newItems, diff)
+        }
+    }
+
+    private fun applyDiffResult(newItems: List<ViewItem>, diffResult: DiffUtil.DiffResult) {
+        pendingUpdates.remove(newItems)
+        diffResult.dispatchUpdatesTo(this)
+        items = newItems
+
+        if (pendingUpdates.isNotEmpty()) {
+            val latest = pendingUpdates.pop()
+            pendingUpdates.clear()
+            updateItemsInternal(latest)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
