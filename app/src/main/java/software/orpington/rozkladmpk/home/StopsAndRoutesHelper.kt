@@ -1,4 +1,4 @@
-package software.orpington.rozkladmpk.stopsAndRoutes
+package software.orpington.rozkladmpk.home
 
 import software.orpington.rozkladmpk.data.model.StopsAndRoutes
 import software.orpington.rozkladmpk.utils.GeoLocation
@@ -56,7 +56,7 @@ class StopsAndRoutesHelper {
         items.addAll(
             data.routes.map { route ->
                 Route(route.routeID, route.isBus)
-            }//.sort()
+            }.sort()
         )
 
         return items

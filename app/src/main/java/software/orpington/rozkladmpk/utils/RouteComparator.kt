@@ -1,7 +1,7 @@
 package software.orpington.rozkladmpk.utils
 
 import software.orpington.rozkladmpk.data.model.RouteVariant
-import software.orpington.rozkladmpk.stopsAndRoutes.Route
+import software.orpington.rozkladmpk.home.Route
 
 internal class RouteComparator {
     fun compare(routeID1: String, routeID2: String): Int {
