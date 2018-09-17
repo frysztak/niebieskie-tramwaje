@@ -52,4 +52,6 @@
     <string name="on_demand">na życzenie</string>
     <string name="failed_to_load_map_data">Nie udało się wczytać danych</string>
     <string name="you">Ty</string>
+    <string name="title_map">Map</string>
+    <string name="more">więcej</string>
 </resources>

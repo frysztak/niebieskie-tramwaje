@@ -27,6 +27,20 @@
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
     </style>
 
+    <!-- Home -->
+    <style name="HomeHeader" parent="TextAppearance.AppCompat.Headline">
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">26dp</item>
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="FavouriteCard" parent="TextAppearance.AppCompat.Headline">
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">12dp</item>
+        <item name="android:textColor">@color/primary_text</item>
+    </style>
+
     <!-- Stops and routes -->
     <style name="StopsAndRoutesItem" parent="TextAppearance.AppCompat.Headline">
         <item name="android:gravity">left</item>

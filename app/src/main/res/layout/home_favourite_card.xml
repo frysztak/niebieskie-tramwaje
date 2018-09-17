@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_margin="8dp"
+    android:layout_height="wrap_content"
+    app:cardElevation="2dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <ImageView
+            android:id="@+id/favouriteCard_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@android:color/black"
+            app:layout_constraintEnd_toEndOf="@id/favouriteCard_lineNumber"
+            app:layout_constraintStart_toStartOf="@id/favouriteCard_lineNumber"
+            tools:srcCompat="@drawable/ic_bus_white_24dp" />
+
+        <TextView
+            android:id="@+id/favouriteCard_lineNumber"
+            style="@style/FavouriteCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/favouriteCard_icon"
+            tools:text="136" />
+
+        <View
+            android:id="@+id/favouriteCard_separator"
+            android:layout_width="28dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:foreground="@color/accent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/favouriteCard_lineNumber" />
+
+        <TextView
+            android:id="@+id/favouriteCard_direction"
+            style="@style/FavouriteCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintTop_toBottomOf="@id/favouriteCard_separator"
+            app:layout_constraintWidth_max="70dp"
+            tools:text="Na Ostatnim Groszu" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

@@ -16,21 +16,14 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD03wdn4bzb_Lc2c9Rr2E5Ph2l0z4xxTXA"/>
+            android:value="AIzaSyD03wdn4bzb_Lc2c9Rr2E5Ph2l0z4xxTXA" />
 
         <activity
             android:name=".stopsAndRoutes.StopsAndRoutesActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".routeVariants.RouteVariantsActivity"
             android:screenOrientation="portrait" />
@@ -41,7 +34,16 @@
             android:name=".stopsForRoute.StopsForRouteActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".about.AboutActivity" />
-        <activity android:name=".routeMap.RouteMapActivity"></activity>
+        <activity android:name=".routeMap.RouteMapActivity" />
+        <activity
+            android:name=".home.HomeActivity"
+            android:label="@string/title_activity_home">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

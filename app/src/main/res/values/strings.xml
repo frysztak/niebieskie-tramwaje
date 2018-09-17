@@ -51,5 +51,11 @@
     <string name="on_demand">on demand</string>
     <string name="failed_to_load_map_data">Failed to load map data</string>
     <string name="you">You</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_map">Map</string>
+    <string name="more">more</string>
 
 </resources>
