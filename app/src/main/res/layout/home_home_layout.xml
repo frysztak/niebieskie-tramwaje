@@ -14,7 +14,7 @@
             android:id="@+id/home_searchCard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_margin="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -50,6 +50,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/home_searchResultsRecycler"
                 android:layout_width="match_parent"
+                android:layout_marginTop="8dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/home_searchResults"
                 tools:itemCount="2"
@@ -71,7 +72,9 @@
             android:id="@+id/home_fakeNewsCard1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="18dp"
             android:minHeight="80dp"
             app:cardElevation="2dp"
             app:layout_constraintEnd_toEndOf="@id/home_fakeNewsCard2"
