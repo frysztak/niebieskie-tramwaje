@@ -20,6 +20,7 @@ interface HomeFragmentContract {
         fun routeClicked(routeID: String)
 
         fun onFavouritesLoaded(map: Map<String, *>)
+        fun favouriteClicked(index: Int)
     }
 
     interface View: BaseView {
@@ -31,5 +32,6 @@ interface HomeFragmentContract {
         fun hideSearchResults()
 
         fun showFavourites(data: List<FavouriteItem>)
+        fun navigateToRouteDetails(routeID: String, stopName: String, direction: String)
     }
 }

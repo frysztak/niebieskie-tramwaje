@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.home_home_layout.*
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.source.ApiClient
+import software.orpington.rozkladmpk.routeDetails.RouteDetailsActivity
 import software.orpington.rozkladmpk.routeVariants.RouteVariantsActivity
 import software.orpington.rozkladmpk.stopsForRoute.StopsForRouteActivity
 import software.orpington.rozkladmpk.utils.onQueryChanged
@@ -110,6 +111,14 @@ class HomeFragment : Fragment(), HomeFragmentContract.View {
 
     override fun showFavourites(data: List<FavouriteItem>) {
         favouritesAdapter.setItems(data)
+    }
+
+    override fun navigateToRouteDetails(routeID: String, stopName: String, direction: String) {
+        val i = Intent(context, RouteDetailsActivity::class.java)
+        i.putExtra("routeID", routeID)
+        i.putExtra("stopName", stopName)
+        i.putExtra("direction", direction)
+        startActivity(i)
     }
 
     companion object {

@@ -59,6 +59,20 @@ class RouteDetailsPresenter(
         state.stopName = name
     }
 
+    private var directionToNavigateTo: String? = null
+    override fun setDirection(direction: String) {
+        directionToNavigateTo = direction
+        if (state.routeDirections.isEmpty()) {
+            state.routeDirections = listOf(direction)
+            state.currentRouteDirection = 0
+        }
+        directionsView?.showRouteDirections(
+            state.routeDirections,
+            state.favouriteDirections,
+            state.currentRouteDirection
+        )
+    }
+
     override fun loadRouteInfo() {
         infoView?.showProgressBar()
         dataSource.getRouteInfo(state.routeID, object : IDataSource.LoadDataCallback<RouteInfo> {
@@ -80,6 +94,10 @@ class RouteDetailsPresenter(
         dataSource.getRouteDirectionsThroughStop(state.routeID, state.stopName, object : IDataSource.LoadDataCallback<RouteDirections> {
             override fun onDataLoaded(data: RouteDirections) {
                 state.routeDirections = data.directions
+                if (directionToNavigateTo != null) {
+                    state.currentRouteDirection = state.routeDirections.indexOf(directionToNavigateTo!!)
+                    directionToNavigateTo = null
+                }
                 directionsView?.hideProgressBar()
                 initialiseFavouriteDirections()
                 directionsView?.showRouteDirections(

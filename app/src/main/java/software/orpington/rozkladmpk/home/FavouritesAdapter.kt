@@ -10,6 +10,7 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.home_favourite_card.view.*
 import software.orpington.rozkladmpk.R
 
+
 class FavouritesAdapter(
     private val context: Context,
     private val presenter: HomeFragmentContract.Presenter
@@ -22,18 +23,28 @@ class FavouritesAdapter(
         notifyDataSetChanged()
     }
 
+    internal interface ClickListener {
+        fun itemClicked(index: Int)
+    }
+
     override fun getItemCount(): Int = items.size
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.home_favourite_card, parent, false)
-        return FavouriteViewHolder(view)
+        val clickListener = object : ClickListener {
+            override fun itemClicked(index: Int) {
+                presenter.favouriteClicked(index)
+            }
+        }
+
+        return FavouriteViewHolder(view, clickListener)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = items[position]
         (holder as FavouriteViewHolder).apply {
-            icon.setImageResource(when(item.isBus) {
+            icon.setImageResource(when (item.isBus) {
                 true -> R.drawable.ic_bus_white_24dp
-                false-> R.drawable.ic_tram_white_24dp
+                false -> R.drawable.ic_tram_white_24dp
             })
             routeID.text = item.routeID
             direction.text = item.direction
@@ -41,13 +52,10 @@ class FavouritesAdapter(
         }
     }
 
-    internal interface ClickListener {
-        fun itemClicked(index: Int)
-    }
 
     internal class FavouriteViewHolder(
-        view: View
-        //private val clickListener: ClickListener
+        view: View,
+        private val clickListener: ClickListener
     ) :
         RecyclerView.ViewHolder(view) {
 
@@ -58,7 +66,7 @@ class FavouritesAdapter(
 
         init {
             view.setOnClickListener {
-                //clickListener.itemClicked(adapterPosition)
+                clickListener.itemClicked(adapterPosition)
             }
         }
     }

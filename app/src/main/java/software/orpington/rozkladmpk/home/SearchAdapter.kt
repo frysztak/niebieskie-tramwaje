@@ -10,16 +10,11 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.stops_and_routes_list_item.view.*
 import software.orpington.rozkladmpk.R
 
-internal interface ClickListener {
-    fun itemClicked(index: Int)
-}
 
 class SearchAdapter(
     private val context: Context,
     private val presenter: HomeFragmentContract.Presenter) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>(),
-    ClickListener {
-
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: List<ViewItem> = emptyList()
 
@@ -37,18 +32,23 @@ class SearchAdapter(
         }
     }
 
-    override fun itemClicked(index: Int) {
-        val item = items[index]
-        when (item) {
-            is ViewItem.Stop -> presenter.stopClicked(item.stopName)
-            is ViewItem.Route -> presenter.routeClicked(item.routeID)
-        }
+    internal interface ClickListener {
+        fun itemClicked(index: Int)
     }
 
     override fun getItemCount(): Int = items.size
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.stops_and_routes_list_item, parent, false)
-        return StopOrRouteViewHolder(view, this)
+        val clickListener = object : ClickListener {
+            override fun itemClicked(index: Int) {
+                val item = items[index]
+                when (item) {
+                    is ViewItem.Stop -> presenter.stopClicked(item.stopName)
+                    is ViewItem.Route -> presenter.routeClicked(item.routeID)
+                }
+            }
+        }
+        return StopOrRouteViewHolder(view, clickListener)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

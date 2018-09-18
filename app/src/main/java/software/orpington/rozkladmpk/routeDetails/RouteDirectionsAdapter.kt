@@ -33,6 +33,12 @@ class RouteDirectionsAdapter(
         notifyDataSetChanged()
     }
 
+    private var itemToHighlight: Int = -1
+    fun setItemToHighlight(idx: Int) {
+        itemToHighlight = idx
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.route_directions_list_item, parent, false)
         return ViewHolder(view, highlightColour, normalColour, presenter)
@@ -49,6 +55,12 @@ class RouteDirectionsAdapter(
             true -> R.drawable.ic_favorite_black_24dp
             false -> R.drawable.ic_favorite_border_black_24dp
         })
+
+        if (position == itemToHighlight) {
+            holder.highlight()
+        } else {
+            holder.removeHighlight()
+        }
     }
 
     class ViewHolder(

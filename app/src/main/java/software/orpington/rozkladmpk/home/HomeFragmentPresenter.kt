@@ -1,8 +1,10 @@
 package software.orpington.rozkladmpk.home
 
+import android.content.Intent
 import software.orpington.rozkladmpk.data.model.StopsAndRoutes
 import software.orpington.rozkladmpk.data.source.IDataSource
 import software.orpington.rozkladmpk.data.source.RemoteDataSource
+import software.orpington.rozkladmpk.routeDetails.RouteDetailsActivity
 
 class HomeFragmentPresenter(
     private val dataSource: RemoteDataSource
@@ -57,6 +59,7 @@ class HomeFragmentPresenter(
         view?.navigateToRouteVariants(stopName)
     }
 
+    private var favourites: List<FavouriteItem> = emptyList()
     override fun onFavouritesLoaded(kvs: Map<String, *>) {
         val favourites: MutableList<FavouriteItem> = mutableListOf()
 
@@ -79,6 +82,12 @@ class HomeFragmentPresenter(
             }
         }
 
-        view?.showFavourites(favourites)
+        this.favourites = favourites
+        view?.showFavourites(this.favourites)
+    }
+
+    override fun favouriteClicked(index: Int) {
+        val item = favourites[index]
+        view?.navigateToRouteDetails(item.routeID, item.stopName, item.direction)
     }
 }

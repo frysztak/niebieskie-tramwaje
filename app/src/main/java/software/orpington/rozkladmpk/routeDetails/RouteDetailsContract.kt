@@ -19,6 +19,7 @@ interface RouteDetailsContract {
 
         fun setRouteID(id: String)
         fun setStopName(name: String)
+        fun setDirection(direction: String)
 
         fun loadRouteInfo()
 
