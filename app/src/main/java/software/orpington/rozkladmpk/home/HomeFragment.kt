@@ -20,18 +20,18 @@ import software.orpington.rozkladmpk.utils.onQueryChanged
 class HomeFragment : Fragment(), HomeFragmentContract.View {
 
     private lateinit var presenter: HomeFragmentPresenter
-    private lateinit var adapter: HomeFragmentAdapter
+    private lateinit var searchAdapter: SearchAdapter
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         val httpClient = ApiClient.getHttpClient(context!!.cacheDir)
         presenter = HomeFragmentPresenter(Injection.provideDataSource(httpClient))
-        adapter = HomeFragmentAdapter(context!!, presenter)
+        searchAdapter = SearchAdapter(context!!, presenter)
         presenter.loadData()
 
         home_searchResultsRecycler.apply {
-            adapter = this@HomeFragment.adapter
+            adapter = this@HomeFragment.searchAdapter
             layoutManager = LinearLayoutManager(context)
         }
 
@@ -70,7 +70,7 @@ class HomeFragment : Fragment(), HomeFragmentContract.View {
 
     override fun showSearchResults(data: List<StopOrRoute>) {
         view?.findViewById<ConstraintLayout>(R.id.home_searchResultsLayout)?.visibility = View.VISIBLE
-        adapter.setItems(data)
+        searchAdapter.setItems(data)
     }
 
     override fun hideSearchResults() {

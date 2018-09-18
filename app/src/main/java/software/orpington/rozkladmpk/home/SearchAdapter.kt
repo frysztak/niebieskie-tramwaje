@@ -14,7 +14,7 @@ internal interface ClickListener {
     fun itemClicked(index: Int)
 }
 
-class HomeFragmentAdapter(
+class SearchAdapter(
     private val context: Context,
     private val presenter: HomeFragmentContract.Presenter) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(),
