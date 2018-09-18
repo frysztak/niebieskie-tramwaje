@@ -115,22 +115,24 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
         }
     }
 
-    private fun getFavouriteKey(routeID: String, stopName: String): String {
-        return "fav_${routeID}_${stopName}"
+    private fun getFavouriteKey(routeID: String, stopName: String, isBus: Boolean): String {
+        val vehicle = if(isBus) "bus" else "tram"
+        return "fav_${routeID}_${stopName}_${vehicle}"
     }
 
-    override fun getFavouriteDirections(routeID: String, stopName: String): Set<String> {
-        val key = getFavouriteKey(routeID, stopName)
+    override fun getFavouriteDirections(routeID: String, stopName: String, isBus: Boolean): Set<String> {
+        val key = getFavouriteKey(routeID, stopName, isBus)
         return sharedPreferences.getStringSet(key, setOf())
     }
 
     override fun setFavouriteDirections(
         routeID: String,
         stopName: String,
+        isBus: Boolean,
         favourites: Set<String>,
         favouritesIndices: Set<Int>
     ) {
-        val key = getFavouriteKey(routeID, stopName)
+        val key = getFavouriteKey(routeID, stopName, isBus)
         sharedPreferences
             .edit()
             .putStringSet(key, favourites)

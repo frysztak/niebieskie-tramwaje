@@ -56,4 +56,29 @@ class HomeFragmentPresenter(
     override fun stopClicked(stopName: String) {
         view?.navigateToRouteVariants(stopName)
     }
+
+    override fun onFavouritesLoaded(kvs: Map<String, *>) {
+        val favourites: MutableList<FavouriteItem> = mutableListOf()
+
+        kvs.filterKeys { key ->
+            key.startsWith("fav_")
+        }.forEach { (key, value) ->
+            val parts = key.split("_")
+            val routeID = parts[1]
+            val stopName = parts[2]
+            val isBus = parts[3] == "bus"
+
+            val directions = value as Set<String>?
+                ?: // something is very very wrong
+                return
+
+            for (direction in directions) {
+                favourites.add(FavouriteItem(
+                    routeID, isBus, stopName, direction
+                ))
+            }
+        }
+
+        view?.showFavourites(favourites)
+    }
 }

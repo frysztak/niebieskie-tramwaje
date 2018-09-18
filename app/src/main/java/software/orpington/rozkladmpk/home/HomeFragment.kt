@@ -1,10 +1,14 @@
 package software.orpington.rozkladmpk.home
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +25,8 @@ class HomeFragment : Fragment(), HomeFragmentContract.View {
 
     private lateinit var presenter: HomeFragmentPresenter
     private lateinit var searchAdapter: SearchAdapter
+    private lateinit var favouritesAdapter: FavouritesAdapter
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -28,11 +34,19 @@ class HomeFragment : Fragment(), HomeFragmentContract.View {
         val httpClient = ApiClient.getHttpClient(context!!.cacheDir)
         presenter = HomeFragmentPresenter(Injection.provideDataSource(httpClient))
         searchAdapter = SearchAdapter(context!!, presenter)
+        favouritesAdapter = FavouritesAdapter(context!!, presenter)
+
+        sharedPreferences = context!!.getSharedPreferences("PREF", Context.MODE_PRIVATE)
         presenter.loadData()
 
         home_searchResultsRecycler.apply {
             adapter = this@HomeFragment.searchAdapter
             layoutManager = LinearLayoutManager(context)
+        }
+
+        home_favouritesList.apply {
+            adapter = this@HomeFragment.favouritesAdapter
+            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         }
 
         home_searchView.onQueryChanged { query ->
@@ -50,6 +64,7 @@ class HomeFragment : Fragment(), HomeFragmentContract.View {
     override fun onResume() {
         super.onResume()
         presenter.attachView(this)
+        presenter.onFavouritesLoaded(sharedPreferences.all)
     }
 
     override fun onStop() {
@@ -91,6 +106,10 @@ class HomeFragment : Fragment(), HomeFragmentContract.View {
         val i = Intent(context, StopsForRouteActivity::class.java)
         i.putExtra("routeID", routeID)
         startActivity(i)
+    }
+
+    override fun showFavourites(data: List<FavouriteItem>) {
+        favouritesAdapter.setItems(data)
     }
 
     companion object {

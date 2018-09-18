@@ -53,9 +53,14 @@ interface RouteDetailsContract {
 
         fun highlightDirection(directionIdx: Int)
 
-        fun getFavouriteDirections(routeID: String, stopName: String): Set<String>
+        fun getFavouriteDirections(
+            routeID: String,
+            stopName: String,
+            isBus: Boolean
+        ): Set<String>
         fun setFavouriteDirections(routeID: String,
                                    stopName: String,
+                                   isBus: Boolean,
                                    favourites: Set<String>,
                                    favouritesIndices: Set<Int>)
     }

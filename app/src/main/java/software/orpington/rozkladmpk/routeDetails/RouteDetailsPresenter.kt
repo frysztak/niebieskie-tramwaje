@@ -65,6 +65,7 @@ class RouteDetailsPresenter(
             override fun onDataLoaded(data: RouteInfo) {
                 infoView?.hideProgressBar()
                 infoView?.showRouteInfo(data)
+                state.isBus = data.isBus
             }
 
             override fun onDataNotAvailable() {
@@ -104,7 +105,7 @@ class RouteDetailsPresenter(
     }
 
     private fun initialiseFavouriteDirections() {
-        val favourites = directionsView?.getFavouriteDirections(state.routeID, state.stopName)
+        val favourites = directionsView?.getFavouriteDirections(state.routeID, state.stopName, state.isBus)
             ?: return
 
         state.favouriteDirections = favourites.map { direction ->
@@ -128,6 +129,7 @@ class RouteDetailsPresenter(
         directionsView?.setFavouriteDirections(
             state.routeID,
             state.stopName,
+            state.isBus,
             directionNames,
             state.favouriteDirections
         )
