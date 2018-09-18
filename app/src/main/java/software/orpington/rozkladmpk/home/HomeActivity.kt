@@ -11,22 +11,27 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        swapPageContent(0)
+        swapPageContent(R.id.navigation_home)
         navigation.setOnNavigationItemSelectedListener {
             swapPageContent(it.itemId)
             true
         }
     }
 
+    private var currentPageIndex: Int = -1
     private fun swapPageContent(pageIdx: Int) {
+        if (pageIdx == currentPageIndex) return
+
         val fragment: Fragment =
             when (pageIdx) {
-                0 -> HomeFragment.newInstance()
+                R.id.navigation_home -> HomeFragment.newInstance()
                 else -> HomeFragment.newInstance()
             }
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.frameLayout, fragment)
             .commit()
+
+        currentPageIndex = pageIdx
     }
 }
