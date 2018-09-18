@@ -39,7 +39,7 @@ inline fun <T : View> T.afterMeasured(crossinline f: T.() -> Unit) {
 
 inline fun RecyclerView.whenScrollStateIdle(crossinline f: RecyclerView.() -> Unit) {
     addOnScrollListener(object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 removeOnScrollListener(this)
                 f()

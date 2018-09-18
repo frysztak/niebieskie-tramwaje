@@ -73,7 +73,7 @@ class RouteDetailsActivity : AppCompatActivity(),
         supportFragmentManager.registerFragmentLifecycleCallbacks(
             object : FragmentManager.FragmentLifecycleCallbacks() {
 
-                override fun onFragmentViewCreated(fm: FragmentManager?, f: Fragment?, v: View?, savedInstanceState: Bundle?) {
+                override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
                     if (f is RouteDetailsContract.DirectionsView) {
                         f.attachPresenter(presenter)
                     }
