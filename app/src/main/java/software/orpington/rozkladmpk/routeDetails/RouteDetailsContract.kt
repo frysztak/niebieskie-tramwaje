@@ -24,6 +24,7 @@ interface RouteDetailsContract {
 
         fun loadRouteDirections()
         fun onDirectionClicked(directionIdx: Int)
+        fun onDirectionFavouriteClicked(directionIdx: Int)
 
         fun loadTimeTable()
         fun onTimeClicked(time: String)
@@ -47,9 +48,16 @@ interface RouteDetailsContract {
         fun attachPresenter(newPresenter: Presenter)
 
         fun showRouteDirections(routeDirections: List<String>,
+                                favouriteDirections: Set<Int>,
                                 idxToHighlight: Int = -1)
 
         fun highlightDirection(directionIdx: Int)
+
+        fun getFavouriteDirections(routeID: String, stopName: String): Set<String>
+        fun setFavouriteDirections(routeID: String,
+                                   stopName: String,
+                                   favourites: Set<String>,
+                                   favouritesIndices: Set<Int>)
     }
 
     interface TimetableView : BaseView {

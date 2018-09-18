@@ -80,7 +80,12 @@ class RouteDetailsPresenter(
             override fun onDataLoaded(data: RouteDirections) {
                 state.routeDirections = data.directions
                 directionsView?.hideProgressBar()
-                directionsView?.showRouteDirections(state.routeDirections, state.currentRouteDirection)
+                initialiseFavouriteDirections()
+                directionsView?.showRouteDirections(
+                    state.routeDirections,
+                    state.favouriteDirections,
+                    state.currentRouteDirection
+                )
             }
 
             override fun onDataNotAvailable() {
@@ -96,6 +101,36 @@ class RouteDetailsPresenter(
 
         directionsView?.highlightDirection(directionIdx)
         infoView?.switchToTimetableTab()
+    }
+
+    private fun initialiseFavouriteDirections() {
+        val favourites = directionsView?.getFavouriteDirections(state.routeID, state.stopName)
+            ?: return
+
+        state.favouriteDirections = favourites.map { direction ->
+            state.routeDirections.indexOf(direction)
+        }.toSet()
+    }
+
+    override fun onDirectionFavouriteClicked(directionIdx: Int) {
+        if (state.favouriteDirections.contains(directionIdx)) {
+            state.favouriteDirections =
+                state.favouriteDirections - directionIdx
+        } else {
+            state.favouriteDirections =
+                state.favouriteDirections + directionIdx
+        }
+
+        val directionNames = state.routeDirections.filterIndexed { index, _ ->
+            state.favouriteDirections.contains(index)
+        }.toSet()
+
+        directionsView?.setFavouriteDirections(
+            state.routeID,
+            state.stopName,
+            directionNames,
+            state.favouriteDirections
+        )
     }
 
     override fun loadTimeTable() {

@@ -1,5 +1,7 @@
 package software.orpington.rozkladmpk.routeDetails
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -18,6 +20,7 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
 
     private lateinit var adapter: RouteDirectionsAdapter
     private var presenter: RouteDetailsContract.Presenter? = null
+    private lateinit var sharedPreferences: SharedPreferences
     // TODO? clear presenter when fragment dies
 
     override fun attachPresenter(newPresenter: RouteDetailsContract.Presenter) {
@@ -39,6 +42,7 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
         super.onActivityCreated(savedInstanceState)
 
         adapter = RouteDirectionsAdapter(context!!, presenter!!)
+        sharedPreferences = context!!.getSharedPreferences("PREF", Context.MODE_PRIVATE)
 
         routeDirections_recyclerview.apply {
             adapter = this@RouteDirectionsFragment.adapter
@@ -56,8 +60,10 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
     }
 
     override fun showRouteDirections(routeDirections: List<String>,
+                                     favouriteDirections: Set<Int>,
                                      idxToHighlight: Int) {
         adapter.setItems(routeDirections)
+        adapter.setFavourites(favouriteDirections)
         if (idxToHighlight != -1) {
             routeDirections_recyclerview.afterMeasured {
                 highlightDirection(idxToHighlight)
@@ -107,6 +113,29 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
                 else -> viewHolder?.removeHighlight()
             }
         }
+    }
+
+    private fun getFavouriteKey(routeID: String, stopName: String): String {
+        return "fav_${routeID}_${stopName}"
+    }
+
+    override fun getFavouriteDirections(routeID: String, stopName: String): Set<String> {
+        val key = getFavouriteKey(routeID, stopName)
+        return sharedPreferences.getStringSet(key, setOf())
+    }
+
+    override fun setFavouriteDirections(
+        routeID: String,
+        stopName: String,
+        favourites: Set<String>,
+        favouritesIndices: Set<Int>
+    ) {
+        val key = getFavouriteKey(routeID, stopName)
+        sharedPreferences
+            .edit()
+            .putStringSet(key, favourites)
+            .apply()
+        adapter.setFavourites(favouritesIndices)
     }
 
     companion object {

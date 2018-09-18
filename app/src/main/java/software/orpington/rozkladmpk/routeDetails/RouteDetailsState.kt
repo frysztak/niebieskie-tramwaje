@@ -11,6 +11,7 @@ data class RouteDetailsState(
 
     var tripID: Int = -1,
     var routeDirections: List<String> = emptyList(),
+    var favouriteDirections: Set<Int> = emptySet(),
     var currentRouteDirection: Int = -1,
 
     var timetable: TimeTable? = null,
