@@ -2,14 +2,7 @@ package software.orpington.rozkladmpk.home
 
 import software.orpington.rozkladmpk.BaseView
 
-data class FavouriteItem(
-    val routeID: String,
-    val isBus: Boolean,
-    val stopName: String,
-    val direction: String
-)
-
-interface HomeFragmentContract {
+interface SearchContract {
     interface Presenter {
         fun attachView(view: View)
         fun detachView()
@@ -18,20 +11,14 @@ interface HomeFragmentContract {
         fun queryTextChanged(newText: String)
         fun stopClicked(stopName: String)
         fun routeClicked(routeID: String)
-
-        fun onFavouritesLoaded(map: Map<String, *>)
-        fun favouriteClicked(index: Int)
     }
 
-    interface View: BaseView {
+    interface View : BaseView {
         fun navigateToRouteVariants(stopName: String)
         fun navigateToStopsForRoute(routeID: String)
 
         fun showStopNotFound()
         fun showSearchResults(data: List<StopOrRoute>)
         fun hideSearchResults()
-
-        fun showFavourites(data: List<FavouriteItem>)
-        fun navigateToRouteDetails(routeID: String, stopName: String, direction: String)
     }
 }

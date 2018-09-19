@@ -1,22 +1,21 @@
 package software.orpington.rozkladmpk.home
 
-import android.content.Intent
 import software.orpington.rozkladmpk.data.model.StopsAndRoutes
 import software.orpington.rozkladmpk.data.source.IDataSource
 import software.orpington.rozkladmpk.data.source.RemoteDataSource
-import software.orpington.rozkladmpk.routeDetails.RouteDetailsActivity
 
-class HomeFragmentPresenter(
+class SearchPresenter(
     private val dataSource: RemoteDataSource
-) : HomeFragmentContract.Presenter {
-    private var view: HomeFragmentContract.View? = null
-    override fun attachView(view: HomeFragmentContract.View) {
+) : SearchContract.Presenter {
+    private var view: SearchContract.View? = null
+    override fun attachView(view: SearchContract.View) {
         this.view = view
     }
 
     override fun detachView() {
         this.view = null
     }
+
 
     private var stopsAndRoutes: List<StopOrRoute> = emptyList()
     override fun loadData() {
@@ -57,37 +56,5 @@ class HomeFragmentPresenter(
 
     override fun stopClicked(stopName: String) {
         view?.navigateToRouteVariants(stopName)
-    }
-
-    private var favourites: List<FavouriteItem> = emptyList()
-    override fun onFavouritesLoaded(kvs: Map<String, *>) {
-        val favourites: MutableList<FavouriteItem> = mutableListOf()
-
-        kvs.filterKeys { key ->
-            key.startsWith("fav_")
-        }.forEach { (key, value) ->
-            val parts = key.split("_")
-            val routeID = parts[1]
-            val stopName = parts[2]
-            val isBus = parts[3] == "bus"
-
-            val directions = value as Set<String>?
-                ?: // something is very very wrong
-                return
-
-            for (direction in directions) {
-                favourites.add(FavouriteItem(
-                    routeID, isBus, stopName, direction
-                ))
-            }
-        }
-
-        this.favourites = favourites
-        view?.showFavourites(this.favourites)
-    }
-
-    override fun favouriteClicked(index: Int) {
-        val item = favourites[index]
-        view?.navigateToRouteDetails(item.routeID, item.stopName, item.direction)
     }
 }

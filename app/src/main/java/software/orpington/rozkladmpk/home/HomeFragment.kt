@@ -6,7 +6,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
@@ -22,23 +21,28 @@ import software.orpington.rozkladmpk.routeVariants.RouteVariantsActivity
 import software.orpington.rozkladmpk.stopsForRoute.StopsForRouteActivity
 import software.orpington.rozkladmpk.utils.onQueryChanged
 
-class HomeFragment : Fragment(), HomeFragmentContract.View {
+class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
 
-    private lateinit var presenter: HomeFragmentPresenter
+    private lateinit var searchPresenter: SearchPresenter
     private lateinit var searchAdapter: SearchAdapter
+
     private lateinit var favouritesAdapter: FavouritesAdapter
+    private lateinit var favouritesPresenter: FavouritesPresenter
+
     private lateinit var sharedPreferences: SharedPreferences
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         val httpClient = ApiClient.getHttpClient(context!!.cacheDir)
-        presenter = HomeFragmentPresenter(Injection.provideDataSource(httpClient))
-        searchAdapter = SearchAdapter(context!!, presenter)
-        favouritesAdapter = FavouritesAdapter(context!!, presenter)
+        searchPresenter = SearchPresenter(Injection.provideDataSource(httpClient))
+        searchAdapter = SearchAdapter(context!!, searchPresenter)
+
+        favouritesPresenter = FavouritesPresenter()
+        favouritesAdapter = FavouritesAdapter(context!!, favouritesPresenter)
 
         sharedPreferences = context!!.getSharedPreferences("PREF", Context.MODE_PRIVATE)
-        presenter.loadData()
+        searchPresenter.loadData()
 
         home_searchResultsRecycler.apply {
             adapter = this@HomeFragment.searchAdapter
@@ -51,7 +55,7 @@ class HomeFragment : Fragment(), HomeFragmentContract.View {
         }
 
         home_searchView.onQueryChanged { query ->
-            presenter.queryTextChanged(query)
+            searchPresenter.queryTextChanged(query)
         }
     }
 
@@ -64,13 +68,16 @@ class HomeFragment : Fragment(), HomeFragmentContract.View {
 
     override fun onResume() {
         super.onResume()
-        presenter.attachView(this)
-        presenter.onFavouritesLoaded(sharedPreferences.all)
+        searchPresenter.attachView(this)
+
+        favouritesPresenter.attachView(this)
+        favouritesPresenter.onFavouritesLoaded(sharedPreferences.all)
     }
 
     override fun onStop() {
         super.onStop()
-        presenter.detachView()
+        searchPresenter.detachView()
+        favouritesPresenter.detachView()
     }
 
     override fun showProgressBar() {

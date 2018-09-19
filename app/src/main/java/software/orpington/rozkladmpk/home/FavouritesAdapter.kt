@@ -13,7 +13,7 @@ import software.orpington.rozkladmpk.R
 
 class FavouritesAdapter(
     private val context: Context,
-    private val presenter: HomeFragmentContract.Presenter
+    private val presenter: FavouritesContract.Presenter
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

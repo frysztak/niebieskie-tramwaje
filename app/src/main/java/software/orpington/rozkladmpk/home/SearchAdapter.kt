@@ -13,7 +13,7 @@ import software.orpington.rozkladmpk.R
 
 class SearchAdapter(
     private val context: Context,
-    private val presenter: HomeFragmentContract.Presenter) :
+    private val presenter: SearchContract.Presenter) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: List<ViewItem> = emptyList()
