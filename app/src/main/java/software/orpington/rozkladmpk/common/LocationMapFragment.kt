@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.graphics.Typeface
+import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
@@ -18,6 +20,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -25,32 +29,36 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices.getFusedLocationProviderClient
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.GoogleMapOptions
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.*
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsOptions
 import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsRequest
 import kotlinx.android.synthetic.main.location_map_fragment_layout.*
 import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.utils.LocationCallbackReference
+import software.orpington.rozkladmpk.utils.convertToBitmap
+
+interface LocationMapCallbacks {
+    fun onLocationChanged(latitude: Float, longitude: Float)
+}
 
 class LocationMapFragment : Fragment(), OnMapReadyCallback {
 
     private val initialLocation = LatLng(51.110415, 17.032925) // Rynek
     private val initialZoom = 13f
 
-    interface OnLocationChangedCallback {
-        fun locationChanged(latitude: Float, longitude: Float)
+    private var locationMapCallbacks: LocationMapCallbacks? = null
+    fun setOnLocationMapCallbacks(cb: LocationMapCallbacks) {
+        locationMapCallbacks = cb
     }
 
-    private var locationChangedCallback: OnLocationChangedCallback? = null
-    fun setOnLocationChangedCallback(cb: OnLocationChangedCallback) {
-        locationChangedCallback = cb
+    fun showProgressBar() {
+        currentState = State.Loading
+    }
+
+    fun hideProgressBar() {
+        currentState = State.Idle
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,6 +89,10 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
 
         v.findViewById<Button>(R.id.messageButton).setOnClickListener {
             currentState.buttonAction()
+        }
+
+        v.findViewById<Button>(R.id.myLocationFAB).setOnClickListener {
+            centerToUserLocation()
         }
 
         State.GrantPermission.buttonAction = {
@@ -163,6 +175,12 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationCallbackReference: LocationCallbackReference
 
+    private fun notifyLocationChanged(loc: Location) {
+        updateUserMarker(loc)
+        updateFABVisibility()
+        locationMapCallbacks?.onLocationChanged(loc.latitude.toFloat(), loc.longitude.toFloat())
+    }
+
     private fun initLocationManager() {
         if (!checkPlayServices()) return
 
@@ -178,7 +196,7 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(location: LocationResult?) {
                 val loc = location?.lastLocation ?: return
-                locationChangedCallback?.locationChanged(loc.latitude.toFloat(), loc.longitude.toFloat())
+                notifyLocationChanged(loc)
             }
         }
         locationCallbackReference = LocationCallbackReference(locationCallback)
@@ -241,12 +259,49 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
     private fun registerLocationListener() = runWithPermissions(Manifest.permission.ACCESS_FINE_LOCATION, options = quickPermissionsOption) {
         locationProvider.lastLocation.addOnSuccessListener { loc ->
             if (loc != null) {
-                locationChangedCallback?.locationChanged(loc.latitude.toFloat(), loc.longitude.toFloat())
+                notifyLocationChanged(loc)
             }
         }
 
         locationProvider
             .requestLocationUpdates(locationRequest, locationCallbackReference, Looper.myLooper())
+    }
+
+    private var userMarker: Marker? = null
+    private fun updateUserMarker(location: Location) {
+        if (userMarker == null) {
+            val specialMarkerView = LayoutInflater.from(context).inflate(R.layout.map_marker, null, false)
+            val tv = specialMarkerView
+                .findViewById<TextView>(R.id.stopName)
+            tv.text = getString(R.string.you)
+            tv.setTypeface(tv.typeface, Typeface.BOLD)
+
+            specialMarkerView
+                .findViewById<ImageView>(R.id.circle)
+                .setImageResource(R.drawable.map_marker_user)
+
+            val icon = BitmapDescriptorFactory.fromBitmap(specialMarkerView.convertToBitmap())
+
+            val opt = MarkerOptions()
+                .position(LatLng(location.latitude, location.longitude))
+                .icon(icon)
+            userMarker = map?.addMarker(opt)
+        }
+
+        userMarker?.position = LatLng(location.latitude, location.longitude)
+    }
+
+    private fun centerToUserLocation() {
+        val marker = userMarker ?: return
+
+        map?.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(marker.position, 14.0f)
+        )
+
+    }
+
+    private fun updateFABVisibility() {
+        myLocationFAB.visibility = if (userMarker == null) View.GONE else View.VISIBLE
     }
 
     override fun onStop() {
@@ -266,6 +321,23 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
             registerLocationListener()
             registerLocationSettingListener()
         }
+    }
+
+    override fun onDestroy() {
+        // there are two fragments: explicitly added SupportMapFragment
+        // and some internal Google Play Services one.
+        // both need to be removed to avoid memory leaks.
+        for (frag in childFragmentManager.fragments) {
+            childFragmentManager
+                .beginTransaction()
+                .remove(frag)
+                .commitAllowingStateLoss()
+        }
+
+        map?.clear()
+        map = null
+
+        super.onDestroy()
     }
 
 }
