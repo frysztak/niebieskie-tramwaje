@@ -1,12 +1,13 @@
 package software.orpington.rozkladmpk.home.map
 
-import android.support.v4.app.Fragment
-import com.google.android.gms.maps.SupportMapFragment
 import android.os.Bundle
-import android.view.ViewGroup
+import android.support.design.widget.FloatingActionButton
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import software.orpington.rozkladmpk.R
+import software.orpington.rozkladmpk.common.LocationMapFragment
 
 
 class MapFragment : Fragment() {
@@ -14,6 +15,11 @@ class MapFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.home_map_layout, container, false)
+
+        val locationMapFragment = childFragmentManager.findFragmentById(R.id.map) as LocationMapFragment
+        val fab = v.findViewById<FloatingActionButton>(R.id.fab)
+        locationMapFragment.overrideFAB(fab)
+
         return v
     }
 

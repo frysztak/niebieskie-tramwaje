@@ -63,6 +63,18 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
         currentState = State.Idle
     }
 
+    private var customFAB: FloatingActionButton? = null
+    fun overrideFAB(newFAB: FloatingActionButton) {
+        customFAB = newFAB
+
+        myLocationFAB.visibility = View.GONE
+        myLocationFAB.setOnClickListener(null)
+
+        newFAB.setOnClickListener {
+            centerToUserLocation()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -325,7 +337,8 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun updateFABVisibility() {
-        myLocationFAB.visibility = if (userMarker == null) View.GONE else View.VISIBLE
+        (customFAB
+            ?: myLocationFAB).visibility = if (userMarker == null) View.GONE else View.VISIBLE
     }
 
     override fun onStop() {
@@ -360,6 +373,7 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
 
         map?.clear()
         map = null
+        customFAB = null
 
         super.onDestroy()
     }
