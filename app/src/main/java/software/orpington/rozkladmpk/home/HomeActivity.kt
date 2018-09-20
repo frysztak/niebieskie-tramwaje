@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_home.*
 import software.orpington.rozkladmpk.R
+import software.orpington.rozkladmpk.home.map.MapFragment
 
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +26,7 @@ class HomeActivity : AppCompatActivity() {
         val fragment: Fragment =
             when (pageIdx) {
                 R.id.navigation_home -> HomeFragment.newInstance()
+                R.id.navigation_map -> MapFragment.newInstance()
                 else -> HomeFragment.newInstance()
             }
         supportFragmentManager
