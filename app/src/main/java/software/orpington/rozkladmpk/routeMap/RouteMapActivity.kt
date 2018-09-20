@@ -1,15 +1,10 @@
 package software.orpington.rozkladmpk.routeMap
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
-import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Typeface
-import android.location.Location
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
@@ -17,58 +12,32 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices.getFusedLocationProviderClient
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
-import kotlinx.android.synthetic.main.activity_route_map.*
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
+import software.orpington.rozkladmpk.common.LocationMapCallbacks
+import software.orpington.rozkladmpk.common.LocationMapFragment
 import software.orpington.rozkladmpk.data.model.MapData
 import software.orpington.rozkladmpk.data.model.VehiclePosition
 import software.orpington.rozkladmpk.data.model.VehiclePositions
 import software.orpington.rozkladmpk.data.source.ApiClient
-import software.orpington.rozkladmpk.utils.LocationCallbackReference
 import software.orpington.rozkladmpk.utils.convertToBitmap
 import software.orpington.rozkladmpk.utils.getBitmapDescriptor
 import kotlin.math.roundToInt
 
 
-class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContract.View {
+class RouteMapActivity : AppCompatActivity(), RouteMapContract.View, LocationMapCallbacks {
 
+    private lateinit var locationMapFragment: LocationMapFragment
     private lateinit var presenter: RouteMapContract.Presenter
-
-    private lateinit var locationProvider: FusedLocationProviderClient
-    private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: LocationCallback
-    private lateinit var locationCallbackReference: LocationCallbackReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_route_map)
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        // https://issuetracker.google.com/issues/66402372#comment4
-        lateinit var mapFragment: SupportMapFragment
-        if (savedInstanceState != null) {
-            mapFragment = supportFragmentManager.findFragmentByTag("map") as SupportMapFragment
-        } else {
-            val opt = GoogleMapOptions().camera(
-                CameraPosition.fromLatLngZoom(LatLng(51.110415, 17.032925), 13f)
-            )
-            mapFragment = SupportMapFragment.newInstance(opt)
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.container, mapFragment, "map")
-                .commit()
-        }
-        mapFragment.getMapAsync(this)
 
         val httpClient = ApiClient.getHttpClient(cacheDir)
         presenter = RouteMapPresenter(Injection.provideDataSource(httpClient))
@@ -79,18 +48,16 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         val stopName = intent.getStringExtra("stopName")
         title = "${getString(R.string.route)} $routeID — $stopName"
 
-        retryButton.setOnClickListener {
-            loadData(routeID, direction, stopName)
-        }
+        locationMapFragment =
+            supportFragmentManager.findFragmentById(R.id.locationMapFragment) as LocationMapFragment
+        locationMapFragment.setOnLocationMapCallbacks(this)
 
-        myLocationFAB.setOnClickListener {
-            centerToUserLocation()
-        }
+        // TODO
+        //retryButton.setOnClickListener {
+        //    loadData(routeID, direction, stopName)
+        //}
 
         loadData(routeID, direction, stopName)
-
-        initLocationManager()
-        initLocationCallback()
     }
 
     private fun loadData(routeID: String, direction: String, stopName: String) {
@@ -105,7 +72,6 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         super.onPause()
 
         presenter.detachView()
-        locationProvider.removeLocationUpdates(locationCallbackReference)
         vehicleLocationHandler.removeCallbacksAndMessages(null)
     }
 
@@ -113,13 +79,6 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
     override fun onResume() {
         super.onResume()
         presenter.attachView(this)
-
-        if (isLocationPermissionGranted()) {
-            registerLocationListener()
-            myLocationFAB.visibility = View.VISIBLE
-        } else {
-            myLocationFAB.visibility = View.GONE
-        }
 
         val routeID = intent.getStringExtra("routeID")
         updateVehicleLocation(routeID)
@@ -136,29 +95,15 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
                 .commitAllowingStateLoss()
         }
 
-        for (marker in vehicleMarkers) {
-            marker.remove()
-        }
-        vehicleMarkers = emptyList()
-        userMarker?.remove()
-        userMarker = null
-        map?.clear()
-        map = null
-
         super.onDestroy()
     }
 
-    private var mapReady: Boolean = false
-    private var map: GoogleMap? = null
-    override fun onMapReady(googleMap: GoogleMap?) {
-        map = googleMap
+    override fun onLocationChanged(latitude: Float, longitude: Float) {
+    }
 
-        try {
-            map?.setMapStyle(
-                MapStyleOptions.loadRawResourceStyle(
-                    this, R.raw.map_style))
-        } catch (e: Resources.NotFoundException) {
-        }
+    private var map: GoogleMap? = null
+    override fun onMapReady(googleMap: GoogleMap) {
+        this.map = googleMap
 
         map?.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
             private var contentsView: View? = null
@@ -187,7 +132,6 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
             }
         })
 
-        mapReady = true
         updateMap()
     }
 
@@ -218,9 +162,8 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
         return color
     }
 
-    private var userMarker: Marker? = null
     private fun updateMap() {
-        if (!mapReady || mapData == null) return
+        if (map == null || mapData == null) return
         colorCounter = 0
 
         val boundsBuilder = LatLngBounds.builder()
@@ -278,21 +221,15 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
     }
 
     override fun showProgressBar() {
-        progressBar.visibility = View.VISIBLE
-        errorLayout.visibility = View.GONE
-        progressBar.show()
+        locationMapFragment.showProgressBar()
     }
 
     override fun hideProgressBar() {
-        progressBar.hide()
-
-        statusBar.visibility = View.GONE
+        locationMapFragment.hideProgressBar()
     }
 
     override fun reportError() {
-        statusBar.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
-        errorLayout.visibility = View.VISIBLE
+        // TODO
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -303,87 +240,6 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
             }
             else -> return super.onOptionsItemSelected(item)
         }
-    }
-
-    private fun checkPlayServices(): Boolean {
-        val googleAPI = GoogleApiAvailability.getInstance()
-        val result = googleAPI.isGooglePlayServicesAvailable(this)
-        return result == ConnectionResult.SUCCESS
-    }
-
-    private fun initLocationManager() {
-        if (!checkPlayServices()) return
-
-        locationRequest = LocationRequest()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 2 * 1000L // 2 seconds
-        locationRequest.fastestInterval = 5 * 100L // 0.5 second
-
-        locationProvider = getFusedLocationProviderClient(this)
-    }
-
-    private fun initLocationCallback() {
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(location: LocationResult?) {
-                val loc = location?.lastLocation ?: return
-                locationChanged(loc)
-            }
-        }
-        locationCallbackReference = LocationCallbackReference(locationCallback)
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun registerLocationListener() {
-        if (!isLocationPermissionGranted()) return
-
-        locationProvider.lastLocation.addOnSuccessListener { loc ->
-            if (loc != null) {
-                locationChanged(loc)
-            }
-        }
-
-        locationProvider
-            .requestLocationUpdates(locationRequest, locationCallbackReference, Looper.myLooper())
-    }
-
-    private fun isLocationPermissionGranted(): Boolean {
-        val permissionLocation = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-        return permissionLocation == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun locationChanged(location: Location) {
-        if (!mapReady) return
-
-        if (userMarker == null) {
-            val specialMarkerView = LayoutInflater.from(this).inflate(R.layout.map_marker, null, false)
-            val tv = specialMarkerView
-                .findViewById<TextView>(R.id.stopName)
-            tv.text = getString(R.string.you)
-            tv.setTypeface(tv.typeface, Typeface.BOLD)
-
-            specialMarkerView
-                .findViewById<ImageView>(R.id.circle)
-                .setImageResource(R.drawable.map_marker_user)
-
-            val icon = BitmapDescriptorFactory.fromBitmap(specialMarkerView.convertToBitmap())
-
-            val opt = MarkerOptions()
-                .position(LatLng(location.latitude, location.longitude))
-                .icon(icon)
-            userMarker = map?.addMarker(opt)
-        }
-
-        userMarker?.position = LatLng(location.latitude, location.longitude)
-        myLocationFAB.visibility = if (userMarker == null) View.GONE else View.VISIBLE
-    }
-
-    private fun centerToUserLocation() {
-        val marker = userMarker ?: return
-
-        map?.moveCamera(
-            CameraUpdateFactory.newLatLngZoom(marker.position, 14.0f)
-        )
-
     }
 
     private val vehicleLocationHandler = Handler()
@@ -400,7 +256,6 @@ class RouteMapActivity : AppCompatActivity(), OnMapReadyCallback, RouteMapContra
 
     private var vehicleMarkers: List<Marker> = emptyList()
     override fun displayVehiclePositions(data: VehiclePositions) {
-        if (!mapReady) return
         if (data.isEmpty()) return
 
         val addNewMarker = { position: VehiclePosition ->
