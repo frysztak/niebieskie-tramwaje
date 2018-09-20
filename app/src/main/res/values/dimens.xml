@@ -4,6 +4,7 @@
     <dimen name="StateViewIconSize">100dp</dimen>
 
     <dimen name="StopIconSize">56dp</dimen>
+    <dimen name="StopIconSmallSize">32dp</dimen>
 
     <dimen name="TimeTableRowHeight">48dp</dimen>
     <dimen name="TimeTableColumnWidth">48dp</dimen>

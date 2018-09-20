@@ -42,6 +42,19 @@
         <item name="android:textColor">@color/primary_text</item>
     </style>
 
+    <style name="NearbyStopName" parent="TextAppearance.AppCompat.Headline">
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">16dp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="NearbyStopDistance">
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">12dp</item>
+        <item name="android:textColor">@color/secondary_text</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
     <!-- Stops and routes -->
     <style name="StopsAndRoutesItem" parent="TextAppearance.AppCompat.Headline">
         <item name="android:gravity">left</item>
