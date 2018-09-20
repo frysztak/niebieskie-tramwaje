@@ -13,6 +13,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
@@ -40,6 +41,7 @@ import software.orpington.rozkladmpk.utils.LocationCallbackReference
 import software.orpington.rozkladmpk.utils.convertToBitmap
 
 interface LocationMapCallbacks {
+    fun onMapReady(googleMap: GoogleMap)
     fun onLocationChanged(latitude: Float, longitude: Float)
 }
 
@@ -91,7 +93,7 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
             currentState.buttonAction()
         }
 
-        v.findViewById<Button>(R.id.myLocationFAB).setOnClickListener {
+        v.findViewById<FloatingActionButton>(R.id.myLocationFAB).setOnClickListener {
             centerToUserLocation()
         }
 
@@ -116,8 +118,11 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
 
     private var map: GoogleMap? = null
     override fun onMapReady(googleMap: GoogleMap?) {
+        if (googleMap == null) return
+
         map = googleMap
         map?.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style))
+        locationMapCallbacks?.onMapReady(map!!)
     }
 
     // Location-related mess starts here
@@ -133,22 +138,40 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
         companion object {
             val Idle = Storage(false, -1, -1, {})
             val Loading = Storage(true, -1, -1, {})
-            val GrantPermission = Storage(false, R.id.allowLocating, R.id.okButton, {})
-            val GooglePlayError = Storage(false, R.id.googlePlayErrorMessage, -1, {})
-            val LocationIsDisabled = Storage(false, R.id.locationIsDisabled, R.id.enableButton, {})
+            val GrantPermission = Storage(false, R.string.find_nearby_stops, R.string.ok, {})
+            val GooglePlayError = Storage(false, R.string.google_play_error_msg, -1, {})
+            val LocationIsDisabled = Storage(false, R.string.location_is_disabled, R.string.enable, {})
         }
     }
 
-    private var currentState: State.Storage = State.Idle
+    private var currentState_: State.Storage = State.Idle
+    private var currentState: State.Storage
+        get() = currentState_
         set(value) {
             updateState(value)
+            currentState_ = value
         }
 
     private fun updateState(newState: State.Storage) {
         when (newState) {
-            State.Idle -> statusBar.visibility = View.GONE
-            State.Loading -> progressBar.visibility = View.VISIBLE
-            else -> errorMessage.visibility = View.VISIBLE
+            State.Idle -> {
+                statusBarBackground.visibility = View.GONE
+                actualProgressBar.visibility = View.GONE
+                messageText.visibility = View.GONE
+                messageButton.visibility = View.GONE
+            }
+            State.Loading -> {
+                statusBarBackground.visibility = View.VISIBLE
+                actualProgressBar.visibility = View.VISIBLE
+                messageText.visibility = View.GONE
+                messageButton.visibility = View.GONE
+            }
+            else -> {
+                statusBarBackground.visibility = View.VISIBLE
+                messageText.visibility = View.VISIBLE
+                messageButton.visibility = View.VISIBLE
+                actualProgressBar.visibility = View.GONE
+            }
         }
 
         if (newState.messageTextId != -1) {
@@ -225,8 +248,9 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
     private fun registerLocationSettingListener() {
         locationSettingsReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                if (intent.action!!.matches("android.location.PROVIDERS_CHANGED".toRegex()) && !isLocationEnabled()) {
-                    currentState = State.LocationIsDisabled
+                currentState = when {
+                    intent.action!!.matches("android.location.PROVIDERS_CHANGED".toRegex()) && !isLocationEnabled() -> State.LocationIsDisabled
+                    else -> State.Idle
                 }
             }
         }
