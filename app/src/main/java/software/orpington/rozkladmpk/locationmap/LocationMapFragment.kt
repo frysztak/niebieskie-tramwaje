@@ -350,7 +350,9 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
         map?.clear()
         map = null
         customFAB = null
+        State.GrantPermission.buttonAction = {}
         State.FailedToLoadData.buttonAction = {}
+        State.LocationIsDisabled.buttonAction = {}
 
         super.onDestroy()
     }
