@@ -348,6 +348,7 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
         map?.clear()
         map = null
         customFAB = null
+        State.FailedToLoadData.buttonAction = {}
 
         super.onDestroy()
     }
