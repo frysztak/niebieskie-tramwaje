@@ -12,8 +12,12 @@ class LocationMapPresenter: LocationMapContract.Presenter {
 
     private val messages: MutableList<Message> = mutableListOf()
 
-    override fun pushMessage(msg: Message) {
-        messages.add(msg)
+    override fun pushMessage(msg: Message, putAtTop: Boolean) {
+        if (putAtTop || msg.progressBarVisible) {
+            messages.add(0, msg)
+        } else {
+            messages.add(msg)
+        }
         view?.setMessages(messages)
     }
 

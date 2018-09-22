@@ -73,7 +73,7 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
         }
     }
 
-    fun pushDataFailedToLoad() = presenter.pushMessage(State.FailedToLoadData)
+    fun pushDataFailedToLoad() = presenter.pushMessage(State.FailedToLoadData, true)
     fun popDataFailedToLoad() = presenter.popMessage(State.FailedToLoadData)
 
     private lateinit var presenter: LocationMapContract.Presenter
