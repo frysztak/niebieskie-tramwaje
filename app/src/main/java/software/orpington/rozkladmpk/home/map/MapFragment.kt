@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import software.orpington.rozkladmpk.R
-import software.orpington.rozkladmpk.common.LocationMapFragment
+import software.orpington.rozkladmpk.locationmap.LocationMapFragment
 
 
 class MapFragment : Fragment() {

@@ -17,8 +17,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
-import software.orpington.rozkladmpk.common.LocationMapCallbacks
-import software.orpington.rozkladmpk.common.LocationMapFragment
+import software.orpington.rozkladmpk.locationmap.LocationMapCallbacks
+import software.orpington.rozkladmpk.locationmap.LocationMapFragment
 import software.orpington.rozkladmpk.data.model.MapData
 import software.orpington.rozkladmpk.data.model.VehiclePosition
 import software.orpington.rozkladmpk.data.model.VehiclePositions

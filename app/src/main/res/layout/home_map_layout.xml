@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/map"
-        class="software.orpington.rozkladmpk.common.LocationMapFragment"
+        class="software.orpington.rozkladmpk.locationmap.LocationMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

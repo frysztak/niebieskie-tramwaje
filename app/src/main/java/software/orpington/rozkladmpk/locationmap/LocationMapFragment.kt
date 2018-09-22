@@ -1,4 +1,4 @@
-package software.orpington.rozkladmpk.common
+package software.orpington.rozkladmpk.locationmap
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -17,6 +17,8 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +47,7 @@ interface LocationMapCallbacks {
     fun onLocationChanged(latitude: Float, longitude: Float)
 }
 
-class LocationMapFragment : Fragment(), OnMapReadyCallback {
+class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.View {
 
     private val initialLocation = LatLng(51.110415, 17.032925) // Rynek
     private val initialZoom = 13f
@@ -55,13 +57,9 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
         locationMapCallbacks = cb
     }
 
-    fun showProgressBar() {
-        currentState = State.Loading
-    }
-
-    fun hideProgressBar() {
-        currentState = State.Idle
-    }
+    override fun showProgressBar() = presenter.pushMessage(State.Loading)
+    override fun hideProgressBar() = presenter.popMessage(State.Loading)
+    override fun setMessages(msgs: List<Message>) = adapter.setMessages(msgs)
 
     private var customFAB: FloatingActionButton? = null
     fun overrideFAB(newFAB: FloatingActionButton) {
@@ -75,8 +73,13 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
+    private lateinit var presenter: LocationMapContract.Presenter
+    private lateinit var adapter: MessagesAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        presenter = LocationMapPresenter()
+        adapter = MessagesAdapter(context!!, presenter)
 
         initLocationManager()
         initLocationCallback()
@@ -101,8 +104,9 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
         }
         mapFragment.getMapAsync(this)
 
-        v.findViewById<Button>(R.id.messageButton).setOnClickListener {
-            currentState.buttonAction()
+        v.findViewById<RecyclerView>(R.id.messagesList).apply {
+            adapter = this@LocationMapFragment.adapter
+            layoutManager = LinearLayoutManager(context!!)
         }
 
         v.findViewById<FloatingActionButton>(R.id.myLocationFAB).setOnClickListener {
@@ -111,21 +115,16 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
 
         State.GrantPermission.buttonAction = {
             runWithPermissions(Manifest.permission.ACCESS_FINE_LOCATION, options = quickPermissionsOption) {
-                currentState = State.Idle
+                presenter.popMessage(State.GrantPermission)
             }
         }
 
         State.LocationIsDisabled.buttonAction = {
             startActivity(Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-            currentState = State.Idle
+            presenter.popMessage(State.LocationIsDisabled)
         }
 
         return v
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        currentState = State.Idle
     }
 
     private var map: GoogleMap? = null
@@ -140,58 +139,11 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
     // Location-related mess starts here
 
     private class State {
-        data class Storage(
-            val progressBarVisible: Boolean,
-            val messageTextId: Int,
-            val buttonTextId: Int,
-            var buttonAction: () -> Unit
-        )
-
         companion object {
-            val Idle = Storage(false, -1, -1, {})
-            val Loading = Storage(true, -1, -1, {})
-            val GrantPermission = Storage(false, R.string.find_nearby_stops, R.string.ok, {})
-            val GooglePlayError = Storage(false, R.string.google_play_error_msg, -1, {})
-            val LocationIsDisabled = Storage(false, R.string.location_is_disabled, R.string.enable, {})
-        }
-    }
-
-    private var currentState_: State.Storage = State.Idle
-    private var currentState: State.Storage
-        get() = currentState_
-        set(value) {
-            updateState(value)
-            currentState_ = value
-        }
-
-    private fun updateState(newState: State.Storage) {
-        when (newState) {
-            State.Idle -> {
-                statusBarBackground.visibility = View.GONE
-                actualProgressBar.visibility = View.GONE
-                messageText.visibility = View.GONE
-                messageButton.visibility = View.GONE
-            }
-            State.Loading -> {
-                statusBarBackground.visibility = View.VISIBLE
-                actualProgressBar.visibility = View.VISIBLE
-                messageText.visibility = View.GONE
-                messageButton.visibility = View.GONE
-            }
-            else -> {
-                statusBarBackground.visibility = View.VISIBLE
-                messageText.visibility = View.VISIBLE
-                messageButton.visibility = View.VISIBLE
-                actualProgressBar.visibility = View.GONE
-            }
-        }
-
-        if (newState.messageTextId != -1) {
-            messageText.text = context?.getString(newState.messageTextId)
-        }
-
-        if (newState.buttonTextId != -1) {
-            messageButton.text = context?.getString(newState.buttonTextId)
+            val Loading = Message(true, -1, -1, {})
+            val GrantPermission = Message(false, R.string.find_nearby_stops, R.string.ok, {})
+            val GooglePlayError = Message(false, R.string.google_play_error_msg, -1, {})
+            val LocationIsDisabled = Message(false, R.string.location_is_disabled, R.string.enable, {})
         }
     }
 
@@ -199,9 +151,10 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
         val googleAPI = GoogleApiAvailability.getInstance()
         val result = googleAPI.isGooglePlayServicesAvailable(context)
         if (result != ConnectionResult.SUCCESS) {
-            currentState = State.GooglePlayError
+            presenter.pushMessage(State.GooglePlayError)
             return false
         }
+        presenter.popMessage(State.GooglePlayError)
         return true
     }
 
@@ -240,9 +193,11 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
     private fun isLocationPermissionGranted(): Boolean {
         val permissionLocation = ContextCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION)
         if (permissionLocation != PackageManager.PERMISSION_GRANTED) {
-            currentState = State.GrantPermission
+            presenter.pushMessage(State.GrantPermission)
+            return false
         }
-        return permissionLocation == PackageManager.PERMISSION_GRANTED
+        presenter.popMessage(State.GrantPermission)
+        return true
     }
 
     private fun isLocationEnabled(): Boolean {
@@ -260,9 +215,10 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
     private fun registerLocationSettingListener() {
         locationSettingsReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                currentState = when {
-                    intent.action!!.matches("android.location.PROVIDERS_CHANGED".toRegex()) && !isLocationEnabled() -> State.LocationIsDisabled
-                    else -> State.Idle
+                if (intent.action!!.matches("android.location.PROVIDERS_CHANGED".toRegex()) && !isLocationEnabled()) {
+                    presenter.pushMessage(State.LocationIsDisabled)
+                } else {
+                    presenter.popMessage(State.LocationIsDisabled)
                 }
             }
         }
@@ -343,6 +299,7 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onStop() {
         super.onStop()
+        presenter.detachView()
 
         locationProvider.removeLocationUpdates(locationCallbackReference)
         unregisterLocationSettingListener()
@@ -350,10 +307,13 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onResume() {
         super.onResume()
+        presenter.attachView(this)
 
         if (isLocationPermissionGranted()) {
             if (!isLocationEnabled()) {
-                currentState = State.LocationIsDisabled
+                presenter.pushMessage(State.LocationIsDisabled)
+            } else {
+                presenter.popMessage(State.LocationIsDisabled)
             }
             registerLocationListener()
             registerLocationSettingListener()
