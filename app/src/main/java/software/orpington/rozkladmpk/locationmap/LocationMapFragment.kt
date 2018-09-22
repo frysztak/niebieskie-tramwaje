@@ -72,6 +72,8 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
         newFAB.setOnClickListener {
             centerToUserLocation()
         }
+
+        updateFABVisibility()
     }
 
     fun pushDataFailedToLoad() = presenter.pushMessage(State.FailedToLoadData, true)
