@@ -17,6 +17,7 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -110,6 +111,7 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
         v.findViewById<RecyclerView>(R.id.messagesList).apply {
             adapter = this@LocationMapFragment.adapter
             layoutManager = LinearLayoutManager(context!!)
+            addItemDecoration(DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL))
         }
 
         v.findViewById<FloatingActionButton>(R.id.myLocationFAB).setOnClickListener {
