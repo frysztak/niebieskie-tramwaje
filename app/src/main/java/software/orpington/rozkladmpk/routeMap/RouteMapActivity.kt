@@ -17,12 +17,12 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
-import software.orpington.rozkladmpk.locationmap.LocationMapCallbacks
-import software.orpington.rozkladmpk.locationmap.LocationMapFragment
 import software.orpington.rozkladmpk.data.model.MapData
 import software.orpington.rozkladmpk.data.model.VehiclePosition
 import software.orpington.rozkladmpk.data.model.VehiclePositions
 import software.orpington.rozkladmpk.data.source.ApiClient
+import software.orpington.rozkladmpk.locationmap.LocationMapCallbacks
+import software.orpington.rozkladmpk.locationmap.LocationMapFragment
 import software.orpington.rozkladmpk.utils.convertToBitmap
 import software.orpington.rozkladmpk.utils.getBitmapDescriptor
 import kotlin.math.roundToInt
@@ -52,10 +52,10 @@ class RouteMapActivity : AppCompatActivity(), RouteMapContract.View, LocationMap
             supportFragmentManager.findFragmentById(R.id.locationMapFragment) as LocationMapFragment
         locationMapFragment.setOnLocationMapCallbacks(this)
 
-        // TODO
-        //retryButton.setOnClickListener {
-        //    loadData(routeID, direction, stopName)
-        //}
+        locationMapFragment.setRetryButtonAction {
+            locationMapFragment.popDataFailedToLoad()
+            loadData(routeID, direction, stopName)
+        }
 
         loadData(routeID, direction, stopName)
     }
@@ -163,6 +163,8 @@ class RouteMapActivity : AppCompatActivity(), RouteMapContract.View, LocationMap
     }
 
     private fun updateMap() {
+        locationMapFragment.popDataFailedToLoad()
+
         if (map == null || mapData == null) return
         colorCounter = 0
 
@@ -229,7 +231,7 @@ class RouteMapActivity : AppCompatActivity(), RouteMapContract.View, LocationMap
     }
 
     override fun reportError() {
-        // TODO
+        locationMapFragment.pushDataFailedToLoad()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

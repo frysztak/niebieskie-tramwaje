@@ -12,9 +12,6 @@ interface LocationMapContract {
     }
 
     interface View {
-        fun showProgressBar()
-        fun hideProgressBar()
-
         fun setMessages(msgs: List<Message>)
     }
 }

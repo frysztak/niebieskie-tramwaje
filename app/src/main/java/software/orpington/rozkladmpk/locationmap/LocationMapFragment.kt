@@ -57,8 +57,8 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
         locationMapCallbacks = cb
     }
 
-    override fun showProgressBar() = presenter.pushMessage(State.Loading)
-    override fun hideProgressBar() = presenter.popMessage(State.Loading)
+    fun showProgressBar() = presenter.pushMessage(State.Loading)
+    fun hideProgressBar() = presenter.popMessage(State.Loading)
     override fun setMessages(msgs: List<Message>) = adapter.setMessages(msgs)
 
     private var customFAB: FloatingActionButton? = null
@@ -72,6 +72,9 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
             centerToUserLocation()
         }
     }
+
+    fun pushDataFailedToLoad() = presenter.pushMessage(State.FailedToLoadData)
+    fun popDataFailedToLoad() = presenter.popMessage(State.FailedToLoadData)
 
     private lateinit var presenter: LocationMapContract.Presenter
     private lateinit var adapter: MessagesAdapter
@@ -113,6 +116,12 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
             centerToUserLocation()
         }
 
+        initStates()
+
+        return v
+    }
+
+    private fun initStates() {
         State.GrantPermission.buttonAction = {
             runWithPermissions(Manifest.permission.ACCESS_FINE_LOCATION, options = quickPermissionsOption) {
                 presenter.popMessage(State.GrantPermission)
@@ -120,11 +129,13 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
         }
 
         State.LocationIsDisabled.buttonAction = {
-            startActivity(Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
             presenter.popMessage(State.LocationIsDisabled)
         }
+    }
 
-        return v
+    fun setRetryButtonAction(action: () -> Unit) {
+        State.FailedToLoadData.buttonAction = action
     }
 
     private var map: GoogleMap? = null
@@ -141,6 +152,7 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
     private class State {
         companion object {
             val Loading = Message(true, -1, -1, {})
+            val FailedToLoadData = Message(false, R.string.failed_to_load_map_data, R.string.tryAgain, {})
             val GrantPermission = Message(false, R.string.find_nearby_stops, R.string.ok, {})
             val GooglePlayError = Message(false, R.string.google_play_error_msg, -1, {})
             val LocationIsDisabled = Message(false, R.string.location_is_disabled, R.string.enable, {})
