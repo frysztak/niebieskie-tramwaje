@@ -45,7 +45,7 @@ import software.orpington.rozkladmpk.utils.convertToBitmap
 
 interface LocationMapCallbacks {
     fun onMapReady(googleMap: GoogleMap)
-    fun onLocationChanged(latitude: Float, longitude: Float)
+    fun onLocationChanged(latitude: Double, longitude: Double)
 }
 
 class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.View {
@@ -182,7 +182,7 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
     private fun notifyLocationChanged(loc: Location) {
         updateUserMarker(loc)
         updateFABVisibility()
-        locationMapCallbacks?.onLocationChanged(loc.latitude.toFloat(), loc.longitude.toFloat())
+        locationMapCallbacks?.onLocationChanged(loc.latitude, loc.longitude)
     }
 
     private fun initLocationManager() {

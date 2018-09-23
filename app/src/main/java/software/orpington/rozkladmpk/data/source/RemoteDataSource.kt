@@ -68,6 +68,11 @@ class RemoteDataSource private constructor(
         makeACall(mpkService.getRouteMap(routeID, stopName, direction), callback)
     }
 
+    override fun getDepartures(stopNames: List<String>, callback: IDataSource.LoadDataCallback<Departures>) {
+        val stopNamesString = stopNames.joinToString(",")
+        makeACall(mpkService.getDepartures(stopNamesString), callback)
+    }
+
     override fun getVehiclePosition(routeID: String, callback: IDataSource.LoadDataCallback<VehiclePositions>) {
         makeACall(gpsService.getVehiclePosition(routeID), callback)
     }

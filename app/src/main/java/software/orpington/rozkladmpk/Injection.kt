@@ -9,7 +9,8 @@ import software.orpington.rozkladmpk.data.source.GPSService
 
 object Injection {
 
-    private const val url = "https://orpington.software/apps/rozkladmpk/"
+    private const val url = "http://192.168.0.22:8080/"
+   // private const val url = "https://orpington.software/apps/rozkladmpk/"
 
     fun provideDataSource(httpClient: OkHttpClient, baseUrl: String = url): RemoteDataSource {
         val apiService = ApiClient.getMPK(httpClient, baseUrl).create(ApiService::class.java)

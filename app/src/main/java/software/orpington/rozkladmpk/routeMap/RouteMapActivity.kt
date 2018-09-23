@@ -98,7 +98,7 @@ class RouteMapActivity : AppCompatActivity(), RouteMapContract.View, LocationMap
         super.onDestroy()
     }
 
-    override fun onLocationChanged(latitude: Float, longitude: Float) {
+    override fun onLocationChanged(latitude: Double, longitude: Double) {
     }
 
     private var map: GoogleMap? = null

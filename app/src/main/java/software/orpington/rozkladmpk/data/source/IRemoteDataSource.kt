@@ -20,5 +20,7 @@ interface IRemoteDataSource : IDataSource {
 
     fun getRouteMapData(routeID: String, stopName: String, direction: String, callback: LoadDataCallback<MapData>)
 
+    fun getDepartures(stopNames: List<String>, callback: LoadDataCallback<Departures>)
+
     fun getVehiclePosition(routeID: String, callback: LoadDataCallback<VehiclePositions>)
 }

@@ -54,4 +54,9 @@
     <string name="you">Ty</string>
     <string name="title_map">Map</string>
     <string name="more">więcej</string>
+    <string name="departureIn">Za %s %s (%s)</string>
+    <string name="minute_1">minutę</string>
+    <string name="minutes_2to4">minuty</string>
+    <string name="minutes_5plus">minut</string>
+
 </resources>
