@@ -63,6 +63,10 @@ class DeparturesAdapter(
                 distance.text = "%.1f m".format(item.distance)
             }
             is DepartureDetails -> (holder as DetailsViewHolder).apply {
+                vehicleIcon.setImageResource(when(item.isBus) {
+                    true -> R.drawable.ic_bus_white_24dp
+                    false -> R.drawable.ic_tram_white_24dp
+                })
                 routeID.text = item.routeID
                 direction.text = item.direction
                 departureTime.text = getDepartureInString(item.departureInMinutes, item.departureTime)

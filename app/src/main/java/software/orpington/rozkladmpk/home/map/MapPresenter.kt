@@ -24,11 +24,11 @@ class MapPresenter(
         this.view = null
     }
 
-    private var stops: List<StopsAndRoutes.Stop> = emptyList()
+    private var stopsAndRoutes: StopsAndRoutes = StopsAndRoutes(emptyList(), emptyList())
     override fun loadStops() {
         remoteDataSource.getStopsAndRoutes(object : IDataSource.LoadDataCallback<StopsAndRoutes> {
             override fun onDataLoaded(data: StopsAndRoutes) {
-                stops = data.stops
+                stopsAndRoutes = data
             }
 
             override fun onDataNotAvailable() {
@@ -41,7 +41,7 @@ class MapPresenter(
     override fun locationChanged(latitude: Double, longitude: Double) {
         lastUserLocation = GeoLocation.fromDegrees(latitude, longitude)
         val helper = StopsAndRoutesHelper()
-        val nearbyStops = helper.filterNearbyStops(stops, lastUserLocation)
+        val nearbyStops = helper.filterNearbyStops(stopsAndRoutes.stops, lastUserLocation)
 
         loadDepartures(nearbyStops.map { stop ->
             stop.stopName
@@ -83,8 +83,12 @@ class MapPresenter(
                 val diff = departureTime.time - now.time
                 val minutes = TimeUnit.MILLISECONDS.toMinutes(diff)
 
+                val isBus = stopsAndRoutes.routes.find { route ->
+                    route.routeID == departureDetails.routeID
+                }?.isBus ?: false
+
                 viewItems.add(DepartureDetails(
-                    false,
+                    isBus,
                     departureDetails.routeID,
                     departureDetails.direction,
                     minutes.toInt(),
