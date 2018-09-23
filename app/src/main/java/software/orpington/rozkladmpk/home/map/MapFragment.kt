@@ -25,7 +25,7 @@ class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
 
         val httpClient = ApiClient.getHttpClient(context!!.cacheDir)
         presenter = MapPresenter(Injection.provideDataSource(httpClient))
-        adapter = DeparturesAdapter(context!!)
+        adapter = DeparturesAdapter(context!!, presenter)
 
         presenter.loadStops()
     }

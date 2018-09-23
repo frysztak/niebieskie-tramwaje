@@ -10,10 +10,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.home_map_nearby_header.view.*
 import kotlinx.android.synthetic.main.home_map_nearby_item.view.*
+import kotlinx.android.synthetic.main.home_map_nearby_show_more.view.*
 import software.orpington.rozkladmpk.R
 
 class DeparturesAdapter(
-    private val context: Context
+    private val context: Context,
+    private val presenter: MapPresenter
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var items: List<DepartureViewItem> = emptyList()
     override fun getItemCount(): Int = items.size
@@ -25,12 +27,14 @@ class DeparturesAdapter(
 
     private val ITEM_TYPE_HEADER = 0
     private val ITEM_TYPE_DETAILS = 1
+    private val ITEM_TYPE_SHOW_MORE = 2
 
     override fun getItemViewType(position: Int): Int {
         val item = items[position]
         return when (item) {
             is DepartureHeader -> ITEM_TYPE_HEADER
             is DepartureDetails -> ITEM_TYPE_DETAILS
+            is DepartureShowMore -> ITEM_TYPE_SHOW_MORE
         }
     }
 
@@ -40,9 +44,13 @@ class DeparturesAdapter(
                 val view = LayoutInflater.from(context).inflate(R.layout.home_map_nearby_header, parent, false)
                 HeaderViewHolder(view)
             }
-            else -> {
+            ITEM_TYPE_DETAILS -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.home_map_nearby_item, parent, false)
                 DetailsViewHolder(view)
+            }
+            else -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.home_map_nearby_show_more, parent, false)
+                ShowMoreViewHolder(view, presenter)
             }
         }
     }
@@ -75,19 +83,32 @@ class DeparturesAdapter(
     }
 }
 
-class HeaderViewHolder(
+internal class HeaderViewHolder(
     view: View
 ) : RecyclerView.ViewHolder(view) {
     val stopName: TextView = view.stopName
     val distance: TextView = view.distance
 }
 
-class DetailsViewHolder(
-    private val view: View
+internal class DetailsViewHolder(
+    view: View
 ) : RecyclerView.ViewHolder(view) {
     val vehicleIcon: ImageView = view.vehicleIcon
     val routeID: TextView = view.routeID
     val direction: TextView = view.direction
     val departureTime: TextView = view.departureTime
     val onDemand: Group = view.onDemand
+}
+
+internal class ShowMoreViewHolder(
+    view: View,
+    private val presenter: MapPresenter
+) : RecyclerView.ViewHolder(view) {
+    private val showMoreText: TextView = view.showMore
+
+    init {
+        showMoreText.setOnClickListener {
+            presenter.onShowMoreClicked(adapterPosition)
+        }
+    }
 }

@@ -1,6 +1,5 @@
 package software.orpington.rozkladmpk.home.map
 
-import software.orpington.rozkladmpk.data.model.Departure
 import software.orpington.rozkladmpk.data.model.Departures
 import software.orpington.rozkladmpk.data.model.StopsAndRoutes
 import software.orpington.rozkladmpk.data.source.IDataSource
@@ -8,7 +7,6 @@ import software.orpington.rozkladmpk.data.source.RemoteDataSource
 import software.orpington.rozkladmpk.home.StopsAndRoutesHelper
 import software.orpington.rozkladmpk.utils.GeoLocation
 import java.text.SimpleDateFormat
-import java.time.LocalTime
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -28,7 +26,7 @@ class MapPresenter(
 
     private var stops: List<StopsAndRoutes.Stop> = emptyList()
     override fun loadStops() {
-        remoteDataSource.getStopsAndRoutes(object: IDataSource.LoadDataCallback<StopsAndRoutes> {
+        remoteDataSource.getStopsAndRoutes(object : IDataSource.LoadDataCallback<StopsAndRoutes> {
             override fun onDataLoaded(data: StopsAndRoutes) {
                 stops = data.stops
             }
@@ -53,12 +51,23 @@ class MapPresenter(
     private fun convertToViewItems(departures: Departures): List<DepartureViewItem> {
         val viewItems = mutableListOf<DepartureViewItem>()
         for (departure in sortDepartures(departures)) {
+            val stopID = departure.stop.stopID
+
             val stopLocation = GeoLocation.fromDegrees(departure.stop.latitude, departure.stop.longitude)
             val earthRadius = 6378.1 * 1000 // in meters
             val distance = stopLocation.distanceTo(lastUserLocation, earthRadius)
-            viewItems.add(DepartureHeader(departure.stop.stopName, distance.toFloat()))
+            viewItems.add(DepartureHeader(
+                departure.stop.stopName,
+                departure.stop.stopID,
+                distance.toFloat()
+            ))
 
-            for (departureDetails in departure.departures) {
+            val addShowMoreButton = !stopsToShowFullyExpanded.contains(stopID)
+            val departures = when (addShowMoreButton) {
+                true -> departure.departures.take(2)
+                false -> departure.departures
+            }
+            for (departureDetails in departures) {
                 val timezone = TimeZone.getTimeZone("Europe/Warsaw")
                 val format = SimpleDateFormat("HH:mm")
                 format.timeZone = timezone
@@ -83,6 +92,10 @@ class MapPresenter(
                     departureDetails.onDemand
                 ))
             }
+
+            if (addShowMoreButton) {
+                viewItems.add(DepartureShowMore)
+            }
         }
 
         return viewItems
@@ -96,15 +109,34 @@ class MapPresenter(
         }
     }
 
+    private fun updateViewItems() {
+        viewItems = convertToViewItems(departures)
+        view?.showDepartures(viewItems)
+    }
+
+    private var viewItems: List<DepartureViewItem> = emptyList()
+    private var departures: Departures = emptyList()
     override fun loadDepartures(stopNames: List<String>) {
         remoteDataSource.getDepartures(stopNames, object : IDataSource.LoadDataCallback<Departures> {
             override fun onDataLoaded(data: Departures) {
-                view?.showDepartures(convertToViewItems(data))
+                departures = data
+                updateViewItems()
             }
 
             override fun onDataNotAvailable() {
                 // TODO
             }
         })
+    }
+
+    private var stopsToShowFullyExpanded: MutableList<Int> = mutableListOf()
+    override fun onShowMoreClicked(position: Int) {
+        val stopID  = viewItems
+            .subList(0, position)
+            .filterIsInstance<DepartureHeader>()
+            .last()
+            .stopID
+        stopsToShowFullyExpanded.add(stopID)
+        updateViewItems()
     }
 }
