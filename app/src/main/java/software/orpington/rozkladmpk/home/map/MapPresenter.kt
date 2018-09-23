@@ -26,13 +26,16 @@ class MapPresenter(
 
     private var stopsAndRoutes: StopsAndRoutes = StopsAndRoutes(emptyList(), emptyList())
     override fun loadStops() {
+        view?.showProgressBar()
         remoteDataSource.getStopsAndRoutes(object : IDataSource.LoadDataCallback<StopsAndRoutes> {
             override fun onDataLoaded(data: StopsAndRoutes) {
                 stopsAndRoutes = data
+                view?.hideProgressBar()
             }
 
             override fun onDataNotAvailable() {
-                // TODO
+                view?.hideProgressBar()
+                view?.reportThatSomethingWentWrong()
             }
         })
     }
@@ -120,15 +123,35 @@ class MapPresenter(
 
     private var viewItems: List<DepartureViewItem> = emptyList()
     private var departures: Departures = emptyList()
+    private var lastStopNames: List<String> = emptyList()
+
+    @get:Synchronized @set:Synchronized
+    private var isTryingToLoadDepartures: Boolean = false
+
+    @get:Synchronized @set:Synchronized
+    private var departuresFailedToLoad: Boolean = false
+
     override fun loadDepartures(stopNames: List<String>) {
+        lastStopNames = stopNames
+        if (stopsAndRoutes.stops.isEmpty()) return
+        if (isTryingToLoadDepartures || departuresFailedToLoad) return
+
+        isTryingToLoadDepartures = true
+        view?.showProgressBar()
         remoteDataSource.getDepartures(stopNames, object : IDataSource.LoadDataCallback<Departures> {
             override fun onDataLoaded(data: Departures) {
                 departures = data
                 updateViewItems()
+                view?.hideProgressBar()
+                isTryingToLoadDepartures = false
+                departuresFailedToLoad = false
             }
 
             override fun onDataNotAvailable() {
-                // TODO
+                view?.hideProgressBar()
+                view?.reportThatSomethingWentWrong()
+                isTryingToLoadDepartures = false
+                departuresFailedToLoad = true
             }
         })
     }
@@ -142,5 +165,14 @@ class MapPresenter(
             .stopID
         stopsToShowFullyExpanded.add(stopID)
         updateViewItems()
+    }
+
+    override fun retryToLoadData() {
+        if (stopsAndRoutes.stops.isEmpty()) {
+            loadStops()
+        } else if (departures.isEmpty()) {
+            departuresFailedToLoad = false
+            loadDepartures(lastStopNames)
+        }
     }
 }

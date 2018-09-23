@@ -36,8 +36,14 @@ class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
 
         locationMapFragment = childFragmentManager.findFragmentById(R.id.map) as LocationMapFragment
         locationMapFragment.setOnLocationMapCallbacks(this)
+
         val fab = v.findViewById<FloatingActionButton>(R.id.fab)
         locationMapFragment.overrideFAB(fab)
+        locationMapFragment.setRetryButtonAction {
+            presenter.retryToLoadData()
+            locationMapFragment.popDataFailedToLoad()
+        }
+
         v.findViewById<RecyclerView>(R.id.nearYouRecyclerView).apply {
             adapter = this@MapFragment.adapter
             layoutManager = LinearLayoutManager(context)
@@ -64,12 +70,15 @@ class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
     }
 
     override fun showProgressBar() {
+        locationMapFragment.showProgressBar()
     }
 
     override fun hideProgressBar() {
+        locationMapFragment.hideProgressBar()
     }
 
     override fun reportThatSomethingWentWrong() {
+        locationMapFragment.pushDataFailedToLoad()
     }
 
     override fun showDepartures(data: List<DepartureViewItem>) = adapter.setItems(data)

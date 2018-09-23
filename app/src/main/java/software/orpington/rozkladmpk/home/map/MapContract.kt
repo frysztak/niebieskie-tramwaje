@@ -31,6 +31,8 @@ interface MapContract {
         fun loadDepartures(stopNames: List<String>)
 
         fun onShowMoreClicked(position: Int)
+
+        fun retryToLoadData()
     }
 
     interface View : BaseView {
