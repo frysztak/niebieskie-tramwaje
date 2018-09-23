@@ -16,7 +16,7 @@
         android:fontFamily="sans-serif-light"
         android:gravity="center"
         android:padding="8dp"
-        android:text="Near you"
+        android:text="@string/near_you"
         android:textColor="@color/icons"
         android:textSize="22dp" />
 

@@ -1,6 +1,7 @@
 package software.orpington.rozkladmpk.home.map
 
 import android.content.Context
+import android.support.constraint.Group
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -88,5 +89,5 @@ class DetailsViewHolder(
     val routeID: TextView = view.routeID
     val direction: TextView = view.direction
     val departureTime: TextView = view.departureTime
-    val onDemand: TextView = view.onDemand
+    val onDemand: Group = view.onDemand
 }

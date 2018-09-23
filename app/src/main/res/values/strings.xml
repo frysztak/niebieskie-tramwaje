@@ -51,9 +51,7 @@
     <string name="on_demand">on demand</string>
     <string name="failed_to_load_map_data">Failed to load map data</string>
     <string name="you">You</string>
-    <string name="title_activity_home">HomeActivity</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_map">Map</string>
     <string name="more">more</string>
@@ -61,5 +59,6 @@
     <string name="minute_1">minute</string>
     <string name="minutes_2to4">minutes</string>
     <string name="minutes_5plus">minutes</string>
+    <string name="near_you">Near you</string>
 
 </resources>

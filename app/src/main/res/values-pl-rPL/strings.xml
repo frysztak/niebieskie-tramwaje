@@ -52,11 +52,14 @@
     <string name="on_demand">na życzenie</string>
     <string name="failed_to_load_map_data">Nie udało się wczytać danych</string>
     <string name="you">Ty</string>
-    <string name="title_map">Map</string>
+    <string name="title_home">Dom</string>
+    <string name="title_notifications">Powiadomienia</string>
+    <string name="title_map">Mapa</string>
     <string name="more">więcej</string>
     <string name="departureIn">Za %s %s (%s)</string>
     <string name="minute_1">minutę</string>
     <string name="minutes_2to4">minuty</string>
     <string name="minutes_5plus">minut</string>
+    <string name="near_you">W pobliżu</string>
 
 </resources>
