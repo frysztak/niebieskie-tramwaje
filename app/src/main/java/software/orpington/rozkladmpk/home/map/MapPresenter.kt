@@ -1,11 +1,17 @@
 package software.orpington.rozkladmpk.home.map
 
+import android.support.v4.content.ContextCompat
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.model.Departures
 import software.orpington.rozkladmpk.data.model.StopsAndRoutes
 import software.orpington.rozkladmpk.data.source.IDataSource
 import software.orpington.rozkladmpk.data.source.RemoteDataSource
 import software.orpington.rozkladmpk.home.StopsAndRoutesHelper
 import software.orpington.rozkladmpk.utils.GeoLocation
+import software.orpington.rozkladmpk.utils.getBitmapDescriptor
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -55,6 +61,7 @@ class MapPresenter(
         val viewItems = mutableListOf<DepartureViewItem>()
         for (departure in sortDepartures(departures)) {
             val stopID = departure.stop.stopID
+            val isTracked = trackedStops.contains(stopID)
 
             val stopLocation = GeoLocation.fromDegrees(departure.stop.latitude, departure.stop.longitude)
             val earthRadius = 6378.1 * 1000 // in meters
@@ -62,7 +69,8 @@ class MapPresenter(
             viewItems.add(DepartureHeader(
                 departure.stop.stopName,
                 departure.stop.stopID,
-                distance.toFloat()
+                distance.toFloat(),
+                isTracked
             ))
 
             val addShowMoreButton = !stopsToShowFullyExpanded.contains(stopID)
@@ -125,10 +133,12 @@ class MapPresenter(
     private var departures: Departures = emptyList()
     private var lastStopNames: List<String> = emptyList()
 
-    @get:Synchronized @set:Synchronized
+    @get:Synchronized
+    @set:Synchronized
     private var isTryingToLoadDepartures: Boolean = false
 
-    @get:Synchronized @set:Synchronized
+    @get:Synchronized
+    @set:Synchronized
     private var departuresFailedToLoad: Boolean = false
 
     override fun loadDepartures(stopNames: List<String>) {
@@ -158,7 +168,7 @@ class MapPresenter(
 
     private var stopsToShowFullyExpanded: MutableList<Int> = mutableListOf()
     override fun onShowMoreClicked(position: Int) {
-        val stopID  = viewItems
+        val stopID = viewItems
             .subList(0, position)
             .filterIsInstance<DepartureHeader>()
             .last()
@@ -175,4 +185,34 @@ class MapPresenter(
             loadDepartures(lastStopNames)
         }
     }
+
+    private var trackedStops: MutableList<Int> = mutableListOf()
+    override fun onTrackButtonClicked(position: Int) {
+        val stopID = viewItems.subList(0, position + 1) // should be okay, headers are always followed by other items
+            .filterIsInstance<DepartureHeader>()
+            .last()
+            .stopID
+
+        if (trackedStops.contains(stopID)) {
+            trackedStops.remove(stopID)
+        } else {
+            trackedStops.add(stopID)
+        }
+
+        updateViewItems()
+        updateStopMarkers()
+        updateVehicleMarkers()
+    }
+
+    private fun updateStopMarkers() {
+        val stops = stopsAndRoutes.stops.filter { stop ->
+            trackedStops.contains(stop.stopID)
+        }
+
+        view?.showStopMarkers(stops)
+    }
+
+    private fun updateVehicleMarkers() {
+    }
+
 }

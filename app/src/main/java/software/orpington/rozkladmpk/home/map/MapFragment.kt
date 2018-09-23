@@ -9,8 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.Marker
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
+import software.orpington.rozkladmpk.data.model.StopsAndRoutes
 import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.locationmap.LocationMapCallbacks
 import software.orpington.rozkladmpk.locationmap.LocationMapFragment
@@ -66,7 +68,9 @@ class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
         presenter.locationChanged(latitude, longitude)
     }
 
+    private var googleMap: GoogleMap? = null
     override fun onMapReady(googleMap: GoogleMap) {
+        this.googleMap = googleMap
     }
 
     override fun showProgressBar() {
@@ -82,6 +86,17 @@ class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
     }
 
     override fun showDepartures(data: List<DepartureViewItem>) = adapter.setItems(data)
+
+    private var stopMarkers: List<Marker> = emptyList()
+    override fun showStopMarkers(stops: List<StopsAndRoutes.Stop>) {
+        stopMarkers.forEach { marker ->
+            marker.remove()
+        }
+
+        stopMarkers = stops.mapNotNull { stop ->
+            MarkerHelper.addStopMarker(googleMap, context, stop)
+        }
+    }
 
     companion object {
         fun newInstance(): MapFragment {

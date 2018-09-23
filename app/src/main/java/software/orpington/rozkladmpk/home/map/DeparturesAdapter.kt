@@ -1,7 +1,10 @@
 package software.orpington.rozkladmpk.home.map
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.support.constraint.Group
+import android.support.v4.content.ContextCompat
+import android.support.v4.widget.ImageViewCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -42,7 +45,7 @@ class DeparturesAdapter(
         return when (viewType) {
             ITEM_TYPE_HEADER -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.home_map_nearby_header, parent, false)
-                HeaderViewHolder(view)
+                HeaderViewHolder(view, presenter)
             }
             ITEM_TYPE_DETAILS -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.home_map_nearby_item, parent, false)
@@ -59,11 +62,16 @@ class DeparturesAdapter(
         val item = items[position]
         when (item) {
             is DepartureHeader -> (holder as HeaderViewHolder).apply {
+                val tintColor = ContextCompat.getColor(context, when (item.isTracked) {
+                    true -> R.color.accent
+                    false -> R.color.primary_text
+                })
+                ImageViewCompat.setImageTintList(trackIcon, ColorStateList.valueOf(tintColor))
                 stopName.text = item.stopName
                 distance.text = "%.1f m".format(item.distance)
             }
             is DepartureDetails -> (holder as DetailsViewHolder).apply {
-                vehicleIcon.setImageResource(when(item.isBus) {
+                vehicleIcon.setImageResource(when (item.isBus) {
                     true -> R.drawable.ic_bus_white_24dp
                     false -> R.drawable.ic_tram_white_24dp
                 })
@@ -93,10 +101,18 @@ class DeparturesAdapter(
 }
 
 internal class HeaderViewHolder(
-    view: View
+    view: View,
+    private val presenter: MapPresenter
 ) : RecyclerView.ViewHolder(view) {
     val stopName: TextView = view.stopName
     val distance: TextView = view.distance
+    val trackIcon: ImageView = view.trackIcon
+
+    init {
+        trackIcon.setOnClickListener {
+            presenter.onTrackButtonClicked(adapterPosition)
+        }
+    }
 }
 
 internal class DetailsViewHolder(

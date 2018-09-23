@@ -1,12 +1,14 @@
 package software.orpington.rozkladmpk.home.map
 
 import software.orpington.rozkladmpk.BaseView
+import software.orpington.rozkladmpk.data.model.StopsAndRoutes
 
 sealed class DepartureViewItem
 data class DepartureHeader(
     val stopName: String,
     val stopID: Int,
-    val distance: Float
+    val distance: Float,
+    val isTracked: Boolean
 ) : DepartureViewItem()
 
 data class DepartureDetails(
@@ -32,10 +34,13 @@ interface MapContract {
 
         fun onShowMoreClicked(position: Int)
 
+        fun onTrackButtonClicked(position: Int)
+
         fun retryToLoadData()
     }
 
     interface View : BaseView {
         fun showDepartures(data: List<DepartureViewItem>)
+        fun showStopMarkers(stops: List<StopsAndRoutes.Stop>)
     }
 }
