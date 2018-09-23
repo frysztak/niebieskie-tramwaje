@@ -1,40 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_margin="8dp">
 
     <ImageView
         android:id="@+id/icon"
-        app:srcCompat="@drawable/bus_stop"
         android:layout_width="@dimen/StopIconSize"
         android:layout_height="@dimen/StopIconSize"
-        android:layout_margin="8dp" />
+        android:layout_margin="8dp"
+        app:srcCompat="@drawable/bus_stop" />
 
     <TextView
         android:id="@+id/stopName"
         style="@style/NearbyStopName"
-        app:layout_constraintStart_toEndOf="@id/icon"
-        app:layout_constraintTop_toTopOf="parent"
-        android:fontFamily="sans-serif-light"
-        android:textSize="20dp"
-        tools:text="GAJ"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp" />
+        android:layout_marginStart="16dp"
+        android:fontFamily="sans-serif-light"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@id/distance"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icon"
+        app:layout_constraintTop_toTopOf="@id/icon"
+        tools:text="GAJ" />
 
     <TextView
         android:id="@+id/distance"
         style="@style/NearbyStopDistance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/stopName"
         app:layout_constraintTop_toBottomOf="@id/stopName"
-        tools:text="100 m"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content" />
+        tools:text="100 m" />
 
 </android.support.constraint.ConstraintLayout>
