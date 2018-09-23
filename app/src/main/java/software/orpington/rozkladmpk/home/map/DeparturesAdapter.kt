@@ -72,6 +72,11 @@ class DeparturesAdapter(
     }
 
     private fun getDepartureInString(departureInMinutes: Int, departureTime: String): String {
+        if (departureInMinutes == 0) {
+            val localisedTemplate = context.getString(R.string.departs_now)
+            return localisedTemplate.format(departureTime)
+        }
+
         val minutesString = context.getString(when (departureInMinutes) {
             1 -> R.string.minute_1
             in 2..4 -> R.string.minutes_2to4
