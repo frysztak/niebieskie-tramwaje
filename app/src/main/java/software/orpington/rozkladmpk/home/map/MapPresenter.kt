@@ -1,5 +1,6 @@
 package software.orpington.rozkladmpk.home.map
 
+import software.orpington.rozkladmpk.data.model.Departure
 import software.orpington.rozkladmpk.data.model.Departures
 import software.orpington.rozkladmpk.data.model.StopsAndRoutes
 import software.orpington.rozkladmpk.data.source.IDataSource
@@ -51,7 +52,7 @@ class MapPresenter(
 
     private fun convertToViewItems(departures: Departures): List<DepartureViewItem> {
         val viewItems = mutableListOf<DepartureViewItem>()
-        for (departure in departures) {
+        for (departure in sortDepartures(departures)) {
             val stopLocation = GeoLocation.fromDegrees(departure.stop.latitude, departure.stop.longitude)
             val earthRadius = 6378.1 * 1000 // in meters
             val distance = stopLocation.distanceTo(lastUserLocation, earthRadius)
@@ -85,6 +86,14 @@ class MapPresenter(
         }
 
         return viewItems
+    }
+
+    private fun sortDepartures(departures: Departures): Departures {
+        return departures.sortedBy { departure ->
+            val stopLocation = GeoLocation.fromDegrees(departure.stop.latitude, departure.stop.longitude)
+            val earthRadius = 6378.1 * 1000 // in meters
+            stopLocation.distanceTo(lastUserLocation, earthRadius)
+        }
     }
 
     override fun loadDepartures(stopNames: List<String>) {
