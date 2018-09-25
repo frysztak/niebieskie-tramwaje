@@ -35,8 +35,8 @@ class StopsAndRoutesHelperTest {
     fun convertModel_Test() {
         val data = StopsAndRoutes(
             listOf(
-                StopsAndRoutes.Stop("AUCHAN", 0.0, 0.0),
-                StopsAndRoutes.Stop("KOZANÓW", 0.0, 0.0)),
+                StopsAndRoutes.Stop("AUCHAN", 0, 0.0, 0.0),
+                StopsAndRoutes.Stop("KOZANÓW",1, 0.0, 0.0)),
             listOf(
                 StopsAndRoutes.Route("122", true),
                 StopsAndRoutes.Route("33", false)

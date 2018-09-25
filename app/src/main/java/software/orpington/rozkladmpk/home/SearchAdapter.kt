@@ -18,16 +18,16 @@ class SearchAdapter(
 
     private var items: List<ViewItem> = emptyList()
 
-    fun setItems(data: List<StopOrRoute>) {
+    fun setItems(data: List<StopOrRouteViewItem>) {
         items = convertToViewItems(data)
         notifyDataSetChanged()
     }
 
-    private fun convertToViewItems(data: List<StopOrRoute>): List<ViewItem> {
+    private fun convertToViewItems(data: List<StopOrRouteViewItem>): List<ViewItem> {
         return data.map { item ->
             when (item) {
-                is Stop -> ViewItem.Stop(item.stopName)
-                is Route -> ViewItem.Route(item.routeID, item.isBus)
+                is StopViewItem -> ViewItem.Stop(item.stopName)
+                is RouteViewItem -> ViewItem.Route(item.routeID, item.isBus)
             }
         }
     }

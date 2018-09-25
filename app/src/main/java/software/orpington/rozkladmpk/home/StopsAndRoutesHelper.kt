@@ -6,17 +6,17 @@ import software.orpington.rozkladmpk.utils.sort
 import me.xdrop.fuzzywuzzy.FuzzySearch
 
 
-sealed class StopOrRoute
+sealed class StopOrRouteViewItem
 
-data class Stop(
+data class StopViewItem(
     val stopName: String,
     val distance: Float = Float.NaN
-) : StopOrRoute()
+) : StopOrRouteViewItem()
 
-data class Route(
+data class RouteViewItem(
     val routeID: String,
     val isBus: Boolean
-) : StopOrRoute()
+) : StopOrRouteViewItem()
 
 
 // https://stackoverflow.com/a/10831704
@@ -48,21 +48,21 @@ fun String.stripAccents(): String {
 
 class StopsAndRoutesHelper {
 
-    fun convertModel(data: StopsAndRoutes): List<StopOrRoute> {
-        val items: MutableList<StopOrRoute> = data.stops.map { stop ->
-            Stop(stop.stopName)
+    fun convertModel(data: StopsAndRoutes): List<StopOrRouteViewItem> {
+        val items: MutableList<StopOrRouteViewItem> = data.stops.map { stop ->
+            StopViewItem(stop.stopName)
         }.distinct().toMutableList()
 
         items.addAll(
             data.routes.map { route ->
-                Route(route.routeID, route.isBus)
+                RouteViewItem(route.routeID, route.isBus)
             }.sort()
         )
 
         return items
     }
 
-    fun filterItems(items: List<StopOrRoute>, query: String): List<StopOrRoute> {
+    fun filterItems(items: List<StopOrRouteViewItem>, query: String): List<StopOrRouteViewItem> {
 
         if (query.isEmpty()) {
             return items
@@ -73,7 +73,7 @@ class StopsAndRoutesHelper {
 
         // handle cases like 'A', 'C' etc which correspond to express bus lines
         if (normalisedQuery.length < 2) {
-            val routes = items.filterIsInstance(Route::class.java)
+            val routes = items.filterIsInstance(RouteViewItem::class.java)
                 .filter { route ->
                     route.routeID.startsWith(normalisedQuery, true)
                 }
@@ -84,8 +84,8 @@ class StopsAndRoutesHelper {
         return items.map { item ->
             val str =
                 when (item) {
-                    is Stop -> item.stopName
-                    is Route -> item.routeID
+                    is StopViewItem -> item.stopName
+                    is RouteViewItem -> item.routeID
                 }.stripAccents()
 
             val score =
@@ -104,7 +104,7 @@ class StopsAndRoutesHelper {
         }
     }
 
-    fun filterNearbyStops(stops: List<StopsAndRoutes.Stop>, location: GeoLocation): List<Stop> {
+    fun filterNearbyStops(stops: List<StopsAndRoutes.Stop>, location: GeoLocation): List<StopViewItem> {
         val earthRadius = 6378.1 * 1000 // in meters
         val maxDistance = 500.0 // meters
 
@@ -119,7 +119,7 @@ class StopsAndRoutesHelper {
                 && stopLocation.longitudeInRadians <= bounds[1].longitudeInRadians
         }.map { (stop, stopLocation) ->
             val distance = stopLocation.distanceTo(location, earthRadius).toFloat()
-            Stop(stop.stopName, distance)
+            StopViewItem(stop.stopName, distance)
         }.sortedBy { (stop, distance) ->
             distance
         }.distinctBy { (stop, distance) ->

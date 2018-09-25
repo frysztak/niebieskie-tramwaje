@@ -91,7 +91,7 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
 
     }
 
-    override fun showSearchResults(data: List<StopOrRoute>) {
+    override fun showSearchResults(data: List<StopOrRouteViewItem>) {
         view?.findViewById<ConstraintLayout>(R.id.home_searchResultsLayout)?.visibility = View.VISIBLE
         searchAdapter.setItems(data)
     }

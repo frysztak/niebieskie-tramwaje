@@ -18,7 +18,7 @@ interface SearchContract {
         fun navigateToStopsForRoute(routeID: String)
 
         fun showStopNotFound()
-        fun showSearchResults(data: List<StopOrRoute>)
+        fun showSearchResults(data: List<StopOrRouteViewItem>)
         fun hideSearchResults()
     }
 }

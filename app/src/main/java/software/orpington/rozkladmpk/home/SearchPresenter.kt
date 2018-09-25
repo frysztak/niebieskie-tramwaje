@@ -17,7 +17,7 @@ class SearchPresenter(
     }
 
 
-    private var stopsAndRoutes: List<StopOrRoute> = emptyList()
+    private var stopsAndRoutes: List<StopOrRouteViewItem> = emptyList()
     override fun loadData() {
         view?.showProgressBar()
         dataSource.getStopsAndRoutes(object : IDataSource.LoadDataCallback<StopsAndRoutes> {
