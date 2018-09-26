@@ -102,6 +102,8 @@ class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
 
     override fun drawShape(shape: Shape, colour: Int) = locationMapFragment.drawShape(shape, colour)
     override fun clearShapes() = locationMapFragment.clearShapes()
+    override fun drawStops(stops: List<MapData.Stop>) = locationMapFragment.drawStops(stops)
+    override fun clearStops() = locationMapFragment.clearStops()
 
     companion object {
         fun newInstance(): MapFragment {

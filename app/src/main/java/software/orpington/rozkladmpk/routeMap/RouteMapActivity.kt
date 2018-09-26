@@ -149,6 +149,7 @@ class RouteMapActivity : AppCompatActivity(), RouteMapContract.View, LocationMap
         if (map == null || mapData == null) return
         coloursHelper.resetCounter()
 
+        // TODO: use method from LocationMapFragment
         val boundsBuilder = LatLngBounds.builder()
         for (shape in mapData!!.shapes) {
             val polyline = PolylineOptions()

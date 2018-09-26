@@ -19,5 +19,8 @@ interface LocationMapContract {
 
         fun drawShape(shape: Shape, colour: Int)
         fun clearShapes()
+
+        fun drawStops(stops: List<MapData.Stop>)
+        fun clearStops()
     }
 }

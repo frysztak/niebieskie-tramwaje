@@ -250,6 +250,7 @@ class MapPresenter(
                 val cb = object : IDataSource.LoadDataCallback<MapData> {
                     override fun onDataLoaded(data: MapData) {
                         view?.drawShape(data.shapes.first(), shapeColour)
+                        view?.drawStops(data.stops)
                     }
 
                     override fun onDataNotAvailable() {

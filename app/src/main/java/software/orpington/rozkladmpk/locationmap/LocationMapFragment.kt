@@ -39,9 +39,11 @@ import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsOption
 import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsRequest
 import kotlinx.android.synthetic.main.location_map_fragment_layout.*
 import software.orpington.rozkladmpk.R
+import software.orpington.rozkladmpk.data.model.MapData
 import software.orpington.rozkladmpk.data.model.Shape
 import software.orpington.rozkladmpk.utils.LocationCallbackReference
 import software.orpington.rozkladmpk.utils.convertToBitmap
+import software.orpington.rozkladmpk.utils.getBitmapDescriptor
 import kotlin.math.roundToInt
 
 interface LocationMapCallbacks {
@@ -149,6 +151,34 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
 
         map = googleMap
         map?.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style))
+
+        map?.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
+            private var contentsView: View? = null
+
+            override fun getInfoWindow(marker: Marker): View? {
+                if (marker.title == null) return null
+
+                if (contentsView == null) {
+                    contentsView = layoutInflater.inflate(R.layout.map_marker, null)
+                    contentsView?.findViewById<ImageView>(R.id.circle)?.visibility = View.GONE
+                }
+
+                contentsView!!
+                    .findViewById<TextView>(R.id.stopName)
+                    ?.text = marker.title
+
+                contentsView!!
+                    .findViewById<TextView>(R.id.onDemand)
+                    ?.visibility = if (marker.snippet == null) View.GONE else View.VISIBLE
+
+                return contentsView!!
+            }
+
+            override fun getInfoContents(marker: Marker): View? {
+                return null
+            }
+        })
+
         locationMapCallbacks?.onMapReady(map!!)
     }
 
@@ -343,6 +373,54 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
             shape.remove()
         }
         drawnShapes.clear()
+    }
+
+    private val stopMarkers: MutableList<Marker> = mutableListOf()
+
+    // I'm not happy about this, but it'll have to do.
+    // I should probably use RxJava to merge all map data requests
+    // and get unique stops
+    private val alreadyDrawnStops: MutableList<MapData.Stop> = mutableListOf()
+    override fun drawStops(stops: List<MapData.Stop>) {
+        val context = context ?: return
+
+        val regularIcon = ContextCompat
+            .getDrawable(context, R.drawable.map_marker)
+            ?.getBitmapDescriptor() ?: return
+
+        val onDemandIcon = ContextCompat
+            .getDrawable(context, R.drawable.map_marker_on_demand)
+            ?.getBitmapDescriptor() ?: return
+
+        for (stop in stops - alreadyDrawnStops) {
+            val markerOptions = MarkerOptions()
+                .position(LatLng(stop.latitude, stop.longitude))
+
+            if (stop.firstOrLast) {
+                val specialMarkerView = LayoutInflater.from(context).inflate(R.layout.map_marker, null, false)
+                val stopNameTextView = specialMarkerView.findViewById<TextView>(R.id.stopName)
+                stopNameTextView.text = stop.stopName
+
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(specialMarkerView.convertToBitmap()))
+            } else {
+                val icon = if (stop.onDemand) onDemandIcon else regularIcon
+                val snippet = if (stop.onDemand) "" else null
+                markerOptions
+                    .title(stop.stopName)
+                    .icon(icon)
+                    .snippet(snippet)
+            }
+            val marker = map?.addMarker(markerOptions)
+            if (marker != null) stopMarkers.add(marker)
+            alreadyDrawnStops.add(stop)
+        }
+    }
+
+    override fun clearStops() {
+        for (marker in stopMarkers) {
+            marker.remove()
+        }
+        stopMarkers.clear()
     }
 
     private fun updateFABVisibility() {
