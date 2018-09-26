@@ -23,7 +23,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.gms.common.ConnectionResult
@@ -40,8 +39,10 @@ import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsOption
 import com.livinglifetechway.quickpermissions_kotlin.util.QuickPermissionsRequest
 import kotlinx.android.synthetic.main.location_map_fragment_layout.*
 import software.orpington.rozkladmpk.R
+import software.orpington.rozkladmpk.data.model.Shape
 import software.orpington.rozkladmpk.utils.LocationCallbackReference
 import software.orpington.rozkladmpk.utils.convertToBitmap
+import kotlin.math.roundToInt
 
 interface LocationMapCallbacks {
     fun onMapReady(googleMap: GoogleMap)
@@ -306,6 +307,42 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
             CameraUpdateFactory.newLatLngZoom(marker.position, 14.0f)
         )
 
+    }
+
+    private var drawnShapes: MutableList<Polyline> = mutableListOf()
+    override fun drawShape(shape: Shape, colour: Int) {
+        val boundsBuilder = LatLngBounds.builder()
+        val polylineOptions = PolylineOptions()
+            .color(colour)
+
+        for (point in shape.points) {
+            val coords = LatLng(point.latitude, point.longitude)
+            polylineOptions.add(coords)
+            boundsBuilder.include(coords)
+        }
+
+        val polyline = map?.addPolyline(polylineOptions) ?: return
+        drawnShapes.add(polyline)
+
+        centerToBounds(boundsBuilder.build())
+    }
+
+    private fun centerToBounds(bounds: LatLngBounds) {
+        // can't call
+        //map?.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 60))
+        // because of https://github.com/googlemaps/android-samples/issues/10
+
+        val width = resources.displayMetrics.widthPixels
+        val height = resources.displayMetrics.heightPixels
+        val padding = (width * 0.12).roundToInt()
+        map?.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding))
+    }
+
+    override fun clearShapes() {
+        for (shape in drawnShapes) {
+            shape.remove()
+        }
+        drawnShapes.clear()
     }
 
     private fun updateFABVisibility() {

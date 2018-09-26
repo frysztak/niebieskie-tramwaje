@@ -1,9 +1,9 @@
 package software.orpington.rozkladmpk.data.source
 
-import software.orpington.rozkladmpk.data.model.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import software.orpington.rozkladmpk.data.model.*
 
 
 class RemoteDataSource private constructor(
@@ -66,6 +66,10 @@ class RemoteDataSource private constructor(
 
     override fun getRouteMapData(routeID: String, stopName: String, direction: String, callback: IDataSource.LoadDataCallback<MapData>) {
         makeACall(mpkService.getRouteMap(routeID, stopName, direction), callback)
+    }
+
+    override fun getTripMapData(tripID: Int, callback: IDataSource.LoadDataCallback<MapData>) {
+        makeACall(mpkService.getTripMap(tripID), callback)
     }
 
     override fun getDepartures(stopNames: List<String>, callback: IDataSource.LoadDataCallback<Departures>) {

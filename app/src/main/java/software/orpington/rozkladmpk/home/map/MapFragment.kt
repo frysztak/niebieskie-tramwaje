@@ -12,6 +12,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
+import software.orpington.rozkladmpk.data.model.MapData
+import software.orpington.rozkladmpk.data.model.Shape
 import software.orpington.rozkladmpk.data.model.StopsAndRoutes
 import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.locationmap.LocationMapCallbacks
@@ -97,6 +99,9 @@ class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
             MarkerHelper.addStopMarker(googleMap, context, stop)
         }
     }
+
+    override fun drawShape(shape: Shape, colour: Int) = locationMapFragment.drawShape(shape, colour)
+    override fun clearShapes() = locationMapFragment.clearShapes()
 
     companion object {
         fun newInstance(): MapFragment {

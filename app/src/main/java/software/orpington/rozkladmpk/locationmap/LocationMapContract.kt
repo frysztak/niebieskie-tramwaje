@@ -1,5 +1,8 @@
 package software.orpington.rozkladmpk.locationmap
 
+import software.orpington.rozkladmpk.data.model.MapData
+import software.orpington.rozkladmpk.data.model.Shape
+
 interface LocationMapContract {
     interface Presenter {
         fun attachView(view: View)
@@ -13,5 +16,8 @@ interface LocationMapContract {
 
     interface View {
         fun setMessages(msgs: List<Message>)
+
+        fun drawShape(shape: Shape, colour: Int)
+        fun clearShapes()
     }
 }

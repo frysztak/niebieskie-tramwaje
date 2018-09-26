@@ -2,6 +2,7 @@ package software.orpington.rozkladmpk.home.map
 
 import software.orpington.rozkladmpk.data.model.Departure
 import software.orpington.rozkladmpk.data.model.Departures
+import software.orpington.rozkladmpk.data.model.MapData
 import software.orpington.rozkladmpk.data.model.StopsAndRoutes
 import software.orpington.rozkladmpk.data.source.IDataSource
 import software.orpington.rozkladmpk.data.source.RemoteDataSource
@@ -230,16 +231,35 @@ class MapPresenter(
         }
 
         updateViewItems()
-        updateStopMarkers()
+        updateRouteShapes()
         updateVehicleMarkers()
     }
 
-    private fun updateStopMarkers() {
-        //val stops = stopsAndRoutes.stops.filter { stop ->
-        //    trackedStops.contains(stop.stopID)
-        //}
+    private fun updateRouteShapes() {
+        view?.clearShapes()
 
-        //view?.showStopMarkers(stops)
+        for (trackedDeparture in trackedDepartures.toMap()) {
+            val stopID = trackedDeparture.key
+            val stopName = stopsAndRoutes.stops.find { stop ->
+                stop.stopID == stopID
+            }?.stopName ?: return
+
+            for (trackedDepartureDetails in trackedDeparture.value) {
+
+                val shapeColour = trackedDeparturesColours.getOrElse(trackedDepartureDetails.tripID) { -1 }
+                val cb = object : IDataSource.LoadDataCallback<MapData> {
+                    override fun onDataLoaded(data: MapData) {
+                        view?.drawShape(data.shapes.first(), shapeColour)
+                    }
+
+                    override fun onDataNotAvailable() {
+                        // TODO
+                    }
+                }
+
+                remoteDataSource.getTripMapData(trackedDepartureDetails.tripID, cb)
+            }
+        }
     }
 
     private fun updateVehicleMarkers() {

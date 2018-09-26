@@ -1,6 +1,8 @@
 package software.orpington.rozkladmpk.home.map
 
 import software.orpington.rozkladmpk.BaseView
+import software.orpington.rozkladmpk.data.model.MapData
+import software.orpington.rozkladmpk.data.model.Shape
 import software.orpington.rozkladmpk.data.model.StopsAndRoutes
 
 sealed class DepartureViewItem
@@ -44,5 +46,8 @@ interface MapContract {
     interface View : BaseView {
         fun showDepartures(data: List<DepartureViewItem>)
         fun showStopMarkers(stops: List<StopsAndRoutes.Stop>)
+
+        fun drawShape(shape: Shape, colour: Int)
+        fun clearShapes()
     }
 }
