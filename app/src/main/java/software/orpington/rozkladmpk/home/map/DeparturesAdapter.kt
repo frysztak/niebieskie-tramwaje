@@ -45,11 +45,11 @@ class DeparturesAdapter(
         return when (viewType) {
             ITEM_TYPE_HEADER -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.home_map_nearby_header, parent, false)
-                HeaderViewHolder(view, presenter)
+                HeaderViewHolder(view)
             }
             ITEM_TYPE_DETAILS -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.home_map_nearby_item, parent, false)
-                DetailsViewHolder(view)
+                DetailsViewHolder(view, presenter)
             }
             else -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.home_map_nearby_show_more, parent, false)
@@ -62,11 +62,6 @@ class DeparturesAdapter(
         val item = items[position]
         when (item) {
             is DepartureHeader -> (holder as HeaderViewHolder).apply {
-                val tintColor = ContextCompat.getColor(context, when (item.isTracked) {
-                    true -> R.color.accent
-                    false -> R.color.primary_text
-                })
-                ImageViewCompat.setImageTintList(trackIcon, ColorStateList.valueOf(tintColor))
                 stopName.text = item.stopName
                 distance.text = "%.1f m".format(item.distance)
             }
@@ -79,6 +74,10 @@ class DeparturesAdapter(
                 direction.text = item.direction
                 departureTime.text = getDepartureInString(item.departureInMinutes, item.departureTime)
                 onDemand.visibility = if (item.onDemand) View.VISIBLE else View.GONE
+
+                val regularColour = ContextCompat.getColor(context, R.color.primary_text)
+                val tintColor = if (item.isTracked && item.shapeColour != -1) item.shapeColour else regularColour
+                ImageViewCompat.setImageTintList(trackIcon, ColorStateList.valueOf(tintColor))
             }
         }
     }
@@ -101,28 +100,28 @@ class DeparturesAdapter(
 }
 
 internal class HeaderViewHolder(
-    view: View,
-    private val presenter: MapPresenter
+    view: View
 ) : RecyclerView.ViewHolder(view) {
     val stopName: TextView = view.stopName
     val distance: TextView = view.distance
+}
+
+internal class DetailsViewHolder(
+    view: View,
+    private val presenter: MapPresenter
+) : RecyclerView.ViewHolder(view) {
+    val vehicleIcon: ImageView = view.vehicleIcon
+    val routeID: TextView = view.routeID
+    val direction: TextView = view.direction
     val trackIcon: ImageView = view.trackIcon
+    val departureTime: TextView = view.departureTime
+    val onDemand: Group = view.onDemand
 
     init {
         trackIcon.setOnClickListener {
             presenter.onTrackButtonClicked(adapterPosition)
         }
     }
-}
-
-internal class DetailsViewHolder(
-    view: View
-) : RecyclerView.ViewHolder(view) {
-    val vehicleIcon: ImageView = view.vehicleIcon
-    val routeID: TextView = view.routeID
-    val direction: TextView = view.direction
-    val departureTime: TextView = view.departureTime
-    val onDemand: Group = view.onDemand
 }
 
 internal class ShowMoreViewHolder(

@@ -23,6 +23,7 @@ import software.orpington.rozkladmpk.data.model.VehiclePositions
 import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.locationmap.LocationMapCallbacks
 import software.orpington.rozkladmpk.locationmap.LocationMapFragment
+import software.orpington.rozkladmpk.utils.MapColoursHelper
 import software.orpington.rozkladmpk.utils.convertToBitmap
 import software.orpington.rozkladmpk.utils.getBitmapDescriptor
 import kotlin.math.roundToInt
@@ -141,37 +142,17 @@ class RouteMapActivity : AppCompatActivity(), RouteMapContract.View, LocationMap
         updateMap()
     }
 
-    private val lineColors = listOf<Int>(
-        Color.parseColor("#E91E63"),
-        Color.parseColor("#673AB7"),
-        Color.parseColor("#2196F3"),
-        Color.parseColor("#00BCD4"),
-        Color.parseColor("#4CAF50"),
-        Color.parseColor("#CDDC39"),
-        Color.parseColor("#FFC107"),
-        Color.parseColor("#FF5722"),
-        Color.parseColor("#9E9E9E")
-    )
-
-    private var colorCounter = 0
-    private fun getNextColor(): Int {
-        val color = lineColors[colorCounter]
-
-        colorCounter = (colorCounter + 1) % lineColors.size
-
-        return color
-    }
-
+    private val coloursHelper = MapColoursHelper()
     private fun updateMap() {
         locationMapFragment.popDataFailedToLoad()
 
         if (map == null || mapData == null) return
-        colorCounter = 0
+        coloursHelper.resetCounter()
 
         val boundsBuilder = LatLngBounds.builder()
         for (shape in mapData!!.shapes) {
             val polyline = PolylineOptions()
-                .color(getNextColor())
+                .color(coloursHelper.getNextColor())
 
             for (point in shape.points) {
                 val coords = LatLng(point.latitude, point.longitude)

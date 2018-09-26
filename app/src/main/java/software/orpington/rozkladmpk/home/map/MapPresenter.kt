@@ -1,17 +1,13 @@
 package software.orpington.rozkladmpk.home.map
 
-import android.support.v4.content.ContextCompat
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
-import software.orpington.rozkladmpk.R
+import software.orpington.rozkladmpk.data.model.Departure
 import software.orpington.rozkladmpk.data.model.Departures
 import software.orpington.rozkladmpk.data.model.StopsAndRoutes
 import software.orpington.rozkladmpk.data.source.IDataSource
 import software.orpington.rozkladmpk.data.source.RemoteDataSource
 import software.orpington.rozkladmpk.home.StopsAndRoutesHelper
 import software.orpington.rozkladmpk.utils.GeoLocation
-import software.orpington.rozkladmpk.utils.getBitmapDescriptor
+import software.orpington.rozkladmpk.utils.MapColoursHelper
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -61,7 +57,6 @@ class MapPresenter(
         val viewItems = mutableListOf<DepartureViewItem>()
         for (departure in sortDepartures(departures)) {
             val stopID = departure.stop.stopID
-            val isTracked = trackedStops.contains(stopID)
 
             val stopLocation = GeoLocation.fromDegrees(departure.stop.latitude, departure.stop.longitude)
             val earthRadius = 6378.1 * 1000 // in meters
@@ -69,16 +64,19 @@ class MapPresenter(
             viewItems.add(DepartureHeader(
                 departure.stop.stopName,
                 departure.stop.stopID,
-                distance.toFloat(),
-                isTracked
+                distance.toFloat()
             ))
 
-            val addShowMoreButton = !stopsToShowFullyExpanded.contains(stopID)
-            val departures = when (addShowMoreButton) {
+            val addShowMoreButton = !fullyExpandedStops.contains(stopID)
+
+            val trackedDeparturesToAdd = trackedDepartures.getOrElse(stopID) { mutableListOf() }
+            val departuresToAdd = (trackedDeparturesToAdd + when (addShowMoreButton) {
                 true -> departure.departures.take(2)
                 false -> departure.departures
-            }
-            for (departureDetails in departures) {
+            }).distinctBy { departureDetails -> departureDetails.tripID }
+                .sortedBy { departureDetails -> departureDetails.departureTime }
+
+            for (departureDetails in departuresToAdd) {
                 val timezone = TimeZone.getTimeZone("Europe/Warsaw")
                 val format = SimpleDateFormat("HH:mm")
                 format.timeZone = timezone
@@ -98,13 +96,19 @@ class MapPresenter(
                     route.routeID == departureDetails.routeID
                 }?.isBus ?: false
 
+                val isTracked = trackedDeparturesToAdd.contains(departureDetails)
+                val lineColour = trackedDeparturesColours.getOrElse(departureDetails.tripID) { -1 }
+
                 viewItems.add(DepartureDetails(
                     isBus,
                     departureDetails.routeID,
                     departureDetails.direction,
                     minutes.toInt(),
                     departureDetails.departureTime,
-                    departureDetails.onDemand
+                    departureDetails.onDemand,
+                    departureDetails.tripID,
+                    isTracked,
+                    lineColour
                 ))
             }
 
@@ -166,14 +170,14 @@ class MapPresenter(
         })
     }
 
-    private var stopsToShowFullyExpanded: MutableList<Int> = mutableListOf()
+    private var fullyExpandedStops: MutableList<Int> = mutableListOf()
     override fun onShowMoreClicked(position: Int) {
         val stopID = viewItems
             .subList(0, position)
             .filterIsInstance<DepartureHeader>()
             .last()
             .stopID
-        stopsToShowFullyExpanded.add(stopID)
+        fullyExpandedStops.add(stopID)
         updateViewItems()
     }
 
@@ -186,17 +190,43 @@ class MapPresenter(
         }
     }
 
-    private var trackedStops: MutableList<Int> = mutableListOf()
+    // Key: StopID, Value: self-explanatory, I hope
+    private val trackedDepartures: MutableMap<Int, MutableList<Departure.DepartureDetails>> = mutableMapOf()
+
+    // Key: TripID, Value: Colour
+    private val trackedDeparturesColours: MutableMap<Int, Int> = mutableMapOf()
+
+    private val coloursHelper = MapColoursHelper()
     override fun onTrackButtonClicked(position: Int) {
+        val tripID = viewItems.subList(0, position + 1) // should be okay, headers are always followed by other items
+            .filterIsInstance<DepartureDetails>()
+            .last()
+            .tripID
+
         val stopID = viewItems.subList(0, position + 1) // should be okay, headers are always followed by other items
             .filterIsInstance<DepartureHeader>()
             .last()
             .stopID
 
-        if (trackedStops.contains(stopID)) {
-            trackedStops.remove(stopID)
+        val departure = departures.find { departure ->
+            departure.stop.stopID == stopID
+        } ?: return
+
+        val departureDetails = departure.departures.find { departureDetails ->
+            departureDetails.tripID == tripID
+        } ?: return
+
+        if (!trackedDepartures.containsKey(stopID)) {
+            trackedDepartures[stopID] = mutableListOf()
+        }
+
+        if (trackedDepartures[stopID]!!.contains(departureDetails)) {
+            trackedDepartures[stopID]!!.remove(departureDetails)
+            trackedDeparturesColours.remove(departureDetails.tripID)
+            coloursHelper.goBack()
         } else {
-            trackedStops.add(stopID)
+            trackedDepartures[stopID]!!.add(departureDetails)
+            trackedDeparturesColours[departureDetails.tripID] = coloursHelper.getNextColor()
         }
 
         updateViewItems()
@@ -205,11 +235,11 @@ class MapPresenter(
     }
 
     private fun updateStopMarkers() {
-        val stops = stopsAndRoutes.stops.filter { stop ->
-            trackedStops.contains(stop.stopID)
-        }
+        //val stops = stopsAndRoutes.stops.filter { stop ->
+        //    trackedStops.contains(stop.stopID)
+        //}
 
-        view?.showStopMarkers(stops)
+        //view?.showStopMarkers(stops)
     }
 
     private fun updateVehicleMarkers() {

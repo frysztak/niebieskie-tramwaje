@@ -47,10 +47,21 @@
         android:textColor="@color/primary_text"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="@id/departureTime"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/trackIcon"
         app:layout_constraintStart_toEndOf="@id/arrow"
         app:layout_constraintTop_toTopOf="@id/departureTime"
         tools:text="STADION WROCŁAW (KRÓLEWIECKA)" />
+
+    <ImageView
+        android:id="@+id/trackIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/direction"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/direction"
+        app:srcCompat="@drawable/ic_track_changes_black_24dp"
+        tools:tint="@color/primary_text" />
 
     <ImageView
         android:id="@+id/timeIcon"

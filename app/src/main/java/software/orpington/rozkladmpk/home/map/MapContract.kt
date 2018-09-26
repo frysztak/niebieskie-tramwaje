@@ -7,8 +7,7 @@ sealed class DepartureViewItem
 data class DepartureHeader(
     val stopName: String,
     val stopID: Int,
-    val distance: Float,
-    val isTracked: Boolean
+    val distance: Float
 ) : DepartureViewItem()
 
 data class DepartureDetails(
@@ -17,7 +16,10 @@ data class DepartureDetails(
     val direction: String,
     val departureInMinutes: Int,
     val departureTime: String,
-    val onDemand: Boolean
+    val onDemand: Boolean,
+    val tripID: Int,
+    val isTracked: Boolean,
+    val shapeColour: Int
 ) : DepartureViewItem()
 
 object DepartureShowMore : DepartureViewItem()

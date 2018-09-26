@@ -22,7 +22,7 @@
         android:fontFamily="sans-serif-light"
         android:textSize="22dp"
         app:layout_constraintBottom_toTopOf="@id/distance"
-        app:layout_constraintEnd_toStartOf="@id/trackIcon"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/icon"
         app:layout_constraintTop_toTopOf="@id/icon"
         tools:text="GAJ" />
@@ -33,19 +33,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/trackIcon"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/stopName"
         app:layout_constraintTop_toBottomOf="@id/stopName"
         tools:text="100 m" />
 
-    <ImageView
-        android:id="@+id/trackIcon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        tools:tint="@color/primary_text"
-        app:layout_constraintBottom_toBottomOf="@id/icon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/icon"
-        app:srcCompat="@drawable/ic_track_changes_black_24dp" />
 
 </android.support.constraint.ConstraintLayout>
