@@ -19,21 +19,48 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    private fun getFragmentTag(pageID: Int): String {
+        return when (pageID) {
+            R.id.navigation_home -> "HomeFragment"
+            R.id.navigation_map -> "MapFragment"
+            R.id.navigation_notifications -> "NotificationsFragment"
+            else -> "UnknownFragment"
+        }
+    }
+
+    private fun createNewFragment(pageID: Int): Fragment {
+        return when (pageID) {
+            R.id.navigation_home -> HomeFragment.newInstance()
+            R.id.navigation_map -> MapFragment.newInstance()
+            else -> HomeFragment.newInstance()
+        }
+    }
+
     private var currentPageIndex: Int = -1
-    private fun swapPageContent(pageIdx: Int) {
-        if (pageIdx == currentPageIndex) return
+    private fun swapPageContent(pageID: Int) {
+        if (pageID == currentPageIndex) return
 
-        val fragment: Fragment =
-            when (pageIdx) {
-                R.id.navigation_home -> HomeFragment.newInstance()
-                R.id.navigation_map -> MapFragment.newInstance()
-                else -> HomeFragment.newInstance()
-            }
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.frameLayout, fragment)
-            .commit()
+        // based on https://stackoverflow.com/a/45301078
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
 
-        currentPageIndex = pageIdx
+        val currentFragment = supportFragmentManager.primaryNavigationFragment
+        if (currentFragment != null) {
+            fragmentTransaction.hide(currentFragment)
+        }
+
+        val fragmentTag = getFragmentTag(pageID)
+        var fragment = supportFragmentManager.findFragmentByTag(fragmentTag)
+        if (fragment == null) {
+            fragment = createNewFragment(pageID)
+            fragmentTransaction.add(R.id.frameLayout, fragment, fragmentTag)
+        } else {
+            fragmentTransaction.show(fragment)
+        }
+
+        fragmentTransaction.setPrimaryNavigationFragment(fragment)
+        fragmentTransaction.setReorderingAllowed(true)
+        fragmentTransaction.commit()
+
+        currentPageIndex = pageID
     }
 }
