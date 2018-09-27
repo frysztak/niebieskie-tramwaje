@@ -57,6 +57,7 @@
     <string name="more">more</string>
     <string name="departureIn">In %s %s (%s)</string>
     <string name="departs_now">Departs now! (%s)</string>
+    <string name="already_departed">Departed %s %s ago (%s)</string>
     <string name="minute_1">minute</string>
     <string name="minutes_2to4">minutes</string>
     <string name="minutes_5plus">minutes</string>

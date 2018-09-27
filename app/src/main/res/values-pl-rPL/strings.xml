@@ -58,6 +58,7 @@
     <string name="more">więcej</string>
     <string name="departureIn">Za %s %s (%s)</string>
     <string name="departs_now">Odjeżdza teraz! (%s)</string>
+    <string name="already_departed">Odjechał %s %s temu (%s)</string>
     <string name="minute_1">minutę</string>
     <string name="minutes_2to4">minuty</string>
     <string name="minutes_5plus">minut</string>

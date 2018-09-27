@@ -83,19 +83,26 @@ class DeparturesAdapter(
     }
 
     private fun getDepartureInString(departureInMinutes: Int, departureTime: String): String {
+        val getMinutesString = { minutes: Int ->
+            context.getString(when (minutes) {
+                1 -> R.string.minute_1
+                in 2..4 -> R.string.minutes_2to4
+                else -> R.string.minutes_5plus
+            })
+        }
+
+        if (departureInMinutes < 0) {
+            val localisedTemplate = context.getString(R.string.already_departed)
+            return localisedTemplate.format(-departureInMinutes, getMinutesString(-departureInMinutes), departureTime)
+        }
+
         if (departureInMinutes == 0) {
             val localisedTemplate = context.getString(R.string.departs_now)
             return localisedTemplate.format(departureTime)
         }
 
-        val minutesString = context.getString(when (departureInMinutes) {
-            1 -> R.string.minute_1
-            in 2..4 -> R.string.minutes_2to4
-            else -> R.string.minutes_5plus
-        })
-
         val localisedTemplate = context.getString(R.string.departureIn)
-        return localisedTemplate.format(departureInMinutes, minutesString, departureTime)
+        return localisedTemplate.format(departureInMinutes, getMinutesString(departureInMinutes), departureTime)
     }
 }
 
