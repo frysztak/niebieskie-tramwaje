@@ -1,5 +1,7 @@
 package software.orpington.rozkladmpk.home.map
 
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 import software.orpington.rozkladmpk.data.model.Departure
 import software.orpington.rozkladmpk.data.model.Departures
 import software.orpington.rozkladmpk.data.model.MapData
@@ -12,6 +14,7 @@ import software.orpington.rozkladmpk.utils.MapColoursHelper
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.fixedRateTimer
 
 
 class MapPresenter(
@@ -45,6 +48,7 @@ class MapPresenter(
 
     private lateinit var lastUserLocation: GeoLocation
     override fun locationChanged(latitude: Double, longitude: Double) {
+        // NOTE: always process location-induced requests
         lastUserLocation = GeoLocation.fromDegrees(latitude, longitude)
         val helper = StopsAndRoutesHelper()
         val nearbyStops = helper.filterNearbyStops(stopsAndRoutes.stops, lastUserLocation)
@@ -146,6 +150,17 @@ class MapPresenter(
     @set:Synchronized
     private var departuresFailedToLoad: Boolean = false
 
+    private var lastUpdateTime = 0L
+    private val minimalTimeDeltaBetweenUpdates = 30 * 1000 // 30 seconds
+    private val updateTimer = fixedRateTimer(period = 30 * 1000) {
+        launch(UI) {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime >= (lastUpdateTime + minimalTimeDeltaBetweenUpdates)) {
+                loadDepartures(lastStopNames)
+            }
+        }
+    }
+
     override fun loadDepartures(stopNames: List<String>) {
         lastStopNames = stopNames
         if (stopsAndRoutes.stops.isEmpty()) return
@@ -160,6 +175,7 @@ class MapPresenter(
                 view?.hideProgressBar()
                 isTryingToLoadDepartures = false
                 departuresFailedToLoad = false
+                lastUpdateTime = System.currentTimeMillis()
             }
 
             override fun onDataNotAvailable() {
