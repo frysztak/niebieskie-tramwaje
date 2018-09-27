@@ -2,10 +2,7 @@ package software.orpington.rozkladmpk.home.map
 
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
-import software.orpington.rozkladmpk.data.model.Departure
-import software.orpington.rozkladmpk.data.model.Departures
-import software.orpington.rozkladmpk.data.model.MapData
-import software.orpington.rozkladmpk.data.model.StopsAndRoutes
+import software.orpington.rozkladmpk.data.model.*
 import software.orpington.rozkladmpk.data.source.IDataSource
 import software.orpington.rozkladmpk.data.source.RemoteDataSource
 import software.orpington.rozkladmpk.home.StopsAndRoutesHelper
@@ -43,9 +40,25 @@ class MapPresenter(
             if (currentTime >= (lastUpdateTime + minimalTimeDeltaBetweenUpdates)) {
                 loadDepartures(lastStopNames)
             }
+
+            updateVehicleLocations()
         }
     }
 
+    private fun updateVehicleLocations() {
+        val routeIDs = trackedDepartures.values.flatten().map { departureDetails ->
+            departureDetails.routeID
+        }.distinct()
+
+        remoteDataSource.getVehiclePosition(routeIDs, object : IDataSource.LoadDataCallback<VehiclePositions> {
+            override fun onDataLoaded(data: VehiclePositions) {
+                view?.drawVehicleMarkers(data)
+            }
+
+            override fun onDataNotAvailable() {
+            }
+        })
+    }
 
     private var stopsAndRoutes: StopsAndRoutes = StopsAndRoutes(emptyList(), emptyList())
     override fun loadStops() {
@@ -262,12 +275,13 @@ class MapPresenter(
 
         updateViewItems()
         updateRouteShapes()
-        updateVehicleMarkers()
+        updateVehicleLocations()
     }
 
     private fun updateRouteShapes() {
         view?.clearShapes()
         view?.clearStops()
+        view?.clearVehicleMarkers()
         view?.showProgressBar()
 
         for (trackedDeparture in trackedDepartures.toMap()) {
@@ -290,9 +304,6 @@ class MapPresenter(
                 remoteDataSource.getTripMapData(trackedDepartureDetails.tripID, cb)
             }
         }
-    }
-
-    private fun updateVehicleMarkers() {
     }
 
 }

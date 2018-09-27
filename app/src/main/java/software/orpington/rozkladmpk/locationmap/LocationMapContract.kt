@@ -2,6 +2,7 @@ package software.orpington.rozkladmpk.locationmap
 
 import software.orpington.rozkladmpk.data.model.MapData
 import software.orpington.rozkladmpk.data.model.Shape
+import software.orpington.rozkladmpk.data.model.VehiclePositions
 
 interface LocationMapContract {
     interface Presenter {
@@ -23,5 +24,8 @@ interface LocationMapContract {
 
         fun drawStops(stops: List<MapData.Stop>)
         fun clearStops()
+
+        fun drawVehicleMarkers(positions: VehiclePositions)
+        fun clearVehicleMarkers()
     }
 }

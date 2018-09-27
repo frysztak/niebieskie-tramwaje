@@ -4,6 +4,7 @@ import software.orpington.rozkladmpk.BaseView
 import software.orpington.rozkladmpk.data.model.MapData
 import software.orpington.rozkladmpk.data.model.Shape
 import software.orpington.rozkladmpk.data.model.StopsAndRoutes
+import software.orpington.rozkladmpk.data.model.VehiclePositions
 
 sealed class DepartureViewItem
 data class DepartureHeader(
@@ -52,5 +53,8 @@ interface MapContract {
 
         fun drawStops(stops: List<MapData.Stop>)
         fun clearStops()
+
+        fun drawVehicleMarkers(positions: VehiclePositions)
+        fun clearVehicleMarkers()
     }
 }

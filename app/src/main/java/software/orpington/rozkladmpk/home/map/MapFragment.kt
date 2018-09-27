@@ -15,6 +15,7 @@ import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.model.MapData
 import software.orpington.rozkladmpk.data.model.Shape
 import software.orpington.rozkladmpk.data.model.StopsAndRoutes
+import software.orpington.rozkladmpk.data.model.VehiclePositions
 import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.locationmap.LocationMapCallbacks
 import software.orpington.rozkladmpk.locationmap.LocationMapFragment
@@ -104,6 +105,8 @@ class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
     override fun clearShapes() = locationMapFragment.clearShapes()
     override fun drawStops(stops: List<MapData.Stop>) = locationMapFragment.drawStops(stops)
     override fun clearStops() = locationMapFragment.clearStops()
+    override fun drawVehicleMarkers(positions: VehiclePositions) = locationMapFragment.drawVehicleMarkers(positions)
+    override fun clearVehicleMarkers() = locationMapFragment.clearVehicleMarkers()
 
     companion object {
         fun newInstance(): MapFragment {

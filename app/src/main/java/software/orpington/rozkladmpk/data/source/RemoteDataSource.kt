@@ -77,8 +77,8 @@ class RemoteDataSource private constructor(
         makeACall(mpkService.getDepartures(stopNamesString), callback)
     }
 
-    override fun getVehiclePosition(routeID: String, callback: IDataSource.LoadDataCallback<VehiclePositions>) {
-        makeACall(gpsService.getVehiclePosition(routeID), callback)
+    override fun getVehiclePosition(routeIDs: List<String>, callback: IDataSource.LoadDataCallback<VehiclePositions>) {
+        makeACall(gpsService.getVehiclePosition(routeIDs), callback)
     }
 
     companion object {

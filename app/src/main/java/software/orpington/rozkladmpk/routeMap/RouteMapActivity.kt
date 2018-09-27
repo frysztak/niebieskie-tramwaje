@@ -237,46 +237,5 @@ class RouteMapActivity : AppCompatActivity(), RouteMapContract.View, LocationMap
         vehicleLocationHandler.post(runnableCode)
     }
 
-    private var vehicleMarkers: List<Marker> = emptyList()
-    override fun displayVehiclePositions(data: VehiclePositions) {
-        if (data.isEmpty()) return
-
-        val addNewMarker = { position: VehiclePosition ->
-            val specialMarkerView = LayoutInflater.from(this).inflate(R.layout.map_marker, null, false)
-
-            val tv = specialMarkerView
-                .findViewById<TextView>(R.id.stopName)
-            tv.text = position.name.toUpperCase()
-            tv.setTypeface(tv.typeface, Typeface.BOLD)
-
-            specialMarkerView
-                .findViewById<ImageView>(R.id.circle)
-                .setImageResource(R.drawable.map_marker_vehicle)
-
-            val opt = MarkerOptions()
-                .position(LatLng(position.x, position.y))
-                .icon(BitmapDescriptorFactory.fromBitmap(specialMarkerView.convertToBitmap()))
-            map?.addMarker(opt)!!
-        }
-
-        val newMarkers: MutableList<Marker> = arrayListOf()
-        // first make sure we have enough markers
-        while (data.size > vehicleMarkers.size + newMarkers.size) {
-            newMarkers.add(addNewMarker(data.first()))
-        }
-
-        vehicleMarkers += newMarkers
-
-        // update markers with new positions
-        for ((position, marker) in data zip vehicleMarkers) {
-            marker.position = LatLng(position.x, position.y)
-        }
-
-        // remove unused markers
-        while (vehicleMarkers.size > data.size) {
-            vehicleMarkers.last().remove()
-            vehicleMarkers = vehicleMarkers.dropLast(1)
-        }
-
-    }
+    override fun displayVehiclePositions(data: VehiclePositions) = locationMapFragment.drawVehicleMarkers(data)
 }

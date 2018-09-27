@@ -41,6 +41,8 @@ import kotlinx.android.synthetic.main.location_map_fragment_layout.*
 import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.model.MapData
 import software.orpington.rozkladmpk.data.model.Shape
+import software.orpington.rozkladmpk.data.model.VehiclePosition
+import software.orpington.rozkladmpk.data.model.VehiclePositions
 import software.orpington.rozkladmpk.utils.LocationCallbackReference
 import software.orpington.rozkladmpk.utils.convertToBitmap
 import software.orpington.rozkladmpk.utils.getBitmapDescriptor
@@ -66,6 +68,7 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
             presenter.pushMessage(State.Loading)
         }
     }
+
     fun hideProgressBar() = presenter.popMessage(State.Loading)
     override fun setMessages(msgs: List<Message>) = adapter.setMessages(msgs)
 
@@ -88,6 +91,7 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
             presenter.pushMessage(State.FailedToLoadData, true)
         }
     }
+
     fun popDataFailedToLoad() = presenter.popMessage(State.FailedToLoadData)
 
     private lateinit var presenter: LocationMapContract.Presenter
@@ -442,6 +446,55 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
         }
         stopMarkers.clear()
         alreadyDrawnStops.clear()
+    }
+
+    private var vehicleMarkers: MutableList<Marker> = mutableListOf()
+    override fun drawVehicleMarkers(positions: VehiclePositions) {
+        if (positions.isEmpty()) return
+
+        val addNewMarker = { position: VehiclePosition ->
+            val specialMarkerView = LayoutInflater.from(context).inflate(R.layout.map_marker, null, false)
+
+            val tv = specialMarkerView
+                .findViewById<TextView>(R.id.stopName)
+            tv.text = position.name.toUpperCase()
+            tv.setTypeface(tv.typeface, Typeface.BOLD)
+
+            specialMarkerView
+                .findViewById<ImageView>(R.id.circle)
+                .setImageResource(R.drawable.map_marker_vehicle)
+
+            val opt = MarkerOptions()
+                .position(LatLng(position.x, position.y))
+                .icon(BitmapDescriptorFactory.fromBitmap(specialMarkerView.convertToBitmap()))
+            map?.addMarker(opt)!!
+        }
+
+        val newMarkers: MutableList<Marker> = mutableListOf()
+        // first make sure we have enough markers
+        while (positions.size > vehicleMarkers.size + newMarkers.size) {
+            newMarkers.add(addNewMarker(positions.first()))
+        }
+
+        vehicleMarkers.addAll(newMarkers)
+
+        // update markers with new positions
+        for ((position, marker) in positions zip vehicleMarkers) {
+            marker.position = LatLng(position.x, position.y)
+        }
+
+        // remove unused markers
+        while (vehicleMarkers.size > positions.size) {
+            vehicleMarkers.last().remove()
+            vehicleMarkers.removeAt(vehicleMarkers.lastIndex)
+        }
+    }
+
+    override fun clearVehicleMarkers() {
+        for (marker in vehicleMarkers) {
+            marker.remove()
+        }
+        vehicleMarkers.clear()
     }
 
     private fun updateFABVisibility() {
