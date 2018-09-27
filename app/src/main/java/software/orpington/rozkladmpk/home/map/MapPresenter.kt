@@ -237,13 +237,9 @@ class MapPresenter(
 
     private fun updateRouteShapes() {
         view?.clearShapes()
+        view?.clearStops()
 
         for (trackedDeparture in trackedDepartures.toMap()) {
-            val stopID = trackedDeparture.key
-            val stopName = stopsAndRoutes.stops.find { stop ->
-                stop.stopID == stopID
-            }?.stopName ?: return
-
             for (trackedDepartureDetails in trackedDeparture.value) {
 
                 val shapeColour = trackedDeparturesColours.getOrElse(trackedDepartureDetails.tripID) { -1 }

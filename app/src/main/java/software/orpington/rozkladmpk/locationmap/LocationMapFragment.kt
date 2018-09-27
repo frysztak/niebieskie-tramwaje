@@ -421,6 +421,7 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
             marker.remove()
         }
         stopMarkers.clear()
+        alreadyDrawnStops.clear()
     }
 
     private fun updateFABVisibility() {
