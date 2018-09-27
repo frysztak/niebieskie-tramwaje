@@ -231,25 +231,40 @@ class MapPresenter(
             .last()
             .stopID
 
-        val departure = departures.find { departure ->
+        val departureDetails = departures.find { departure ->
             departure.stop.stopID == stopID
-        } ?: return
-
-        val departureDetails = departure.departures.find { departureDetails ->
+        }?.departures?.find { departureDetails ->
             departureDetails.tripID == tripID
-        } ?: return
-
-        if (!trackedDepartures.containsKey(stopID)) {
-            trackedDepartures[stopID] = mutableListOf()
         }
 
-        if (trackedDepartures[stopID]!!.contains(departureDetails)) {
-            trackedDepartures[stopID]!!.remove(departureDetails)
-            trackedDeparturesColours.remove(departureDetails.tripID)
-            coloursHelper.goBack()
+        if (departureDetails == null) {
+            // this vehicle already has departed.
+            // it's not present in 'departures' list,
+            // but it should be present in 'trackedDepartures'
+            for ((k, v) in trackedDepartures) {
+                val itemToRemove = v.find { departureDetails ->
+                    departureDetails.tripID == tripID
+                }
+
+                if (itemToRemove != null) {
+                    v.remove(itemToRemove)
+                    trackedDeparturesColours.remove(tripID)
+                    coloursHelper.goBack()
+                }
+            }
         } else {
-            trackedDepartures[stopID]!!.add(departureDetails)
-            trackedDeparturesColours[departureDetails.tripID] = coloursHelper.getNextColor()
+            if (!trackedDepartures.containsKey(stopID)) {
+                trackedDepartures[stopID] = mutableListOf()
+            }
+
+            if (trackedDepartures[stopID]!!.contains(departureDetails)) {
+                trackedDepartures[stopID]!!.remove(departureDetails)
+                trackedDeparturesColours.remove(departureDetails.tripID)
+                coloursHelper.goBack()
+            } else {
+                trackedDepartures[stopID]!!.add(departureDetails)
+                trackedDeparturesColours[departureDetails.tripID] = coloursHelper.getNextColor()
+            }
         }
 
         updateViewItems()
