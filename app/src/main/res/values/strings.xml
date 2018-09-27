@@ -65,5 +65,8 @@
     <string name="minutes_5plus">minutes</string>
     <string name="near_you">Near you</string>
     <string name="show_more">show more…</string>
+    <string name="news">News</string>
+    <string name="favourites">Favourites</string>
+    <string name="where_to">Where to?</string>
 
 </resources>

@@ -52,7 +52,7 @@
     <string name="on_demand">na życzenie</string>
     <string name="failed_to_load_map_data">Nie udało się wczytać danych</string>
     <string name="you">Ty</string>
-    <string name="title_home">Dom</string>
+    <string name="title_home">Główna</string>
     <string name="title_notifications">Powiadomienia</string>
     <string name="title_map">Mapa</string>
     <string name="more">więcej</string>
@@ -66,5 +66,8 @@
     <string name="over_hour">ponad godzinę</string>
     <string name="near_you">Obok Ciebie</string>
     <string name="show_more">pokaż więcej…</string>
+    <string name="news">Newsy</string>
+    <string name="favourites">Ulubione</string>
+    <string name="where_to">Dokąd jedziemy?</string>
 
 </resources>
