@@ -61,7 +61,11 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
         locationMapCallbacks = cb
     }
 
-    fun showProgressBar() = presenter.pushMessage(State.Loading)
+    fun showProgressBar() {
+        if (!presenter.getMessages().contains(State.Loading)) {
+            presenter.pushMessage(State.Loading)
+        }
+    }
     fun hideProgressBar() = presenter.popMessage(State.Loading)
     override fun setMessages(msgs: List<Message>) = adapter.setMessages(msgs)
 
@@ -79,7 +83,11 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
         updateFABVisibility()
     }
 
-    fun pushDataFailedToLoad() = presenter.pushMessage(State.FailedToLoadData, true)
+    fun pushDataFailedToLoad() {
+        if (!presenter.getMessages().contains(State.FailedToLoadData)) {
+            presenter.pushMessage(State.FailedToLoadData, true)
+        }
+    }
     fun popDataFailedToLoad() = presenter.popMessage(State.FailedToLoadData)
 
     private lateinit var presenter: LocationMapContract.Presenter

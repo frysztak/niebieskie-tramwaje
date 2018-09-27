@@ -28,6 +28,8 @@ class LocationMapPresenter: LocationMapContract.Presenter {
         view?.setMessages(messages)
     }
 
+    override fun getMessages(): List<Message> = messages
+
     override fun onMessageButtonClicked(index: Int) {
         messages[index].buttonAction()
     }

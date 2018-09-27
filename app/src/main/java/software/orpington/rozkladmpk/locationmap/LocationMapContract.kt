@@ -12,6 +12,7 @@ interface LocationMapContract {
         fun popMessage(msg: Message)
 
         fun onMessageButtonClicked(index: Int)
+        fun getMessages(): List<Message>
     }
 
     interface View {

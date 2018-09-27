@@ -163,14 +163,10 @@ class MapPresenter(
     @set:Synchronized
     private var isTryingToLoadDepartures: Boolean = false
 
-    @get:Synchronized
-    @set:Synchronized
-    private var departuresFailedToLoad: Boolean = false
-
     override fun loadDepartures(stopNames: List<String>) {
         lastStopNames = stopNames
         if (stopsAndRoutes.stops.isEmpty()) return
-        if (isTryingToLoadDepartures || departuresFailedToLoad) return
+        if (isTryingToLoadDepartures) return
 
         isTryingToLoadDepartures = true
         view?.showProgressBar()
@@ -180,7 +176,6 @@ class MapPresenter(
                 updateViewItems()
                 view?.hideProgressBar()
                 isTryingToLoadDepartures = false
-                departuresFailedToLoad = false
                 lastUpdateTime = System.currentTimeMillis()
             }
 
@@ -188,7 +183,6 @@ class MapPresenter(
                 view?.hideProgressBar()
                 view?.reportThatSomethingWentWrong()
                 isTryingToLoadDepartures = false
-                departuresFailedToLoad = true
             }
         })
     }
@@ -208,7 +202,6 @@ class MapPresenter(
         if (stopsAndRoutes.stops.isEmpty()) {
             loadStops()
         } else if (departures.isEmpty()) {
-            departuresFailedToLoad = false
             loadDepartures(lastStopNames)
         }
     }
@@ -275,6 +268,7 @@ class MapPresenter(
     private fun updateRouteShapes() {
         view?.clearShapes()
         view?.clearStops()
+        view?.showProgressBar()
 
         for (trackedDeparture in trackedDepartures.toMap()) {
             for (trackedDepartureDetails in trackedDeparture.value) {
@@ -284,10 +278,12 @@ class MapPresenter(
                     override fun onDataLoaded(data: MapData) {
                         view?.drawShape(data.shapes.first(), shapeColour)
                         view?.drawStops(data.stops)
+                        view?.hideProgressBar()
                     }
 
                     override fun onDataNotAvailable() {
-                        // TODO
+                        view?.reportThatSomethingWentWrong()
+                        view?.hideProgressBar()
                     }
                 }
 
