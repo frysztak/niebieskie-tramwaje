@@ -13,8 +13,8 @@ import software.orpington.rozkladmpk.utils.GeoLocation
 import software.orpington.rozkladmpk.utils.MapColoursHelper
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.fixedRateTimer
 
 
 class MapPresenter(
@@ -24,11 +24,28 @@ class MapPresenter(
     private var view: MapContract.View? = null
     override fun attachView(view: MapContract.View) {
         this.view = view
+
+        val initialDelay = 61L - Calendar.getInstance().get(Calendar.SECOND)
+        val rate = 30L
+        updateScheduler.scheduleAtFixedRate(updateSchedulerCallback, initialDelay, rate, TimeUnit.SECONDS)
     }
 
     override fun detachView() {
         this.view = null
     }
+
+    private var lastUpdateTime = 0L
+    private val minimalTimeDeltaBetweenUpdates = 30 * 1000 // 30 seconds
+    private val updateScheduler = Executors.newSingleThreadScheduledExecutor()
+    private val updateSchedulerCallback = Runnable {
+        launch(UI) {
+            val currentTime = System.currentTimeMillis()
+            if (currentTime >= (lastUpdateTime + minimalTimeDeltaBetweenUpdates)) {
+                loadDepartures(lastStopNames)
+            }
+        }
+    }
+
 
     private var stopsAndRoutes: StopsAndRoutes = StopsAndRoutes(emptyList(), emptyList())
     override fun loadStops() {
@@ -149,17 +166,6 @@ class MapPresenter(
     @get:Synchronized
     @set:Synchronized
     private var departuresFailedToLoad: Boolean = false
-
-    private var lastUpdateTime = 0L
-    private val minimalTimeDeltaBetweenUpdates = 30 * 1000 // 30 seconds
-    private val updateTimer = fixedRateTimer(period = 30 * 1000) {
-        launch(UI) {
-            val currentTime = System.currentTimeMillis()
-            if (currentTime >= (lastUpdateTime + minimalTimeDeltaBetweenUpdates)) {
-                loadDepartures(lastStopNames)
-            }
-        }
-    }
 
     override fun loadDepartures(stopNames: List<String>) {
         lastStopNames = stopNames
