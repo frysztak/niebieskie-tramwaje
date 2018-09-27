@@ -210,10 +210,18 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationCallbackReference: LocationCallbackReference
 
+    private var centeredToUserLocation = false
+
     private fun notifyLocationChanged(loc: Location) {
         updateUserMarker(loc)
         updateFABVisibility()
         locationMapCallbacks?.onLocationChanged(loc.latitude, loc.longitude)
+
+        // center to user location once, after first location comes in
+        if (!centeredToUserLocation) {
+            centerToUserLocation()
+            centeredToUserLocation = true
+        }
     }
 
     private fun initLocationManager() {
@@ -330,13 +338,16 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
         userMarker?.position = LatLng(location.latitude, location.longitude)
     }
 
+    private val centerToUserLocationZoomLevel = 14f
     private fun centerToUserLocation() {
         val marker = userMarker ?: return
 
-        map?.moveCamera(
-            CameraUpdateFactory.newLatLngZoom(marker.position, 14.0f)
-        )
-
+        val currentZoom = map?.cameraPosition?.zoom ?: 10f
+        val cameraUpdate = when {
+            currentZoom > centerToUserLocationZoomLevel -> CameraUpdateFactory.newLatLng(marker.position)
+            else -> CameraUpdateFactory.newLatLngZoom(marker.position, centerToUserLocationZoomLevel)
+        }
+        map?.moveCamera(cameraUpdate)
     }
 
     private var drawnShapes: MutableList<Polyline> = mutableListOf()
@@ -381,6 +392,7 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
     // I should probably use RxJava to merge all map data requests
     // and get unique stops
     private val alreadyDrawnStops: MutableList<MapData.Stop> = mutableListOf()
+
     override fun drawStops(stops: List<MapData.Stop>) {
         val context = context ?: return
 
