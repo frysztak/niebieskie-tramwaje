@@ -248,8 +248,8 @@ class MapPresenter(
 
                 if (itemToRemove != null) {
                     v.remove(itemToRemove)
+                    coloursHelper.releaseColour(trackedDeparturesColours[tripID] ?: -1)
                     trackedDeparturesColours.remove(tripID)
-                    coloursHelper.goBack()
                 }
             }
         } else {
@@ -259,8 +259,8 @@ class MapPresenter(
 
             if (trackedDepartures[stopID]!!.contains(departureDetails)) {
                 trackedDepartures[stopID]!!.remove(departureDetails)
+                coloursHelper.releaseColour(trackedDeparturesColours[tripID] ?: -1)
                 trackedDeparturesColours.remove(departureDetails.tripID)
-                coloursHelper.goBack()
             } else {
                 trackedDepartures[stopID]!!.add(departureDetails)
                 trackedDeparturesColours[departureDetails.tripID] = coloursHelper.getNextColor()

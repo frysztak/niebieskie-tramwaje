@@ -1,7 +1,6 @@
 package software.orpington.rozkladmpk.routeMap
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Handler
@@ -147,7 +146,7 @@ class RouteMapActivity : AppCompatActivity(), RouteMapContract.View, LocationMap
         locationMapFragment.popDataFailedToLoad()
 
         if (map == null || mapData == null) return
-        coloursHelper.resetCounter()
+        coloursHelper.releaseAllColours()
 
         // TODO: use method from LocationMapFragment
         val boundsBuilder = LatLngBounds.builder()
