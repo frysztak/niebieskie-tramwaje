@@ -56,12 +56,14 @@
     <string name="title_notifications">Powiadomienia</string>
     <string name="title_map">Mapa</string>
     <string name="more">więcej</string>
-    <string name="departureIn">Za %s %s (%s)</string>
+    <string name="departureIn">Za %s (%s)</string>
     <string name="departs_now">Odjeżdza teraz! (%s)</string>
-    <string name="already_departed">Odjechał %s %s temu (%s)</string>
+    <string name="already_departed">Odjechał %s temu (%s)</string>
     <string name="minute_1">minutę</string>
     <string name="minutes_2to4">minuty</string>
     <string name="minutes_5plus">minut</string>
+    <string name="hour">godzinę</string>
+    <string name="over_hour">ponad godzinę</string>
     <string name="near_you">Obok Ciebie</string>
     <string name="show_more">pokaż więcej…</string>
 

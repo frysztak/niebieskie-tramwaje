@@ -55,11 +55,13 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_map">Map</string>
     <string name="more">more</string>
-    <string name="departureIn">In %s %s (%s)</string>
+    <string name="departureIn">In %s (%s)</string>
     <string name="departs_now">Departs now! (%s)</string>
-    <string name="already_departed">Departed %s %s ago (%s)</string>
+    <string name="already_departed">Departed %s ago (%s)</string>
     <string name="minute_1">minute</string>
     <string name="minutes_2to4">minutes</string>
+    <string name="hour">an hour</string>
+    <string name="over_hour">over an hour</string>
     <string name="minutes_5plus">minutes</string>
     <string name="near_you">Near you</string>
     <string name="show_more">show more…</string>
