@@ -35,6 +35,7 @@ class StopsForRoutesAdapter(
         val stopName = items[position]
         holder.iconImageView.setImageResource(R.drawable.bus_stop)
         holder.nameTextView.text = stopName
+        holder.distanceTextView.visibility = View.GONE
     }
 
     class ViewHolder(
@@ -44,6 +45,7 @@ class StopsForRoutesAdapter(
 
         val nameTextView: TextView = view.mainName
         val iconImageView: ImageView = view.icon
+        val distanceTextView: TextView = view.distance
 
         init {
             view.setOnClickListener(this)
