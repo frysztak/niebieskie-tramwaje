@@ -1,6 +1,8 @@
 package software.orpington.rozkladmpk.home.map
 
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
+import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -8,6 +10,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 import software.orpington.rozkladmpk.Injection
@@ -47,6 +50,13 @@ class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
         locationMapFragment.setRetryButtonAction {
             presenter.retryToLoadData()
             locationMapFragment.popDataFailedToLoad()
+        }
+
+        val bottomSheetHeader = v.findViewById<TextView>(R.id.mapSheet_header)
+        bottomSheetHeader.post {
+            val bottomSheet = v.findViewById<ConstraintLayout>(R.id.bottomSheet)
+            val behaviour = BottomSheetBehavior.from(bottomSheet)
+            behaviour.peekHeight = bottomSheetHeader.height
         }
 
         v.findViewById<RecyclerView>(R.id.nearYouRecyclerView).apply {
