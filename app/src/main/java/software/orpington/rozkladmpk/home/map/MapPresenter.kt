@@ -50,6 +50,8 @@ class MapPresenter(
             departureDetails.routeID
         }.distinct()
 
+        if (routeIDs.isEmpty()) return
+
         remoteDataSource.getVehiclePosition(routeIDs, object : IDataSource.LoadDataCallback<VehiclePositions> {
             override fun onDataLoaded(data: VehiclePositions) {
                 view?.drawVehicleMarkers(data)
@@ -78,10 +80,16 @@ class MapPresenter(
 
     private lateinit var lastUserLocation: GeoLocation
     override fun locationChanged(latitude: Double, longitude: Double) {
-        // NOTE: always process location-induced requests
         lastUserLocation = GeoLocation.fromDegrees(latitude, longitude)
         val helper = StopsAndRoutesHelper()
         val nearbyStops = helper.filterNearbyStops(stopsAndRoutes.stops, lastUserLocation)
+
+        if (nearbyStops.isEmpty()) {
+            departures = emptyList()
+            lastStopNames = emptyList()
+            updateViewItems()
+            return
+        }
 
         loadDepartures(nearbyStops.map { stop ->
             stop.stopName
@@ -90,6 +98,12 @@ class MapPresenter(
 
     private fun convertToViewItems(departures: Departures): List<DepartureViewItem> {
         val viewItems = mutableListOf<DepartureViewItem>()
+
+        if (departures.isEmpty()) {
+            viewItems.add(DepartureNotFound)
+            return viewItems
+        }
+
         for (departure in sortDepartures(departures)) {
             val stopID = departure.stop.stopID
 
@@ -178,7 +192,7 @@ class MapPresenter(
 
     override fun loadDepartures(stopNames: List<String>) {
         lastStopNames = stopNames
-        if (stopsAndRoutes.stops.isEmpty()) return
+        if (stopNames.isEmpty() || stopsAndRoutes.stops.isEmpty()) return
         if (isTryingToLoadDepartures) return
 
         isTryingToLoadDepartures = true

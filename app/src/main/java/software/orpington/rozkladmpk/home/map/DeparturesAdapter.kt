@@ -31,6 +31,7 @@ class DeparturesAdapter(
     private val ITEM_TYPE_HEADER = 0
     private val ITEM_TYPE_DETAILS = 1
     private val ITEM_TYPE_SHOW_MORE = 2
+    private val ITEM_TYPE_NOT_FOUND = 3
 
     override fun getItemViewType(position: Int): Int {
         val item = items[position]
@@ -38,6 +39,7 @@ class DeparturesAdapter(
             is DepartureHeader -> ITEM_TYPE_HEADER
             is DepartureDetails -> ITEM_TYPE_DETAILS
             is DepartureShowMore -> ITEM_TYPE_SHOW_MORE
+            is DepartureNotFound -> ITEM_TYPE_NOT_FOUND
         }
     }
 
@@ -50,6 +52,10 @@ class DeparturesAdapter(
             ITEM_TYPE_DETAILS -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.home_map_nearby_item, parent, false)
                 DetailsViewHolder(view, presenter)
+            }
+            ITEM_TYPE_NOT_FOUND -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.home_map_nearby_not_found, parent, false)
+                EmptyViewHolder(view)
             }
             else -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.home_map_nearby_show_more, parent, false)
@@ -150,3 +156,6 @@ internal class ShowMoreViewHolder(
         }
     }
 }
+
+internal class EmptyViewHolder(view: View): RecyclerView.ViewHolder(view)
+

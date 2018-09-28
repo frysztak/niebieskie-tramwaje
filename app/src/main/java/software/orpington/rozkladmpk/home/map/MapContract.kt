@@ -25,6 +25,7 @@ data class DepartureDetails(
     val shapeColour: Int
 ) : DepartureViewItem()
 
+object DepartureNotFound: DepartureViewItem()
 object DepartureShowMore : DepartureViewItem()
 
 interface MapContract {
