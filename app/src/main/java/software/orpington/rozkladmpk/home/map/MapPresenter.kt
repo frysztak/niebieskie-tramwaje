@@ -1,5 +1,6 @@
 package software.orpington.rozkladmpk.home.map
 
+import android.annotation.SuppressLint
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import software.orpington.rozkladmpk.data.model.*
@@ -96,6 +97,7 @@ class MapPresenter(
         })
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun convertToViewItems(departures: Departures): List<DepartureViewItem> {
         val viewItems = mutableListOf<DepartureViewItem>()
 
@@ -104,22 +106,34 @@ class MapPresenter(
             return viewItems
         }
 
-        for (departure in sortDepartures(departures)) {
-            val stopID = departure.stop.stopID
+        val sortedDepartures = sortDepartures(departures)
+        val stopIDsAlreadyPresent = sortedDepartures.map { it.stop.stopID }
+        val trackedDeparturesToAdd: MutableList<Departure> = mutableListOf()
 
-            val stopLocation = GeoLocation.fromDegrees(departure.stop.latitude, departure.stop.longitude)
+        // add stops that user is tracking, but his location has already changed, so they aren't
+        // present in departures received from server
+        for ((stop, v) in trackedDepartures) {
+            if (stopIDsAlreadyPresent.contains(stop.stopID)) continue
+            if (v.isEmpty()) continue
+            trackedDeparturesToAdd.add(Departure(stop, mutableListOf()))
+        }
+
+        for (departure in trackedDeparturesToAdd + sortedDepartures) {
+            val stop = departure.stop
+
+            val stopLocation = GeoLocation.fromDegrees(stop.latitude, stop.longitude)
             val earthRadius = 6378.1 * 1000 // in meters
             val distance = stopLocation.distanceTo(lastUserLocation, earthRadius)
             viewItems.add(DepartureHeader(
-                departure.stop.stopName,
-                departure.stop.stopID,
+                stop.stopName,
+                stop.stopID,
                 distance.toFloat()
             ))
 
-            val addShowMoreButton = !fullyExpandedStops.contains(stopID)
+            val addShowMoreButton = !fullyExpandedStops.contains(stop.stopID)
 
-            val trackedDeparturesToAdd = trackedDepartures.getOrElse(stopID) { mutableListOf() }
-            val departuresToAdd = (trackedDeparturesToAdd + when (addShowMoreButton) {
+            val trackedDepartureDetailsToAdd = trackedDepartures.getOrElse(stop) { mutableListOf() }
+            val departuresToAdd = (trackedDepartureDetailsToAdd + when (addShowMoreButton) {
                 true -> departure.departures.take(2)
                 false -> departure.departures
             }).distinctBy { departureDetails -> departureDetails.tripID }
@@ -145,7 +159,7 @@ class MapPresenter(
                     route.routeID == departureDetails.routeID
                 }?.isBus ?: false
 
-                val isTracked = trackedDeparturesToAdd.contains(departureDetails)
+                val isTracked = trackedDepartureDetailsToAdd.contains(departureDetails)
                 val lineColour = trackedDeparturesColours.getOrElse(departureDetails.tripID) { -1 }
 
                 viewItems.add(DepartureDetails(
@@ -233,8 +247,7 @@ class MapPresenter(
         }
     }
 
-    // Key: StopID, Value: self-explanatory, I hope
-    private val trackedDepartures: MutableMap<Int, MutableList<Departure.DepartureDetails>> = mutableMapOf()
+    private val trackedDepartures: MutableMap<StopsAndRoutes.Stop, MutableList<Departure.DepartureDetails>> = mutableMapOf()
 
     // Key: TripID, Value: Colour
     private val trackedDeparturesColours: MutableMap<Int, Int> = mutableMapOf()
@@ -273,16 +286,24 @@ class MapPresenter(
                 }
             }
         } else {
-            if (!trackedDepartures.containsKey(stopID)) {
-                trackedDepartures[stopID] = mutableListOf()
+            val stop =
+                trackedDepartures.keys.find { stop ->
+                    stop.stopID == stopID
+                } ?: departures.find { departure ->
+                    departure.stop.stopID == stopID
+                }?.stop
+                ?: return
+
+            if (!trackedDepartures.containsKey(stop)) {
+                trackedDepartures[stop] = mutableListOf()
             }
 
-            if (trackedDepartures[stopID]!!.contains(departureDetails)) {
-                trackedDepartures[stopID]!!.remove(departureDetails)
+            if (trackedDepartures[stop]!!.contains(departureDetails)) {
+                trackedDepartures[stop]!!.remove(departureDetails)
                 coloursHelper.releaseColour(trackedDeparturesColours[tripID] ?: -1)
                 trackedDeparturesColours.remove(departureDetails.tripID)
             } else {
-                trackedDepartures[stopID]!!.add(departureDetails)
+                trackedDepartures[stop]!!.add(departureDetails)
                 trackedDeparturesColours[departureDetails.tripID] = coloursHelper.getNextColor()
             }
         }
