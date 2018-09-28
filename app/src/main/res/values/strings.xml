@@ -68,5 +68,6 @@
     <string name="news">News</string>
     <string name="favourites">Favourites</string>
     <string name="where_to">Where to?</string>
+    <string name="add">add</string>
 
 </resources>

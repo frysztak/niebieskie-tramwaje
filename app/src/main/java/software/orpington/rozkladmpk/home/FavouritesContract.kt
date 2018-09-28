@@ -1,11 +1,15 @@
 package software.orpington.rozkladmpk.home
 
+sealed class FavouriteViewModel
+
 data class FavouriteItem(
     val routeID: String,
     val isBus: Boolean,
     val stopName: String,
     val direction: String
-)
+) : FavouriteViewModel()
+
+object FavouriteAddNew : FavouriteViewModel()
 
 interface FavouritesContract {
     interface Presenter {
@@ -17,7 +21,8 @@ interface FavouritesContract {
     }
 
     interface View {
-        fun showFavourites(data: List<FavouriteItem>)
+        fun showFavourites(data: List<FavouriteViewModel>)
         fun navigateToRouteDetails(routeID: String, stopName: String, direction: String)
+        fun focusSearchBar()
     }
 }

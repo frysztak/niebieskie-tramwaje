@@ -116,8 +116,12 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
         startActivity(i)
     }
 
-    override fun showFavourites(data: List<FavouriteItem>) {
+    override fun showFavourites(data: List<FavouriteViewModel>) {
         favouritesAdapter.setItems(data)
+    }
+
+    override fun focusSearchBar() {
+        home_searchView.onActionViewExpanded()
     }
 
     override fun navigateToRouteDetails(routeID: String, stopName: String, direction: String) {

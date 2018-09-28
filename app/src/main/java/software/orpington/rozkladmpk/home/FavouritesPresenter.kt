@@ -10,9 +10,9 @@ class FavouritesPresenter: FavouritesContract.Presenter {
         this.view = null
     }
 
-    private var favourites: List<FavouriteItem> = emptyList()
+    private var favourites: List<FavouriteViewModel> = emptyList()
     override fun onFavouritesLoaded(preferencesMap: Map<String, *>) {
-        val favourites: MutableList<FavouriteItem> = mutableListOf()
+        val favourites: MutableList<FavouriteViewModel> = mutableListOf()
 
         preferencesMap.filterKeys { key ->
             key.startsWith("fav_")
@@ -33,12 +33,18 @@ class FavouritesPresenter: FavouritesContract.Presenter {
             }
         }
 
+        favourites.add(FavouriteAddNew)
+
         this.favourites = favourites
         view?.showFavourites(this.favourites)
     }
 
     override fun favouriteClicked(index: Int) {
         val item = favourites[index]
-        view?.navigateToRouteDetails(item.routeID, item.stopName, item.direction)
+        when (item) {
+            is FavouriteItem ->
+                view?.navigateToRouteDetails(item.routeID, item.stopName, item.direction)
+            FavouriteAddNew -> view?.focusSearchBar()
+        }
     }
 }
