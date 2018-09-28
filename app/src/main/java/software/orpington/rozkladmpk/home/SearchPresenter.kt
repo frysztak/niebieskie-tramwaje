@@ -19,17 +19,15 @@ class SearchPresenter(
 
     private var stopsAndRoutes: List<StopOrRouteViewItem> = emptyList()
     override fun loadData() {
-        view?.showProgressBar()
         dataSource.getStopsAndRoutes(object : IDataSource.LoadDataCallback<StopsAndRoutes> {
             override fun onDataLoaded(data: StopsAndRoutes) {
-                view?.hideProgressBar()
                 val helper = StopsAndRoutesHelper()
                 stopsAndRoutes = helper.convertModel(data)
             }
 
             override fun onDataNotAvailable() {
-                view?.hideProgressBar()
-                view?.reportThatSomethingWentWrong()
+                // retry
+                loadData()
             }
         })
     }
