@@ -41,7 +41,7 @@ class SearchPresenter(
         }
 
         val helper = StopsAndRoutesHelper()
-        val searchResults = helper.filterItems(stopsAndRoutes, newText)
+        val searchResults = helper.filterItems(stopsAndRoutes, newText).take(10)
 
         if (searchResults.isNotEmpty()) {
             view?.showSearchResults(searchResults)
