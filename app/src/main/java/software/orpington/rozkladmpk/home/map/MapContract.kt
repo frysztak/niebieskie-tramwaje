@@ -43,6 +43,7 @@ interface MapContract {
         fun onTrackButtonClicked(position: Int)
 
         fun retryToLoadData()
+        fun departureClicked(adapterPosition: Int)
     }
 
     interface View : BaseView {
@@ -57,5 +58,12 @@ interface MapContract {
 
         fun drawVehicleMarkers(positions: VehiclePositions)
         fun clearVehicleMarkers()
+        fun navigateToRouteDetails(
+            routeID: String,
+            stopName: String,
+            direction: String,
+            departureTime: String,
+            tripID: Int
+        )
     }
 }

@@ -138,6 +138,10 @@ internal class DetailsViewHolder(
     val onDemand: Group = view.onDemand
 
     init {
+        view.setOnClickListener {
+            presenter.departureClicked(adapterPosition)
+        }
+
         trackIcon.setOnClickListener {
             presenter.onTrackButtonClicked(adapterPosition)
         }
@@ -157,5 +161,5 @@ internal class ShowMoreViewHolder(
     }
 }
 
-internal class EmptyViewHolder(view: View): RecyclerView.ViewHolder(view)
+internal class EmptyViewHolder(view: View) : RecyclerView.ViewHolder(view)
 

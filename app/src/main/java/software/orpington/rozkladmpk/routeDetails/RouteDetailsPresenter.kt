@@ -1,9 +1,6 @@
 package software.orpington.rozkladmpk.routeDetails
 
-import software.orpington.rozkladmpk.data.model.RouteDirections
-import software.orpington.rozkladmpk.data.model.RouteInfo
-import software.orpington.rozkladmpk.data.model.TimeTable
-import software.orpington.rozkladmpk.data.model.Timeline
+import software.orpington.rozkladmpk.data.model.*
 import software.orpington.rozkladmpk.data.source.IDataSource
 import software.orpington.rozkladmpk.data.source.RemoteDataSource
 import java.util.*
@@ -71,6 +68,21 @@ class RouteDetailsPresenter(
             state.favouriteDirections,
             state.currentRouteDirection
         )
+    }
+
+    private var departureTimeToNavigateTo: String? = null
+    override fun setDepartureTime(departureTime: String, tripID: Int) {
+        departureTimeToNavigateTo = departureTime
+        if (state.timetable == null) {
+            state.timetable = TimeTable(
+                state.routeID,
+                state.stopName,
+                state.routeDirections[state.currentRouteDirection],
+                listOf(TimeTableEntry(tripID, departureTime, departureTime)),
+                emptyList(), emptyList())
+            state.currentTimeTag = "WE:%s".format(departureTime)
+        }
+        state.tripID = tripID
     }
 
     override fun loadRouteInfo() {

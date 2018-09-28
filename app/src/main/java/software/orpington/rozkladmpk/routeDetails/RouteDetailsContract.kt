@@ -37,6 +37,7 @@ interface RouteDetailsContract {
 
         fun getState(): RouteDetailsState
         fun setState(state: RouteDetailsState)
+        fun setDepartureTime(departureTime: String, tripID: Int)
     }
 
     interface InfoView : BaseView {

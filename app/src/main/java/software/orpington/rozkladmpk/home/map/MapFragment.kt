@@ -1,5 +1,6 @@
 package software.orpington.rozkladmpk.home.map
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.BottomSheetBehavior
@@ -22,6 +23,7 @@ import software.orpington.rozkladmpk.data.model.VehiclePositions
 import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.locationmap.LocationMapCallbacks
 import software.orpington.rozkladmpk.locationmap.LocationMapFragment
+import software.orpington.rozkladmpk.routeDetails.RouteDetailsActivity
 
 
 class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
@@ -117,6 +119,24 @@ class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
     override fun clearStops() = locationMapFragment.clearStops()
     override fun drawVehicleMarkers(positions: VehiclePositions) = locationMapFragment.drawVehicleMarkers(positions)
     override fun clearVehicleMarkers() = locationMapFragment.clearVehicleMarkers()
+
+    override fun navigateToRouteDetails(
+        routeID: String,
+        stopName: String,
+        direction: String,
+        departureTime: String,
+        tripID: Int
+    ) {
+        val intent = Intent(context, RouteDetailsActivity::class.java)
+        intent.apply {
+            putExtra("routeID", routeID)
+            putExtra("stopName", stopName)
+            putExtra("direction", direction)
+            putExtra("departureTime", departureTime)
+            putExtra("tripID", tripID)
+        }
+        startActivity(intent)
+    }
 
     companion object {
         fun newInstance(): MapFragment {

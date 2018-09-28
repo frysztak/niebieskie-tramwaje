@@ -48,6 +48,7 @@ class RouteDetailsActivity : AppCompatActivity(),
         routeID = intent.getStringExtra("routeID")
         stopName = intent.getStringExtra("stopName")
         val direction = if (intent.hasExtra("direction")) intent.getStringExtra("direction") else null
+        val departureTime = if (intent.hasExtra("departureTime")) intent.getStringExtra("departureTime") else null
 
         val httpClient = ApiClient.getHttpClient(cacheDir)
         presenter = RouteDetailsPresenter(Injection.provideDataSource(httpClient))
@@ -57,6 +58,11 @@ class RouteDetailsActivity : AppCompatActivity(),
             presenter.setStopName(stopName)
             if (direction != null) {
                 presenter.setDirection(direction)
+            }
+
+            if (departureTime != null) {
+                val tripID = intent.getIntExtra("tripID", -1)
+                presenter.setDepartureTime(departureTime, tripID)
             }
         } else {
             val state = savedInstanceState.getParcelable<RouteDetailsState>("state")
@@ -90,7 +96,9 @@ class RouteDetailsActivity : AppCompatActivity(),
 
         presenter.loadRouteInfo()
 
-        if (direction != null) {
+        if (departureTime != null) {
+            viewPager.currentItem = 2 // timeline
+        } else if (direction != null) {
             viewPager.currentItem = 1 // timetable
         }
     }

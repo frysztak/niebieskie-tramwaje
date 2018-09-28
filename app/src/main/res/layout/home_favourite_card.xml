@@ -5,6 +5,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     app:cardElevation="4dp">
 
     <android.support.constraint.ConstraintLayout
@@ -30,8 +32,8 @@
             style="@style/FavouriteCard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@id/favouriteCard_icon"
@@ -56,8 +58,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingTop="2dp"
             android:paddingBottom="8dp"
+            android:paddingTop="2dp"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="@id/favouriteCard_directionIcon"
             app:layout_constraintEnd_toEndOf="parent"

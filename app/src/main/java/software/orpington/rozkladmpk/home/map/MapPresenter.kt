@@ -239,6 +239,25 @@ class MapPresenter(
         updateViewItems()
     }
 
+    override fun departureClicked(adapterPosition: Int) {
+        val stopName = viewItems
+            .subList(0, adapterPosition)
+            .filterIsInstance<DepartureHeader>()
+            .last()
+            .stopName
+
+        val tripID = viewItems.subList(0, adapterPosition + 1)
+            .filterIsInstance<DepartureDetails>()
+            .last()
+            .tripID
+
+        val item = viewItems[adapterPosition]
+        when (item) {
+            is DepartureDetails ->
+                view?.navigateToRouteDetails(item.routeID, stopName, item.direction, item.departureTime, tripID)
+        }
+    }
+
     override fun retryToLoadData() {
         if (stopsAndRoutes.stops.isEmpty()) {
             loadStops()
