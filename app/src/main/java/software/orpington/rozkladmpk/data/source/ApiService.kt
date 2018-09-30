@@ -37,4 +37,10 @@ interface ApiService {
     fun getRouteMap(@Path("routeID") routeID: String,
                     @Path("stopName") stopName: String,
                     @Path("direction") direction: String): Call<MapData>
+
+    @GET("trip/{tripID}/map")
+    fun getTripMap(@Path("tripID") tripID: Int): Call<MapData>
+
+    @GET("stops/{stopNames}/departures")
+    fun getDepartures(@Path("stopNames") stopNames: String): Call<Departures>
 }

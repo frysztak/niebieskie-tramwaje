@@ -19,11 +19,13 @@ interface RouteDetailsContract {
 
         fun setRouteID(id: String)
         fun setStopName(name: String)
+        fun setDirection(direction: String)
 
         fun loadRouteInfo()
 
         fun loadRouteDirections()
         fun onDirectionClicked(directionIdx: Int)
+        fun onDirectionFavouriteClicked(directionIdx: Int)
 
         fun loadTimeTable()
         fun onTimeClicked(time: String)
@@ -35,6 +37,7 @@ interface RouteDetailsContract {
 
         fun getState(): RouteDetailsState
         fun setState(state: RouteDetailsState)
+        fun setDepartureTime(departureTime: String, tripID: Int)
     }
 
     interface InfoView : BaseView {
@@ -47,9 +50,21 @@ interface RouteDetailsContract {
         fun attachPresenter(newPresenter: Presenter)
 
         fun showRouteDirections(routeDirections: List<String>,
+                                favouriteDirections: Set<Int>,
                                 idxToHighlight: Int = -1)
 
         fun highlightDirection(directionIdx: Int)
+
+        fun getFavouriteDirections(
+            routeID: String,
+            stopName: String,
+            isBus: Boolean
+        ): Set<String>
+        fun setFavouriteDirections(routeID: String,
+                                   stopName: String,
+                                   isBus: Boolean,
+                                   favourites: Set<String>,
+                                   favouritesIndices: Set<Int>)
     }
 
     interface TimetableView : BaseView {

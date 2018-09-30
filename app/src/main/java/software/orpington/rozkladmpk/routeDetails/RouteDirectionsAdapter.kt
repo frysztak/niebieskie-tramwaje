@@ -6,9 +6,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
-import software.orpington.rozkladmpk.R
 import kotlinx.android.synthetic.main.route_directions_list_item.view.*
+import software.orpington.rozkladmpk.R
 
 
 class RouteDirectionsAdapter(
@@ -26,6 +27,18 @@ class RouteDirectionsAdapter(
         notifyDataSetChanged()
     }
 
+    private var favourites: Set<Int> = emptySet()
+    fun setFavourites(newItems: Set<Int>) {
+        favourites = newItems
+        notifyDataSetChanged()
+    }
+
+    private var itemToHighlight: Int = -1
+    fun setItemToHighlight(idx: Int) {
+        itemToHighlight = idx
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.route_directions_list_item, parent, false)
         return ViewHolder(view, highlightColour, normalColour, presenter)
@@ -38,6 +51,16 @@ class RouteDirectionsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
         holder.stopTextView.text = item
+        holder.favouriteIcon.setImageResource(when (favourites.contains(position)) {
+            true -> R.drawable.ic_favorite_black_24dp
+            false -> R.drawable.ic_favorite_border_black_24dp
+        })
+
+        if (position == itemToHighlight) {
+            holder.highlight()
+        } else {
+            holder.removeHighlight()
+        }
     }
 
     class ViewHolder(
@@ -45,16 +68,17 @@ class RouteDirectionsAdapter(
         private val highlightColor: Int,
         private val normalColor: Int,
         private val presenter: RouteDetailsContract.Presenter) :
-        RecyclerView.ViewHolder(view),
-        View.OnClickListener {
+        RecyclerView.ViewHolder(view) {
         val stopTextView: TextView = view.stopName_textview
+        val favouriteIcon: ImageView = view.favouriteIcon
 
         init {
-            view.setOnClickListener(this)
-        }
-
-        override fun onClick(v: View?) {
-            presenter.onDirectionClicked(adapterPosition)
+            view.setOnClickListener {
+                presenter.onDirectionClicked(adapterPosition)
+            }
+            favouriteIcon.setOnClickListener {
+                presenter.onDirectionFavouriteClicked(adapterPosition)
+            }
         }
 
         fun highlight() {

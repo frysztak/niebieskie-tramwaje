@@ -33,7 +33,7 @@ class RouteMapPresenter(
     }
 
     override fun updateVehiclePosition(routeID: String) {
-        dataSource.getVehiclePosition(routeID, object : IDataSource.LoadDataCallback<VehiclePositions> {
+        dataSource.getVehiclePosition(listOf(routeID), object : IDataSource.LoadDataCallback<VehiclePositions> {
             override fun onDataLoaded(data: VehiclePositions) {
                 view?.displayVehiclePositions(data)
             }

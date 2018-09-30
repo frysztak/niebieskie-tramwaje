@@ -9,5 +9,5 @@ import software.orpington.rozkladmpk.data.model.VehiclePositions
 interface GPSService {
     @FormUrlEncoded
     @POST("position.php")
-    fun getVehiclePosition(@Field("busList[bus][]") routeID: String): Call<VehiclePositions>
+    fun getVehiclePosition(@Field("busList[bus][]") routeIDs: List<String>): Call<VehiclePositions>
 }

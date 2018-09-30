@@ -4,9 +4,14 @@
     <dimen name="StateViewIconSize">100dp</dimen>
 
     <dimen name="StopIconSize">56dp</dimen>
+    <dimen name="StopIconSmallSize">32dp</dimen>
 
     <dimen name="TimeTableRowHeight">48dp</dimen>
     <dimen name="TimeTableColumnWidth">48dp</dimen>
 
     <dimen name="SkeletonTimeTableCellSize">36dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="locationMapFragmentMessageMinHeight">48dp</dimen>
 </resources>

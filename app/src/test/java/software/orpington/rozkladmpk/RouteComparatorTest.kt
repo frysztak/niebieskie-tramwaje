@@ -1,7 +1,7 @@
 package software.orpington.rozkladmpk
 
 import software.orpington.rozkladmpk.data.model.RouteVariant
-import software.orpington.rozkladmpk.stopsAndRoutes.Route
+import software.orpington.rozkladmpk.data.model.StopsAndRoutes.Route
 import software.orpington.rozkladmpk.utils.sort
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -10,7 +10,7 @@ import org.hamcrest.CoreMatchers.`is` as Is
 class RouteComparatorTest {
     @Test
     fun sortRoutes() {
-        val data = listOf(
+        val data: List<Route> = listOf(
             Route("3", false),
             Route("1", false),
             Route("0L", false),
@@ -30,7 +30,7 @@ class RouteComparatorTest {
 
     @Test
     fun sortRoutesWithExpressRoute() {
-        val data = listOf(
+        val data: List<Route> = listOf(
             Route("3", false),
             Route("1", false),
             Route("0L", false),
@@ -108,3 +108,4 @@ class RouteComparatorTest {
         assertThat(actual, Is(expected))
     }
 }
+

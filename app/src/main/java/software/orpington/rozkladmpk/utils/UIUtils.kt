@@ -7,6 +7,7 @@ import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.LinearSmoothScroller
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SearchView
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewTreeObserver
@@ -38,7 +39,7 @@ inline fun <T : View> T.afterMeasured(crossinline f: T.() -> Unit) {
 
 inline fun RecyclerView.whenScrollStateIdle(crossinline f: RecyclerView.() -> Unit) {
     addOnScrollListener(object : RecyclerView.OnScrollListener() {
-        override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 removeOnScrollListener(this)
                 f()
@@ -64,4 +65,17 @@ fun LinearLayoutManager.smoothScrollWithOffset(recyclerView: RecyclerView, posit
 
     linearSmoothScroller.targetPosition = position
     startSmoothScroll(linearSmoothScroller)
+}
+
+fun SearchView.onQueryChanged(f: (String) -> Unit) {
+    setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+        override fun onQueryTextChange(newText: String?): Boolean {
+            if (newText != null) {
+                f(newText)
+            }
+            return true
+        }
+
+        override fun onQueryTextSubmit(query: String?): Boolean = true
+    })
 }

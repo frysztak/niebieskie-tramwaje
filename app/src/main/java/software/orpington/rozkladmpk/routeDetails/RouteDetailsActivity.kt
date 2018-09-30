@@ -47,6 +47,8 @@ class RouteDetailsActivity : AppCompatActivity(),
 
         routeID = intent.getStringExtra("routeID")
         stopName = intent.getStringExtra("stopName")
+        val direction = if (intent.hasExtra("direction")) intent.getStringExtra("direction") else null
+        val departureTime = if (intent.hasExtra("departureTime")) intent.getStringExtra("departureTime") else null
 
         val httpClient = ApiClient.getHttpClient(cacheDir)
         presenter = RouteDetailsPresenter(Injection.provideDataSource(httpClient))
@@ -54,6 +56,14 @@ class RouteDetailsActivity : AppCompatActivity(),
         if (savedInstanceState == null) {
             presenter.setRouteID(routeID)
             presenter.setStopName(stopName)
+            if (direction != null) {
+                presenter.setDirection(direction)
+            }
+
+            if (departureTime != null) {
+                val tripID = intent.getIntExtra("tripID", -1)
+                presenter.setDepartureTime(departureTime, tripID)
+            }
         } else {
             val state = savedInstanceState.getParcelable<RouteDetailsState>("state")
             presenter.setState(state)
@@ -69,7 +79,7 @@ class RouteDetailsActivity : AppCompatActivity(),
         supportFragmentManager.registerFragmentLifecycleCallbacks(
             object : FragmentManager.FragmentLifecycleCallbacks() {
 
-                override fun onFragmentViewCreated(fm: FragmentManager?, f: Fragment?, v: View?, savedInstanceState: Bundle?) {
+                override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
                     if (f is RouteDetailsContract.DirectionsView) {
                         f.attachPresenter(presenter)
                     }
@@ -85,6 +95,12 @@ class RouteDetailsActivity : AppCompatActivity(),
             }, false)
 
         presenter.loadRouteInfo()
+
+        if (departureTime != null) {
+            viewPager.currentItem = 2 // timeline
+        } else if (direction != null) {
+            viewPager.currentItem = 1 // timetable
+        }
     }
 
     override fun onDestroy() {

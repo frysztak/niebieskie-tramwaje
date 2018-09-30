@@ -1,9 +1,6 @@
 package software.orpington.rozkladmpk.routeDetails
 
-import software.orpington.rozkladmpk.data.model.RouteDirections
-import software.orpington.rozkladmpk.data.model.RouteInfo
-import software.orpington.rozkladmpk.data.model.TimeTable
-import software.orpington.rozkladmpk.data.model.Timeline
+import software.orpington.rozkladmpk.data.model.*
 import software.orpington.rozkladmpk.data.source.IDataSource
 import software.orpington.rozkladmpk.data.source.RemoteDataSource
 import java.util.*
@@ -59,12 +56,42 @@ class RouteDetailsPresenter(
         state.stopName = name
     }
 
+    private var directionToNavigateTo: String? = null
+    override fun setDirection(direction: String) {
+        directionToNavigateTo = direction
+        if (state.routeDirections.isEmpty()) {
+            state.routeDirections = listOf(direction)
+            state.currentRouteDirection = 0
+        }
+        directionsView?.showRouteDirections(
+            state.routeDirections,
+            state.favouriteDirections,
+            state.currentRouteDirection
+        )
+    }
+
+    private var departureTimeToNavigateTo: String? = null
+    override fun setDepartureTime(departureTime: String, tripID: Int) {
+        departureTimeToNavigateTo = departureTime
+        if (state.timetable == null) {
+            state.timetable = TimeTable(
+                state.routeID,
+                state.stopName,
+                state.routeDirections[state.currentRouteDirection],
+                listOf(TimeTableEntry(tripID, departureTime, departureTime)),
+                emptyList(), emptyList())
+            state.currentTimeTag = "WE:%s".format(departureTime)
+        }
+        state.tripID = tripID
+    }
+
     override fun loadRouteInfo() {
         infoView?.showProgressBar()
         dataSource.getRouteInfo(state.routeID, object : IDataSource.LoadDataCallback<RouteInfo> {
             override fun onDataLoaded(data: RouteInfo) {
                 infoView?.hideProgressBar()
                 infoView?.showRouteInfo(data)
+                state.isBus = data.isBus
             }
 
             override fun onDataNotAvailable() {
@@ -79,8 +106,17 @@ class RouteDetailsPresenter(
         dataSource.getRouteDirectionsThroughStop(state.routeID, state.stopName, object : IDataSource.LoadDataCallback<RouteDirections> {
             override fun onDataLoaded(data: RouteDirections) {
                 state.routeDirections = data.directions
+                if (directionToNavigateTo != null) {
+                    state.currentRouteDirection = state.routeDirections.indexOf(directionToNavigateTo!!)
+                    directionToNavigateTo = null
+                }
                 directionsView?.hideProgressBar()
-                directionsView?.showRouteDirections(state.routeDirections, state.currentRouteDirection)
+                initialiseFavouriteDirections()
+                directionsView?.showRouteDirections(
+                    state.routeDirections,
+                    state.favouriteDirections,
+                    state.currentRouteDirection
+                )
             }
 
             override fun onDataNotAvailable() {
@@ -96,6 +132,37 @@ class RouteDetailsPresenter(
 
         directionsView?.highlightDirection(directionIdx)
         infoView?.switchToTimetableTab()
+    }
+
+    private fun initialiseFavouriteDirections() {
+        val favourites = directionsView?.getFavouriteDirections(state.routeID, state.stopName, state.isBus)
+            ?: return
+
+        state.favouriteDirections = favourites.map { direction ->
+            state.routeDirections.indexOf(direction)
+        }.toSet()
+    }
+
+    override fun onDirectionFavouriteClicked(directionIdx: Int) {
+        if (state.favouriteDirections.contains(directionIdx)) {
+            state.favouriteDirections =
+                state.favouriteDirections - directionIdx
+        } else {
+            state.favouriteDirections =
+                state.favouriteDirections + directionIdx
+        }
+
+        val directionNames = state.routeDirections.filterIndexed { index, _ ->
+            state.favouriteDirections.contains(index)
+        }.toSet()
+
+        directionsView?.setFavouriteDirections(
+            state.routeID,
+            state.stopName,
+            state.isBus,
+            directionNames,
+            state.favouriteDirections
+        )
     }
 
     override fun loadTimeTable() {

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardElevation="4dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="140dp"
+        tools:maxWidth="200dp">
+
+        <ImageView
+            android:id="@+id/favouriteCard_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="@id/favouriteCard_lineNumber"
+            app:layout_constraintEnd_toStartOf="@id/favouriteCard_lineNumber"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/favouriteCard_lineNumber"
+            tools:srcCompat="@drawable/ic_bus_white_24dp" />
+
+        <TextView
+            android:id="@+id/favouriteCard_lineNumber"
+            style="@style/FavouriteCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@id/favouriteCard_icon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="136" />
+
+        <ImageView
+            android:id="@+id/favouriteCard_directionIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="@id/favouriteCard_direction"
+            app:layout_constraintEnd_toStartOf="@id/favouriteCard_direction"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/favouriteCard_direction"
+            app:srcCompat="@drawable/ic_navigate_next_24dp" />
+
+        <TextView
+            android:id="@+id/favouriteCard_direction"
+            style="@style/FavouriteCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingTop="2dp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="@id/favouriteCard_directionIcon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@id/favouriteCard_directionIcon"
+            app:layout_constraintTop_toBottomOf="@id/favouriteCard_lineNumber"
+            app:layout_constraintWidth_max="130dp"
+            tools:text="TARNOGAJ" />
+
+        <View
+            android:id="@+id/favouriteCard_stopBackground"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/primary"
+            app:layout_constraintBottom_toBottomOf="@id/favouriteCard_stop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/favouriteCard_direction" />
+
+        <ImageView
+            android:id="@+id/favouriteCard_stopIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/icons"
+            app:layout_constraintBottom_toBottomOf="@id/favouriteCard_stop"
+            app:layout_constraintEnd_toStartOf="@id/favouriteCard_stop"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/favouriteCard_stop"
+            app:srcCompat="@drawable/ic_bus_stop" />
+
+        <TextView
+            android:id="@+id/favouriteCard_stop"
+            style="@style/FavouriteCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textColor="@color/icons"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/favouriteCard_stopBackground"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@id/favouriteCard_stopIcon"
+            app:layout_constraintTop_toTopOf="@id/favouriteCard_stopBackground"
+            app:layout_constraintWidth_max="130dp"
+            tools:text="NA Osatatnim Groszu " />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

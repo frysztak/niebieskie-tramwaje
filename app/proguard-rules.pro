@@ -22,6 +22,7 @@
 
 ### My own
 -keep class android.support.v7.widget.** { *; }
+-dontwarn com.simplecityapps.recyclerview_fastscroll.views.FastScrollPopup
 
 ### Moshi
 -dontwarn okio.**

@@ -1,5 +1,7 @@
 package software.orpington.rozkladmpk.routeDetails
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -18,6 +20,7 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
 
     private lateinit var adapter: RouteDirectionsAdapter
     private var presenter: RouteDetailsContract.Presenter? = null
+    private lateinit var sharedPreferences: SharedPreferences
     // TODO? clear presenter when fragment dies
 
     override fun attachPresenter(newPresenter: RouteDetailsContract.Presenter) {
@@ -39,6 +42,7 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
         super.onActivityCreated(savedInstanceState)
 
         adapter = RouteDirectionsAdapter(context!!, presenter!!)
+        sharedPreferences = context!!.getSharedPreferences("PREF", Context.MODE_PRIVATE)
 
         routeDirections_recyclerview.apply {
             adapter = this@RouteDirectionsFragment.adapter
@@ -56,8 +60,10 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
     }
 
     override fun showRouteDirections(routeDirections: List<String>,
+                                     favouriteDirections: Set<Int>,
                                      idxToHighlight: Int) {
         adapter.setItems(routeDirections)
+        adapter.setFavourites(favouriteDirections)
         if (idxToHighlight != -1) {
             routeDirections_recyclerview.afterMeasured {
                 highlightDirection(idxToHighlight)
@@ -96,17 +102,32 @@ class RouteDirectionsFragment : Fragment(), RouteDetailsContract.DirectionsView 
     }
 
     override fun highlightDirection(directionIdx: Int) {
-        for (i in 0 until adapter.itemCount) {
-            val viewHolder =
-                routeDirections_recyclerview?.findViewHolderForAdapterPosition(i) as RouteDirectionsAdapter.ViewHolder?
+        adapter.setItemToHighlight(directionIdx)
+    }
 
-            when (i) {
-                directionIdx -> viewHolder?.highlight()
-                // to make sure that only one item is highlighted,
-                // iterate over all directions and unhighlight them
-                else -> viewHolder?.removeHighlight()
-            }
-        }
+    private fun getFavouriteKey(routeID: String, stopName: String, isBus: Boolean): String {
+        val vehicle = if(isBus) "bus" else "tram"
+        return "fav_${routeID}_${stopName}_${vehicle}"
+    }
+
+    override fun getFavouriteDirections(routeID: String, stopName: String, isBus: Boolean): Set<String> {
+        val key = getFavouriteKey(routeID, stopName, isBus)
+        return sharedPreferences.getStringSet(key, setOf())
+    }
+
+    override fun setFavouriteDirections(
+        routeID: String,
+        stopName: String,
+        isBus: Boolean,
+        favourites: Set<String>,
+        favouritesIndices: Set<Int>
+    ) {
+        val key = getFavouriteKey(routeID, stopName, isBus)
+        sharedPreferences
+            .edit()
+            .putStringSet(key, favourites)
+            .apply()
+        adapter.setFavourites(favouritesIndices)
     }
 
     companion object {

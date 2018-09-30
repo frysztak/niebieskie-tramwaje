@@ -1,7 +1,8 @@
 package software.orpington.rozkladmpk.utils
 
 import software.orpington.rozkladmpk.data.model.RouteVariant
-import software.orpington.rozkladmpk.stopsAndRoutes.Route
+import software.orpington.rozkladmpk.data.model.StopsAndRoutes.Route
+import software.orpington.rozkladmpk.home.RouteViewItem
 
 internal class RouteComparator {
     fun compare(routeID1: String, routeID2: String): Int {
@@ -36,15 +37,23 @@ internal class RouteComparator {
 }
 
 @JvmName("sortRoutes")
-fun <T : List<Route>> T.sort(): List<Route> {
+fun List<Route>.sort(): List<Route> {
     val comp = Comparator<Route> { r1, r2 ->
         RouteComparator().compare(r1.routeID, r2.routeID)
     }
     return this.sortedWith(comp)
 }
 
+@JvmName("sortRoutesViewItems")
+fun List<RouteViewItem>.sort(): List<RouteViewItem> {
+    val comp = Comparator<RouteViewItem> { r1, r2 ->
+        RouteComparator().compare(r1.routeID, r2.routeID)
+    }
+    return this.sortedWith(comp)
+}
+
 @JvmName("sortRouteVariants")
-fun <T : List<RouteVariant>> T.sort(): List<RouteVariant> {
+fun List<RouteVariant>.sort(): List<RouteVariant> {
     val comp = Comparator<RouteVariant> { r1, r2 ->
         RouteComparator().compare(r1.routeID, r2.routeID)
     }

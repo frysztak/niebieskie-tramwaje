@@ -56,7 +56,7 @@ class StopsAndRoutesHelper {
         items.addAll(
             data.routes.map { route ->
                 Route(route.routeID, route.isBus)
-            }.sort()
+            }//.sort()
         )
 
         return items

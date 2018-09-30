@@ -13,6 +13,7 @@ data class StopsAndRoutes(
     @JsonClass(generateAdapter = true)
     data class Stop(
         @Json(name = "Name") val stopName: String,
+        @Json(name = "ID") val stopID: Int,
         @Json(name = "Latitude") val latitude: Double,
         @Json(name = "Longitude") val longitude: Double
     )

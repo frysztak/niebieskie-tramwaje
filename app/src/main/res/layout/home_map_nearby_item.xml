@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/departureCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardElevation="4dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp">
+
+        <ImageView
+            android:id="@+id/vehicleIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@color/primary_text"
+            app:layout_constraintBottom_toBottomOf="@id/routeID"
+            app:layout_constraintTop_toTopOf="@id/routeID"
+            app:srcCompat="@drawable/ic_bus_white_24dp" />
+
+        <TextView
+            android:id="@+id/routeID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center_vertical"
+            android:textColor="@color/primary_text"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="@id/direction"
+            app:layout_constraintStart_toEndOf="@id/vehicleIcon"
+            app:layout_constraintTop_toTopOf="@id/direction"
+            tools:text="33" />
+
+        <ImageView
+            android:id="@+id/arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/routeID"
+            app:layout_constraintStart_toEndOf="@id/routeID"
+            app:layout_constraintTop_toTopOf="@id/routeID"
+            app:srcCompat="@drawable/ic_navigate_next_24dp" />
+
+        <TextView
+            android:id="@+id/direction"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center_vertical"
+            android:textColor="@color/primary_text"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="@id/departureTime"
+            app:layout_constraintEnd_toStartOf="@id/trackIcon"
+            app:layout_constraintStart_toEndOf="@id/arrow"
+            app:layout_constraintTop_toTopOf="@id/departureTime"
+            tools:text="STADION WROCŁAW (KRÓLEWIECKA)" />
+
+        <ImageView
+            android:id="@+id/trackIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_margin="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_track_changes_black_24dp"
+            tools:tint="@color/primary_text" />
+
+        <ImageView
+            android:id="@+id/timeIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:tint="@color/accent"
+            app:layout_constraintTop_toBottomOf="@id/direction"
+            app:srcCompat="@drawable/ic_access_time_black_24dp" />
+
+        <TextView
+            android:id="@+id/departureTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:textColor="@color/primary_text"
+            android:textSize="16dp"
+            app:layout_constraintStart_toEndOf="@id/timeIcon"
+            app:layout_constraintTop_toBottomOf="@id/direction"
+            tools:text="Odjeżdza za 2 minuty (15:55)" />
+
+        <ImageView
+            android:id="@+id/onDemandIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="8dp"
+            android:tint="@color/accent"
+            app:layout_constraintTop_toBottomOf="@id/timeIcon"
+            app:srcCompat="@drawable/ic_waving_hand" />
+
+        <TextView
+            android:id="@+id/onDemandText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:text="@string/on_demand"
+            android:textColor="@color/primary_text"
+            android:textSize="16dp"
+            app:layout_constraintBottom_toBottomOf="@id/onDemandIcon"
+            app:layout_constraintStart_toEndOf="@id/onDemandIcon"
+            app:layout_constraintTop_toTopOf="@id/onDemandIcon" />
+
+        <android.support.constraint.Group
+            android:id="@+id/onDemand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="onDemandIcon,onDemandText" />
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

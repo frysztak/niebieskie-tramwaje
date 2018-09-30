@@ -51,5 +51,23 @@
     <string name="on_demand">on demand</string>
     <string name="failed_to_load_map_data">Failed to load map data</string>
     <string name="you">You</string>
+    <string name="title_home">Home</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_map">Map</string>
+    <string name="more">more</string>
+    <string name="departureIn">In %s (%s)</string>
+    <string name="departs_now">Departs now! (%s)</string>
+    <string name="already_departed">Departed %s ago (%s)</string>
+    <string name="minute_1">minute</string>
+    <string name="minutes_2to4">minutes</string>
+    <string name="hour">an hour</string>
+    <string name="over_hour">over an hour</string>
+    <string name="minutes_5plus">minutes</string>
+    <string name="near_you">Near you</string>
+    <string name="show_more">show more…</string>
+    <string name="news">News</string>
+    <string name="favourites">Favourites</string>
+    <string name="where_to">Where to?</string>
+    <string name="add">add</string>
 
 </resources>
