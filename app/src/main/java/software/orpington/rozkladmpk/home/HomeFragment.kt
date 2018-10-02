@@ -15,19 +15,22 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.home_home_layout.*
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
+import software.orpington.rozkladmpk.data.model.NewsItem
 import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.routeDetails.RouteDetailsActivity
 import software.orpington.rozkladmpk.routeVariants.RouteVariantsActivity
 import software.orpington.rozkladmpk.stopsForRoute.StopsForRouteActivity
 import software.orpington.rozkladmpk.utils.onQueryChanged
 
-class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
+class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View, NewsContract.View {
 
     private lateinit var searchPresenter: SearchPresenter
     private lateinit var searchAdapter: SearchAdapter
 
     private lateinit var favouritesAdapter: FavouritesAdapter
     private lateinit var favouritesPresenter: FavouritesPresenter
+
+    private lateinit var newsPresenter: NewsPresenter
 
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -41,8 +44,11 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
         favouritesPresenter = FavouritesPresenter()
         favouritesAdapter = FavouritesAdapter(context!!, favouritesPresenter)
 
+        newsPresenter = NewsPresenter(Injection.provideDataSource(httpClient))
+
         sharedPreferences = context!!.getSharedPreferences("PREF", Context.MODE_PRIVATE)
         searchPresenter.loadData()
+        newsPresenter.loadMostRecentNews()
 
         home_searchResultsRecycler.apply {
             adapter = this@HomeFragment.searchAdapter
@@ -61,8 +67,6 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.home_home_layout, container, false)
-        view.findViewById<TextView>(R.id.newsCard_date)?.text = "17.09.2018"
-        view.findViewById<TextView>(R.id.newsCard_synopsis)?.text = "Something hurrible"
         return view
     }
 
@@ -72,12 +76,15 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
 
         favouritesPresenter.attachView(this)
         favouritesPresenter.onFavouritesLoaded(sharedPreferences.all)
+
+        newsPresenter.attachView(this)
     }
 
     override fun onStop() {
         super.onStop()
         searchPresenter.detachView()
         favouritesPresenter.detachView()
+        newsPresenter.detachView()
     }
 
     override fun showProgressBar() {
@@ -130,6 +137,21 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
         i.putExtra("stopName", stopName)
         i.putExtra("direction", direction)
         startActivity(i)
+    }
+
+    override fun showMostRecentNews(news: NewsItem) {
+        view?.apply {
+            findViewById<TextView>(R.id.newsCard_date)?.text = news.affectsDay
+            findViewById<TextView>(R.id.newsCard_title)?.text = news.title
+            findViewById<TextView>(R.id.newsCard_synopsis)?.text = news.synopsis
+            if (news.affectsLines.isNotEmpty()) {
+                val lineStringId = when (news.affectsLines.count { it == ',' }) {
+                    1 -> R.string.line
+                    else -> R.string.lines
+                }
+                findViewById<TextView>(R.id.newsCard_lines)?.text = context.getString(lineStringId).format(news.affectsLines)
+            }
+        }
     }
 
     companion object {

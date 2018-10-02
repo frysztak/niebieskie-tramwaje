@@ -70,4 +70,7 @@
     <string name="where_to">Where to?</string>
     <string name="add">add</string>
 
+    <string name="line">Line %s</string>
+    <string name="lines">Lines %s</string>
+
 </resources>

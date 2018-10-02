@@ -81,6 +81,14 @@ class RemoteDataSource private constructor(
         makeACall(gpsService.getVehiclePosition(routeIDs), callback)
     }
 
+    override fun getMostRecentNews(callback: IDataSource.LoadDataCallback<NewsItem>) {
+        makeACall(mpkService.getMostRecentNews(), callback)
+    }
+
+    override fun getNews(pageNum: Int, callback: IDataSource.LoadDataCallback<List<NewsItem>>) {
+        makeACall(mpkService.getNews(pageNum), callback)
+    }
+
     companion object {
 
         private var INSTANCE: RemoteDataSource? = null

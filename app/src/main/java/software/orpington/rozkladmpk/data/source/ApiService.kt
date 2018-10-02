@@ -43,4 +43,10 @@ interface ApiService {
 
     @GET("stops/{stopNames}/departures")
     fun getDepartures(@Path("stopNames") stopNames: String): Call<Departures>
+
+    @GET("news/recent")
+    fun getMostRecentNews(): Call<NewsItem>
+
+    @GET("news/page/{pageNum}")
+    fun getNews(@Path("pageNum") pageNum: Int): Call<List<NewsItem>>
 }

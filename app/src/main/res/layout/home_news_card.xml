@@ -23,27 +23,53 @@
         tools:text="17.09.2018" />
 
     <TextView
-        android:id="@+id/newsCard_synopsis"
+        android:id="@+id/newsCard_lines"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textColor="@color/secondary_text"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/newsCard_date"
+        tools:text="Linia 0P" />
+
+    <TextView
+        android:id="@+id/newsCard_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:textColor="@color/primary_text"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@id/newsCard_date"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/newsCard_date"
         app:layout_constraintTop_toBottomOf="@id/newsCard_date"
+        tools:text="Something horrible " />
+
+    <TextView
+        android:id="@+id/newsCard_synopsis"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:textColor="@color/primary_text"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/newsCard_date"
+        app:layout_constraintTop_toBottomOf="@id/newsCard_title"
         tools:text="Something horrible " />
 
     <Button
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="0dp"
         android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:text="@string/more"
         app:layout_constraintEnd_toEndOf="@id/newsCard_synopsis"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/newsCard_date"
-        app:layout_constraintTop_toBottomOf="@id/newsCard_synopsis"
-        android:text="@string/more" />
+        app:layout_constraintTop_toBottomOf="@id/newsCard_synopsis" />
 
 </android.support.constraint.ConstraintLayout>

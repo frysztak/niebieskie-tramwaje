@@ -71,4 +71,6 @@
     <string name="where_to">Dokąd jedziemy?</string>
     <string name="add">dodaj</string>
 
+    <string name="line">Linia %s</string>
+    <string name="lines">Linie %s</string>
 </resources>
