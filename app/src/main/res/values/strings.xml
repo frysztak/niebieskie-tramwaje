@@ -72,5 +72,6 @@
 
     <string name="line">Line %s</string>
     <string name="lines">Lines %s</string>
+    <string name="failed_to_load_news">Failed to load news</string>
 
 </resources>

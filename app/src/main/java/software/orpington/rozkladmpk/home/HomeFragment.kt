@@ -11,8 +11,8 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import kotlinx.android.synthetic.main.home_home_layout.*
+import kotlinx.android.synthetic.main.home_news_card.*
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.model.NewsItem
@@ -22,7 +22,7 @@ import software.orpington.rozkladmpk.routeVariants.RouteVariantsActivity
 import software.orpington.rozkladmpk.stopsForRoute.StopsForRouteActivity
 import software.orpington.rozkladmpk.utils.onQueryChanged
 
-class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View, NewsContract.View {
+class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
 
     private lateinit var searchPresenter: SearchPresenter
     private lateinit var searchAdapter: SearchAdapter
@@ -63,6 +63,10 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View, N
         home_searchView.onQueryChanged { query ->
             searchPresenter.queryTextChanged(query)
         }
+
+        newsCard_retry.setOnClickListener {
+            newsPresenter.loadMostRecentNews()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -77,7 +81,7 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View, N
         favouritesPresenter.attachView(this)
         favouritesPresenter.onFavouritesLoaded(sharedPreferences.all)
 
-        newsPresenter.attachView(this)
+        newsPresenter.attachView(newsView)
     }
 
     override fun onStop() {
@@ -139,17 +143,52 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View, N
         startActivity(i)
     }
 
-    override fun showMostRecentNews(news: NewsItem) {
-        view?.apply {
-            findViewById<TextView>(R.id.newsCard_date)?.text = news.affectsDay
-            findViewById<TextView>(R.id.newsCard_title)?.text = news.title
-            findViewById<TextView>(R.id.newsCard_synopsis)?.text = news.synopsis
+    private val newsView = object : NewsContract.View {
+        private fun setErrorVisibility(visibility: Int) {
+            newsCard_error.visibility = visibility
+        }
+
+        private fun setContentVisibility(visibility: Int) {
+            newsCard_icon.visibility = visibility
+            newsCard_date.visibility = visibility
+            newsCard_lines.visibility = visibility
+            newsCard_title.visibility = visibility
+            newsCard_synopsis.visibility = visibility
+            newsCard_showMore.visibility = visibility
+        }
+
+        private fun setProgressBarVisibility(visibility: Int) {
+            newsCard_progressbar.visibility = visibility
+        }
+
+        override fun showProgressBar() {
+            setContentVisibility(View.INVISIBLE)
+            setErrorVisibility(View.GONE)
+            setProgressBarVisibility(View.VISIBLE)
+        }
+
+        override fun hideProgressBar() {
+            setContentVisibility(View.VISIBLE)
+            setErrorVisibility(View.GONE)
+            setProgressBarVisibility(View.GONE)
+        }
+
+        override fun reportThatSomethingWentWrong() {
+            setContentVisibility(View.GONE)
+            setErrorVisibility(View.VISIBLE)
+            setProgressBarVisibility(View.GONE)
+        }
+
+        override fun showMostRecentNews(news: NewsItem) {
+            newsCard_date.text = news.affectsDay
+            newsCard_title.text = news.title
+            newsCard_synopsis.text = news.synopsis
             if (news.affectsLines.isNotEmpty()) {
                 val lineStringId = when (news.affectsLines.count { it == ',' }) {
                     1 -> R.string.line
                     else -> R.string.lines
                 }
-                findViewById<TextView>(R.id.newsCard_lines)?.text = context.getString(lineStringId).format(news.affectsLines)
+                newsCard_lines.text = context?.getString(lineStringId)?.format(news.affectsLines)
             }
         }
     }

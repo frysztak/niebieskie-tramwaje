@@ -6,10 +6,21 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
 
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/newsCard_progressbar"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/newsCard_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         app:srcCompat="@drawable/ic_error_outline_24dp" />
 
     <TextView
@@ -61,15 +72,43 @@
         tools:text="Something horrible " />
 
     <Button
+        android:id="@+id/newsCard_showMore"
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="0dp"
-        android:minHeight="0dp"
         android:text="@string/more"
         app:layout_constraintEnd_toEndOf="@id/newsCard_synopsis"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/newsCard_date"
         app:layout_constraintTop_toBottomOf="@id/newsCard_synopsis" />
+
+    <TextView
+        android:id="@+id/newsCard_failedToLoad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/failed_to_load_news"
+        android:textColor="@color/primary_text"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/newsCard_date" />
+
+    <Button
+        android:id="@+id/newsCard_retry"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tryAgain"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintTop_toBottomOf="@id/newsCard_failedToLoad" />
+
+    <android.support.constraint.Group
+        android:id="@+id/newsCard_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="newsCard_failedToLoad,newsCard_retry" />
 
 </android.support.constraint.ConstraintLayout>

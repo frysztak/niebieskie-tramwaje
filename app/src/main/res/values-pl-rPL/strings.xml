@@ -73,4 +73,5 @@
 
     <string name="line">Linia %s</string>
     <string name="lines">Linie %s</string>
+    <string name="failed_to_load_news">Nie udało się wczytać wiadomości</string>
 </resources>

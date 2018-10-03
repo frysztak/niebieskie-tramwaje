@@ -25,8 +25,8 @@ class NewsPresenter (
             }
 
             override fun onDataNotAvailable() {
-                view?.reportThatSomethingWentWrong()
                 view?.hideProgressBar()
+                view?.reportThatSomethingWentWrong()
             }
         })
     }
