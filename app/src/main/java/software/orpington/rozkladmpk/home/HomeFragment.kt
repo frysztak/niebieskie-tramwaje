@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.home_home_layout.*
 import kotlinx.android.synthetic.main.home_news_card.*
+import kotlinx.android.synthetic.main.home_news_item.*
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.model.NewsItem
@@ -162,11 +163,7 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
         }
 
         private fun setContentVisibility(visibility: Int) {
-            newsCard_icon.visibility = visibility
-            newsCard_date.visibility = visibility
-            newsCard_lines.visibility = visibility
-            newsCard_title.visibility = visibility
-            newsCard_synopsis.visibility = visibility
+            newsCard_content.visibility = visibility
             newsCard_showMore.visibility = visibility
         }
 
