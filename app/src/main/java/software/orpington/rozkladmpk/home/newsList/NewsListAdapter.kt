@@ -11,14 +11,15 @@ import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.model.NewsItem
 
 class NewsListAdapter(
-    private val context: Context
+    private val context: Context,
+    private val presenter: NewsListPresenter
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             //ITEM_TYPE_NEWS -> {
             else -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.home_news_item, parent, false)
-                NewsViewHolder(view)
+                NewsViewHolder(view, presenter) { isClickable }
             }
         }
     }
@@ -63,6 +64,7 @@ class NewsListAdapter(
     private val ITEM_TYPE_NEWS = 0
     private val ITEM_TYPE_FAILED = 1
     private val ITEM_TYPE_END = 2
+    var isClickable: Boolean = true
 
     sealed class ViewModel {
         data class NewsModel(val data: NewsItem) : ViewModel()
@@ -71,12 +73,22 @@ class NewsListAdapter(
     }
 
     internal class NewsViewHolder(
-        private val view: View
+        private val view: View,
+        presenter: NewsListPresenter,
+        private val clickable: () -> Boolean
     ) : RecyclerView.ViewHolder(view) {
         val date: TextView = view.newsCard_date
         val lines: TextView = view.newsCard_lines
         val title: TextView = view.newsCard_title
         val synopsis: TextView = view.newsCard_synopsis
+
+        init {
+            view.setOnClickListener {
+                if (clickable()) {
+                    presenter.itemClicked(adapterPosition)
+                }
+            }
+        }
     }
 
     internal class FailedViewHolder(

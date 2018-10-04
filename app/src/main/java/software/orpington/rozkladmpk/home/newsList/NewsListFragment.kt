@@ -14,23 +14,35 @@ import software.orpington.rozkladmpk.data.model.NewsItem
 import software.orpington.rozkladmpk.data.source.ApiClient
 
 class NewsListFragment : Fragment(), NewsListContract.View {
-    private lateinit var presenter: NewsListContract.Presenter
+    private lateinit var presenter: NewsListPresenter
     private lateinit var adapter: NewsListAdapter
+    private lateinit var layoutManager: CustomLinearLayoutManager
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         val httpClient = ApiClient.getHttpClient(context!!.cacheDir)
         presenter = NewsListPresenter(Injection.provideDataSource(httpClient))
-        adapter = NewsListAdapter(context!!)
+        adapter = NewsListAdapter(context!!, presenter)
+        layoutManager = CustomLinearLayoutManager(context)
 
         newsPreviews.apply {
             adapter = this@NewsListFragment.adapter
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = this@NewsListFragment.layoutManager
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
         presenter.getNextPage()
+        val frag = childFragmentManager.findFragmentById(R.id.newsDetailsOverlay) as NewsDetailsFragment
+        childFragmentManager
+            .beginTransaction()
+            .hide(frag)
+            .commit()
+
+        childFragmentManager.addOnBackStackChangedListener {
+            layoutManager.setScrollEnabled(frag.isHidden)
+            adapter.isClickable = frag.isHidden
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -51,14 +63,6 @@ class NewsListFragment : Fragment(), NewsListContract.View {
         adapter.addItems(news)
     }
 
-    override fun expandItem(position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun collapseItem(position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun hideDataFailedToLoad() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -73,6 +77,16 @@ class NewsListFragment : Fragment(), NewsListContract.View {
 
     override fun reportThatSomethingWentWrong() {
 
+    }
+
+    override fun showDetail(item: NewsItem) {
+        val frag = childFragmentManager.findFragmentById(R.id.newsDetailsOverlay) as NewsDetailsFragment
+        frag.setData(item)
+        childFragmentManager
+            .beginTransaction()
+            .show(frag)
+            .addToBackStack("")
+            .commit()
     }
 
     companion object {

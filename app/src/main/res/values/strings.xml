@@ -74,4 +74,8 @@
     <string name="lines">Lines %s</string>
     <string name="failed_to_load_news">Failed to load news</string>
 
+    <string name="published_on">Published on: %s</string>
+    <string name="affects_days">Affects days: %s</string>
+    <string name="affects_lines">Affects lines: %s</string>
+
 </resources>

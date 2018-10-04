@@ -16,10 +16,12 @@ class NewsListPresenter(
         this.view = null
     }
 
+    private val items : MutableList<NewsItem> = mutableListOf()
     private var lastPage = 0
     override fun getNextPage() {
         remoteDataSource.getNews(lastPage, object : IDataSource.LoadDataCallback<List<NewsItem>> {
             override fun onDataLoaded(data: List<NewsItem>) {
+                items += data
                 view?.displayNews(data)
                 lastPage++
             }
@@ -31,5 +33,7 @@ class NewsListPresenter(
     }
 
     override fun itemClicked(position: Int) {
+        val item = items[position]
+        view?.showDetail(item)
     }
 }

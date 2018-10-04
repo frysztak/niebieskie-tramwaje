@@ -74,4 +74,8 @@
     <string name="line">Linia %s</string>
     <string name="lines">Linie %s</string>
     <string name="failed_to_load_news">Nie udało się wczytać wiadomości</string>
+
+    <string name="published_on">Opublikowano: %s</string>
+    <string name="affects_days">Dotyczy dni: %s</string>
+    <string name="affects_lines">Dotyczy linii: %s</string>
 </resources>

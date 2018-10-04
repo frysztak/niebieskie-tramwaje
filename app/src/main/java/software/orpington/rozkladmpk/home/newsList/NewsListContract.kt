@@ -14,8 +14,7 @@ interface NewsListContract {
 
     interface View : BaseView {
         fun displayNews(news: List<NewsItem>)
-        fun expandItem(position: Int)
-        fun collapseItem(position: Int)
         fun hideDataFailedToLoad()
+        fun showDetail(item: NewsItem)
     }
 }
