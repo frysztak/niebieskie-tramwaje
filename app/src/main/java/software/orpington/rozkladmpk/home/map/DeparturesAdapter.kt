@@ -69,7 +69,7 @@ class DeparturesAdapter(
         when (item) {
             is DepartureHeader -> (holder as HeaderViewHolder).apply {
                 stopName.text = item.stopName
-                distance.text = "%.1f m".format(item.distance)
+                distance.text = "%.0f m".format(item.distance)
             }
             is DepartureDetails -> (holder as DetailsViewHolder).apply {
                 vehicleIcon.setImageResource(when (item.isBus) {
