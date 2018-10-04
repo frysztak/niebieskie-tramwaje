@@ -101,6 +101,7 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.1'
     implementation 'me.xdrop:fuzzywuzzy:1.1.10'
     implementation 'com.github.strooooke:appbarsyncedfab:v0.4'
+    implementation 'com.github.m7mdra:HtmlRecycler:0.1.11'
 
     implementation 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'

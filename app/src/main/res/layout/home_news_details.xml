@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="#80FFFFFF"
+    app:cardElevation="4dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <ImageView
+            android:id="@+id/goBackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tint="@android:color/black"
+            app:srcCompat="@drawable/ic_arrow_back_white_24dp" />
+
+        <ImageView
+            android:id="@+id/affectsDayIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:tint="@color/accent"
+            app:layout_constraintStart_toEndOf="@id/goBackButton"
+            app:srcCompat="@drawable/ic_today_black_24dp" />
+
+        <TextView
+            android:id="@+id/affectsDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:textColor="@color/primary_text"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/affectsDayIcon"
+            app:layout_constraintStart_toEndOf="@id/affectsDayIcon"
+            app:layout_constraintTop_toTopOf="@id/affectsDayIcon"
+            tools:text="17.09.2018" />
+
+        <ImageView
+            android:id="@+id/affectsLinesIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:tint="@color/accent"
+            app:layout_constraintStart_toEndOf="@id/affectsDay"
+            app:srcCompat="@drawable/ic_tram_white_24dp" />
+
+        <TextView
+            android:id="@+id/affectsLines"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:textColor="@color/primary_text"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/affectsLinesIcon"
+            app:layout_constraintStart_toEndOf="@id/affectsLinesIcon"
+            app:layout_constraintTop_toTopOf="@id/affectsLinesIcon"
+            tools:text="0P" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:textColor="@color/primary_text"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/affectsLines"
+            tools:text="Something horrible very very" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:nestedScrollingEnabled="false"
+            android:textColor="@color/primary_text"
+            android:textSize="14sp"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toTopOf="@id/publishedOn"
+            app:layout_constraintHeight_max="400dp"
+            app:layout_constraintHeight_min="200dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            tools:text="Something horrible " />
+
+        <TextView
+            android:id="@+id/publishedOn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:textColor="@color/secondary_text"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Opublikowano: 17.09.2018" />
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

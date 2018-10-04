@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp">
+
+
+    <TextView
+        android:id="@+id/newsCard_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/primary_text"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/newsCard_date"
+        tools:text="Something horrible " />
+
+    <ImageView
+        android:id="@+id/newsCard_affectsDayIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:tint="@color/accent"
+        app:srcCompat="@drawable/ic_today_black_24dp" />
+
+    <TextView
+        android:id="@+id/newsCard_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:textColor="@color/secondary_text"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/newsCard_affectsDayIcon"
+        app:layout_constraintStart_toEndOf="@id/newsCard_affectsDayIcon"
+        app:layout_constraintTop_toTopOf="@id/newsCard_affectsDayIcon"
+        tools:text="17.09.2018" />
+
+    <ImageView
+        android:id="@+id/newsCard_affectsLinesIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:tint="@color/accent"
+        app:layout_constraintStart_toEndOf="@id/newsCard_date"
+        app:srcCompat="@drawable/ic_tram_white_24dp" />
+
+    <TextView
+        android:id="@+id/newsCard_lines"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:textColor="@color/secondary_text"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/newsCard_affectsLinesIcon"
+        app:layout_constraintStart_toEndOf="@id/newsCard_affectsLinesIcon"
+        app:layout_constraintTop_toTopOf="@id/newsCard_affectsLinesIcon"
+        tools:text="0P" />
+
+
+    <TextView
+        android:id="@+id/newsCard_synopsis"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:textColor="@color/primary_text"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/newsCard_title"
+        tools:text="Something horrible " />
+
+</android.support.constraint.ConstraintLayout>
+
