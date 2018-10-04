@@ -14,9 +14,24 @@ import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.model.NewsItem
 import java.text.SimpleDateFormat
 
+interface BackButtonCallback {
+    fun backButtonPressed()
+}
+
 class NewsDetailsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.home_news_details, null)
+    }
+
+    private var backButtonCallback: BackButtonCallback? = null
+    fun setBackButtonCallback(cb: BackButtonCallback) {
+        backButtonCallback = cb
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        goBackButton.setOnClickListener {
+            backButtonCallback?.backButtonPressed()
+        }
     }
 
     fun setData(data: NewsItem) {
@@ -31,12 +46,6 @@ class NewsDetailsFragment : Fragment() {
             .setAdapter(DefaultElementsAdapter(context) { _, _, _ -> })
             .setRecyclerView(body)
             .build()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.setOnTouchListener { v, event ->
-            true
-        }
     }
 
     @SuppressLint("SimpleDateFormat")

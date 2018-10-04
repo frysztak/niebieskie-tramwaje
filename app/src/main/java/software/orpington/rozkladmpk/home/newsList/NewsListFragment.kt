@@ -3,7 +3,6 @@ package software.orpington.rozkladmpk.home.newsList
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,16 +32,27 @@ class NewsListFragment : Fragment(), NewsListContract.View {
         }
 
         presenter.getNextPage()
+        hideDetailsOverlay()
+
         val frag = childFragmentManager.findFragmentById(R.id.newsDetailsOverlay) as NewsDetailsFragment
-        childFragmentManager
-            .beginTransaction()
-            .hide(frag)
-            .commit()
+        frag.setBackButtonCallback(object : BackButtonCallback {
+            override fun backButtonPressed() {
+                childFragmentManager.popBackStack()
+            }
+        })
 
         childFragmentManager.addOnBackStackChangedListener {
             layoutManager.setScrollEnabled(frag.isHidden)
             adapter.isClickable = frag.isHidden
         }
+    }
+
+    private fun hideDetailsOverlay() {
+        val frag = childFragmentManager.findFragmentById(R.id.newsDetailsOverlay) as NewsDetailsFragment
+        childFragmentManager
+            .beginTransaction()
+            .hide(frag)
+            .commit()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
