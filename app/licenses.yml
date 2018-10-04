@@ -240,3 +240,256 @@
   license: The Apache Software License, Version 2.0
   licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
   url: http://developer.android.com/tools/extras/support-library.html
+- artifact: org.objenesis:objenesis:+
+  name: Objenesis
+  copyrightHolder: EasyMock
+  license: The Apache Software License, Version 2.0
+  url: http://objenesis.org
+- artifact: com.android.support:exifinterface:+
+  name: Android Support ExifInterface
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://developer.android.com/tools/extras/support-library.html
+- artifact: com.android.support:versionedparcelable:+
+  name: VersionedParcelable and friends
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://developer.android.com/tools/extras/support-library.html
+- artifact: com.google.android.gms:play-services-location:+
+  name: play-services-location
+  copyrightHolder: The Android Open Source Project
+  license: Android Software Development Kit License
+  skip: true
+  licenseUrl: https://developer.android.com/studio/terms.html
+- artifact: com.google.android.gms:play-services-tasks:+
+  name: play-services-tasks
+  copyrightHolder: The Android Open Source Project
+  license: Android Software Development Kit License
+  skip: true
+  licenseUrl: https://developer.android.com/studio/terms.html
+- artifact: com.android.databinding:adapters:+
+  name: adapters
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+- artifact: junit:junit:+
+  name: JUnit
+  copyrightHolder: Eclipse Foundation
+  license: Eclipse Public License 1.0
+  licenseUrl: http://www.eclipse.org/legal/epl-v10.html
+  url: http://junit.org
+- artifact: com.android.support:swiperefreshlayout:+
+  name: Android Support Library Custom View
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://developer.android.com/tools/extras/support-library.html
+- artifact: com.android.support:coordinatorlayout:+
+  name: Android Support Library Coordinator Layout
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://developer.android.com/tools/extras/support-library.html
+- artifact: com.google.android.gms:play-services-base:+
+  name: play-services-base
+  copyrightHolder: The Android Open Source Project
+  license: Android Software Development Kit License
+  skip: true
+  licenseUrl: https://developer.android.com/studio/terms.html
+- artifact: com.android.support:localbroadcastmanager:+
+  name: Android Support Library Local Broadcast Manager
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://developer.android.com/tools/extras/support-library.html
+- artifact: org.hamcrest:hamcrest-core:+
+  name: Hamcrest Core
+  copyrightHolder: Hamcrest.org
+  license: BSD License
+- artifact: com.android.support:collections:+
+  name: Android Support Library collections
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://developer.android.com/tools/extras/support-library.html
+- artifact: com.github.quickpermissions:quickpermissions-kotlin:+
+  name: quickpermissions-kotlin
+  copyrightHolder: QuickPermissions
+  license: The Apache Software License, Version 2.0
+- artifact: android.arch.lifecycle:livedata:+
+  name: Android Lifecycle LiveData
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: https://developer.android.com/topic/libraries/architecture/index.html
+- artifact: com.android.support:cursoradapter:+
+  name: Android Support Library Cursor Adapter
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://developer.android.com/tools/extras/support-library.html
+- artifact: com.nhaarman:mockito-kotlin-kt1.1:+
+  name: Mockito-Kotlin
+  copyrightHolder: Niek Haarman
+  license: MIT
+  licenseUrl: https://opensource.org/licenses/MIT
+  url: https://github.com/nhaarman/mockito-kotlin
+- artifact: com.squareup.okhttp3:mockwebserver:+
+  name: MockWebServer
+  license: The Apache Software License, Version 2.0
+  copyrightHolder: Square Inc.
+- artifact: com.android.support:viewpager:+
+  name: Android Support Library View Pager
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://developer.android.com/tools/extras/support-library.html
+- artifact: com.github.m7mdra:HtmlRecycler:+
+  name: m7mdra/HtmlRecycler
+  copyrightHolder: Mohamed Elrasheid
+  license: Apache License 2.0
+  licenseUrl: https://api.github.com/licenses/apache-2.0
+  url: https://github.com/m7mdra/HtmlRecycler
+- artifact: com.github.strooooke:appbarsyncedfab:+
+  name: strooooke/appbarsyncedfab
+  copyrightHolder: Juliane Lehmann
+  license: Apache License 2.0
+  licenseUrl: https://api.github.com/licenses/apache-2.0
+  url: https://github.com/strooooke/appbarsyncedfab
+- artifact: org.mockito:mockito-core:+
+  name: mockito-core
+  copyrightHolder: Mockito
+  license: The MIT License
+  licenseUrl: https://github.com/mockito/mockito/blob/master/LICENSE
+  url: https://github.com/mockito/mockito
+- artifact: org.bouncycastle:bcprov-jdk15on:+
+  name: Bouncy Castle Provider
+  skip: true
+  copyrightHolder: Legion of the Bouncy Castle Inc
+  license: Bouncy Castle Licence
+  licenseUrl: http://www.bouncycastle.org/licence.html
+  url: http://www.bouncycastle.org/java.html
+- artifact: org.jetbrains.kotlin:kotlin-reflect:+
+  name: kotlin-reflect
+  copyrightHolder: JetBrains
+  license: Apache License 2.0
+- artifact: com.android.support:customview:+
+  name: Android Support Library Custom View
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://developer.android.com/tools/extras/support-library.html
+- artifact: com.nhaarman:mockito-kotlin:+
+  name: Mockito-Kotlin
+  copyrightHolder: Niek Haarman
+  license: MIT
+  licenseUrl: https://opensource.org/licenses/MIT
+  url: https://github.com/nhaarman/mockito-kotlin
+- artifact: net.bytebuddy:byte-buddy-agent:+
+  name: Byte Buddy Java agent
+  copyrightHolder: Rafael Winterhalter
+  license: The Apache Software License, Version 2.0
+- artifact: com.android.support:interpolator:+
+  name: Android Support Library Interpolators
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://developer.android.com/tools/extras/support-library.html
+- artifact: com.android.databinding:baseLibrary:+
+  name: Data Binding Base Library
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: https://developer.android.com/studio
+- artifact: com.android.support:documentfile:+
+  name: Android Support Library Document File
+  copyrightHolder: The Android Open Source Project
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://developer.android.com/tools/extras/support-library.html
+- artifact: com.android.support:drawerlayout:+
+  name: Android Support Library Drawer Layout
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://developer.android.com/tools/extras/support-library.html
+- artifact: com.android.support:loader:+
+  name: Android Support Library loader
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://developer.android.com/tools/extras/support-library.html
+- artifact: org.jsoup:jsoup:+
+  name: jsoup Java HTML Parser
+  copyrightHolder: Jonathan Hedley
+  license: The MIT License
+  licenseUrl: https://jsoup.org/license
+  url: https://jsoup.org/
+- artifact: com.android.support:slidingpanelayout:+
+  name: Android Support Library Sliding Pane Layout
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://developer.android.com/tools/extras/support-library.html
+- artifact: org.jetbrains.anko:anko-commons:+
+  name: anko
+  copyrightHolder: JetBrains
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/license/LICENSE-2.0.txt
+  url: https://github.com/JetBrains/anko
+- artifact: com.google.android.gms:play-services-maps:+
+  name: play-services-maps
+  copyrightHolder: The Android Open Source Project
+  license: Android Software Development Kit License
+  skip: true
+  licenseUrl: https://developer.android.com/studio/terms.html
+- artifact: net.bytebuddy:byte-buddy:+
+  name: Byte Buddy (without dependencies)
+  license: The Apache Software License, Version 2.0
+  copyrightHolder: Rafael Winterhalter
+- artifact: com.github.kirtan403.k4kotlin:k4kotlin:+
+  name: k4kotlin
+  copyrightHolder: kirtan403
+  license: The Apache Software License, Version 2.0
+- artifact: com.android.support:asynclayoutinflater:+
+  name: Android Support Library Async Layout Inflater
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://developer.android.com/tools/extras/support-library.html
+- artifact: org.jetbrains.kotlin:kotlin-stdlib-jre7:+
+  name: org.jetbrains.kotlin:kotlin-stdlib-jre7
+  copyrightHolder: JetBrains
+  license: The Apache License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: https://kotlinlang.org/
+- artifact: com.google.android.gms:play-services-places-placereport:+
+  name: play-services-places-placereport
+  copyrightHolder: The Android Open Source Project
+  license: Android Software Development Kit License
+  skip: true
+  licenseUrl: https://developer.android.com/studio/terms.html
+- artifact: com.android.support:print:+
+  name: Android Support Library Print
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://developer.android.com/tools/extras/support-library.html
+- artifact: com.squareup.picasso:picasso:+
+  name: Picasso
+  copyrightHolder: Square Inc.
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: https://github.com/square/picasso/
+- artifact: com.android.databinding:library:+
+  name: library
+  copyrightHolder: The Android Open Source Project
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+- artifact: com.google.android.gms:play-services-basement:+
+  name: play-services-basement
+  copyrightHolder: The Android Open Source Project
+  license: Android Software Development Kit License
+  skip: true
+  licenseUrl: https://developer.android.com/studio/terms.html
