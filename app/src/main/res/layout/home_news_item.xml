@@ -61,6 +61,11 @@
         app:layout_constraintTop_toTopOf="@id/newsCard_affectsLinesIcon"
         tools:text="0P" />
 
+    <android.support.constraint.Group
+        android:id="@+id/newsCard_linesGroup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:constraint_referenced_ids="newsCard_affectsLinesIcon,newsCard_lines" />
 
     <TextView
         android:id="@+id/newsCard_synopsis"

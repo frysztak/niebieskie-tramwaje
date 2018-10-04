@@ -1,6 +1,7 @@
 package software.orpington.rozkladmpk.home.newsList
 
 import android.content.Context
+import android.support.constraint.Group
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -67,6 +68,7 @@ class NewsListAdapter(
                 title.text = item.data.title
                 synopsis.text = item.data.synopsis
                 lines.text = item.data.affectsLines
+                linesGroup.visibility = if (item.data.affectsLines.isEmpty()) View.GONE else View.VISIBLE
             }
         }
     }
@@ -90,7 +92,7 @@ class NewsListAdapter(
         data class News(val data: NewsItem) : ViewModel()
         object Error : ViewModel()
         object End : ViewModel()
-        object Progress: ViewModel()
+        object Progress : ViewModel()
     }
 
     internal class NewsViewHolder(
@@ -99,6 +101,7 @@ class NewsListAdapter(
         private val clickable: () -> Boolean
     ) : RecyclerView.ViewHolder(view) {
         val date: TextView = view.newsCard_date
+        val linesGroup: Group = view.newsCard_linesGroup
         val lines: TextView = view.newsCard_lines
         val title: TextView = view.newsCard_title
         val synopsis: TextView = view.newsCard_synopsis
