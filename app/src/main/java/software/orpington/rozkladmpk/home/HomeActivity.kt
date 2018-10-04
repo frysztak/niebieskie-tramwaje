@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_home.*
 import software.orpington.rozkladmpk.R
+import software.orpington.rozkladmpk.data.model.NewsItem
 import software.orpington.rozkladmpk.home.map.MapFragment
 import software.orpington.rozkladmpk.home.newsList.NewsListFragment
 
@@ -29,16 +30,23 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    private val changePageCallback = object : ChangePageCallback {
+        override fun showNewsPage(news: NewsItem) {
+            swapPageContent(R.id.navigation_news, news)
+            navigation.selectedItemId = R.id.navigation_news
+        }
+    }
+
     private fun createNewFragment(pageID: Int): Fragment {
         return when (pageID) {
-            R.id.navigation_home -> HomeFragment.newInstance()
+            R.id.navigation_home -> HomeFragment.newInstance(changePageCallback)
             R.id.navigation_map -> MapFragment.newInstance()
             else -> NewsListFragment.newInstance()
         }
     }
 
     private var currentPageIndex: Int = -1
-    private fun swapPageContent(pageID: Int) {
+    private fun swapPageContent(pageID: Int, news: NewsItem? = null) {
         if (pageID == currentPageIndex) return
 
         // based on https://stackoverflow.com/a/45301078
@@ -63,5 +71,11 @@ class HomeActivity : AppCompatActivity() {
         fragmentTransaction.commit()
 
         currentPageIndex = pageID
+
+        if (news != null && pageID == R.id.navigation_news) {
+            val newsListFragment = fragment as NewsListFragment? ?: return
+            supportFragmentManager.executePendingTransactions()
+            newsListFragment.showDetail(news)
+        }
     }
 }

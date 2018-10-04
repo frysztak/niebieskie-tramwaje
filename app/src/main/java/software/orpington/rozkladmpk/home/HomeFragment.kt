@@ -22,6 +22,10 @@ import software.orpington.rozkladmpk.routeVariants.RouteVariantsActivity
 import software.orpington.rozkladmpk.stopsForRoute.StopsForRouteActivity
 import software.orpington.rozkladmpk.utils.onQueryChanged
 
+interface ChangePageCallback {
+    fun showNewsPage(news: NewsItem)
+}
+
 class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
 
     private lateinit var searchPresenter: SearchPresenter
@@ -66,6 +70,10 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
 
         newsCard_retry.setOnClickListener {
             newsPresenter.loadMostRecentNews()
+        }
+
+        newsCard_showMore.setOnClickListener {
+            newsPresenter.showMoreClicked()
         }
     }
 
@@ -143,6 +151,11 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
         startActivity(i)
     }
 
+    private var changePageCallback: ChangePageCallback? = null
+    fun setChangePageCallback(cb: ChangePageCallback) {
+        changePageCallback = cb
+    }
+
     private val newsView = object : NewsContract.View {
         private fun setErrorVisibility(visibility: Int) {
             newsCard_error.visibility = visibility
@@ -191,11 +204,17 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
                 newsCard_lines.text = context?.getString(lineStringId)?.format(news.affectsLines)
             }
         }
+
+        override fun showNewsDetail(news: NewsItem) {
+            changePageCallback?.showNewsPage(news)
+        }
     }
 
     companion object {
-        fun newInstance(): HomeFragment {
-            return HomeFragment()
+        fun newInstance(changePageCallback: ChangePageCallback): HomeFragment {
+            val frag = HomeFragment()
+            frag.setChangePageCallback(changePageCallback)
+            return frag
         }
     }
 }

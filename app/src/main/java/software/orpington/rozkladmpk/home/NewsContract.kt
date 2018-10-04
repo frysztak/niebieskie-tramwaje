@@ -9,9 +9,11 @@ interface NewsContract {
         fun detachView()
 
         fun loadMostRecentNews()
+        fun showMoreClicked()
     }
 
     interface View : BaseView {
         fun showMostRecentNews(news: NewsItem)
+        fun showNewsDetail(news: NewsItem)
     }
 }
