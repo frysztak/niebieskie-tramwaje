@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.PopupMenu
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -15,12 +16,14 @@ import kotlinx.android.synthetic.main.home_news_card.*
 import kotlinx.android.synthetic.main.home_news_item.*
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
+import software.orpington.rozkladmpk.about.AboutActivity
 import software.orpington.rozkladmpk.data.model.NewsItem
 import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.routeDetails.RouteDetailsActivity
 import software.orpington.rozkladmpk.routeVariants.RouteVariantsActivity
 import software.orpington.rozkladmpk.stopsForRoute.StopsForRouteActivity
 import software.orpington.rozkladmpk.utils.onQueryChanged
+
 
 interface ChangePageCallback {
     fun showNewsPage(news: NewsItem)
@@ -74,6 +77,20 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
 
         newsCard_showMore.setOnClickListener {
             newsPresenter.showMoreClicked()
+        }
+
+        home_menu.setOnClickListener {
+            val popup = PopupMenu(context!!, home_menu)
+            val inflater = popup.menuInflater
+            inflater.inflate(R.menu.home_menu, popup.menu)
+
+            popup.menu.findItem(R.id.action_about)?.setOnMenuItemClickListener {
+                val intent = Intent(context, AboutActivity::class.java)
+                startActivity(intent)
+                true
+            }
+
+            popup.show()
         }
     }
 

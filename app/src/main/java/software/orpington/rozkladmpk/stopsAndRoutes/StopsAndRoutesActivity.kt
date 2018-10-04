@@ -217,27 +217,27 @@ class StopsAndRoutesActivity : AppCompatActivity(), StopsAndRoutesContract.View 
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.stops_and_routes_menu, menu)
-        val searchItem = menu?.findItem(R.id.action_search)
-        val searchView = searchItem?.actionView as SearchView
-        searchView.queryHint = resources.getString(R.string.searchHint)
-        searchView.setOnQueryTextListener(
-            object : SearchView.OnQueryTextListener {
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    if (newText != null) {
-                        presenter.queryTextChanged(newText)
-                    }
-                    return true
-                }
+        menuInflater.inflate(R.menu.home_menu, menu)
+        //val searchItem = menu?.findItem(R.id.action_search)
+        //val searchView = searchItem?.actionView as SearchView
+        //searchView.queryHint = resources.getString(R.string.searchHint)
+        //searchView.setOnQueryTextListener(
+        //    object : SearchView.OnQueryTextListener {
+        //        override fun onQueryTextChange(newText: String?): Boolean {
+        //            if (newText != null) {
+        //                presenter.queryTextChanged(newText)
+        //            }
+        //            return true
+        //        }
 
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    return true
-                }
-            }
-        )
+        //        override fun onQueryTextSubmit(query: String?): Boolean {
+        //            return true
+        //        }
+        //    }
+        //)
 
-        val aboutItem = menu.findItem(R.id.action_about)
-        aboutItem.setOnMenuItemClickListener {
+        val aboutItem = menu?.findItem(R.id.action_about)
+        aboutItem?.setOnMenuItemClickListener {
             val i = Intent(baseContext, AboutActivity::class.java)
             startActivity(i)
             true
