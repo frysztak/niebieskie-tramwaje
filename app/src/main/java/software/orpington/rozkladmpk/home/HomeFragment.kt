@@ -193,13 +193,7 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
             newsCard_date.text = news.affectsDay
             newsCard_title.text = news.title
             newsCard_synopsis.text = news.synopsis
-            if (news.affectsLines.isNotEmpty()) {
-                val lineStringId = when (news.affectsLines.count { it == ',' }) {
-                    1 -> R.string.line
-                    else -> R.string.lines
-                }
-                newsCard_lines.text = context?.getString(lineStringId)?.format(news.affectsLines)
-            }
+            newsCard_lines.text = news.affectsLines
         }
 
         override fun showNewsDetail(news: NewsItem) {

@@ -66,16 +66,8 @@ class NewsListAdapter(
                 date.text = item.data.affectsDay
                 title.text = item.data.title
                 synopsis.text = item.data.synopsis
-
-                if (item.data.affectsLines.isNotEmpty()) {
-                    val lineStringId = when (item.data.affectsLines.count { it == ',' }) {
-                        1 -> R.string.line
-                        else -> R.string.lines
-                    }
-                    lines.text = context.getString(lineStringId).format(item.data.affectsLines)
-                }
+                lines.text = item.data.affectsLines
             }
-
         }
     }
 
