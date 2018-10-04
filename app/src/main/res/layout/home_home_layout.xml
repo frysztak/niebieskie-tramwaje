@@ -13,7 +13,7 @@
 
         <android.support.v7.widget.CardView
             android:id="@+id/home_searchCard"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             app:cardElevation="4dp"
@@ -23,7 +23,7 @@
 
             <android.support.v7.widget.SearchView
                 android:id="@+id/home_searchView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:iconifiedByDefault="false"
                 app:queryBackground="@android:color/transparent"
@@ -35,6 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
+            tools:visibility="visible"
             app:constraint_referenced_ids="home_searchResults,home_searchResultsRecycler" />
 
         <TextView

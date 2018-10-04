@@ -3,24 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_margin="8dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/minutesLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp">
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
 
         <ImageView
             android:id="@+id/icon"
             android:layout_width="@dimen/StopIconSize"
             android:layout_height="@dimen/StopIconSize"
-            android:layout_marginBottom="8dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -31,8 +34,8 @@
             style="@style/StopsAndRoutesItem"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_marginStart="24dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             app:layout_constraintBottom_toTopOf="@id/distance"
             app:layout_constraintEnd_toEndOf="parent"
