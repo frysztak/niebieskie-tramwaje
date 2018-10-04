@@ -96,6 +96,7 @@ class NewsListFragment : Fragment(), NewsListContract.View {
         frag.setData(item)
         childFragmentManager
             .beginTransaction()
+            .setCustomAnimations(R.anim.news_overlay_enter, R.anim.news_overlay_exit, R.anim.news_overlay_enter, R.anim.news_overlay_exit)
             .show(frag)
             .addToBackStack("")
             .commit()
