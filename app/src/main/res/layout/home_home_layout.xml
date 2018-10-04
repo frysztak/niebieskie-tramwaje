@@ -30,34 +30,32 @@
                 app:queryHint="@string/where_to" />
         </android.support.v7.widget.CardView>
 
-        <android.support.constraint.ConstraintLayout
+        <android.support.constraint.Group
             android:id="@+id/home_searchResultsLayout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="home_searchResults,home_searchResultsRecycler" />
+
+        <TextView
+            android:id="@+id/home_searchResults"
+            style="@style/HomeHeader"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/home_searchCard"
-            tools:visibility="visible">
+            android:text="@string/search_results"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/home_searchCard" />
 
-            <TextView
-                android:id="@+id/home_searchResults"
-                style="@style/HomeHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:text="@string/search_results"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/home_searchResultsRecycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/home_searchResults"
-                tools:itemCount="2"
-                tools:listitem="@layout/stops_and_routes_list_item" />
-        </android.support.constraint.ConstraintLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/home_searchResultsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/home_searchResults"
+            tools:itemCount="2"
+            tools:listitem="@layout/stops_and_routes_list_item" />
 
         <TextView
             android:id="@+id/home_news"
@@ -68,7 +66,7 @@
             android:text="@string/news"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/home_searchResultsLayout" />
+            app:layout_constraintTop_toBottomOf="@id/home_searchResultsRecycler" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/home_fakeNewsCard1"

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.StaggeredGridLayoutManager
@@ -112,12 +111,12 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
     }
 
     override fun showSearchResults(data: List<StopOrRouteViewItem>) {
-        view?.findViewById<ConstraintLayout>(R.id.home_searchResultsLayout)?.visibility = View.VISIBLE
+        home_searchResultsLayout?.visibility = View.VISIBLE
         searchAdapter.setItems(data)
     }
 
     override fun hideSearchResults() {
-        view?.findViewById<ConstraintLayout>(R.id.home_searchResultsLayout)?.visibility = View.GONE
+        home_searchResultsLayout?.visibility = View.GONE
     }
 
     override fun showStopNotFound() {
