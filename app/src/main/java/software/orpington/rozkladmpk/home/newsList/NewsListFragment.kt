@@ -3,6 +3,7 @@ package software.orpington.rozkladmpk.home.newsList
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,6 +60,21 @@ class NewsListFragment : Fragment(), NewsListContract.View {
         return inflater.inflate(R.layout.home_news_preview_list, null)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        newsPreviews.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                val isAtTheBottom = !recyclerView.canScrollVertically(1)
+                if (isAtTheBottom) {
+                    presenter.getNextPage()
+                }
+            }
+        })
+    }
+
     override fun onResume() {
         super.onResume()
         presenter.attachView(this)
@@ -69,25 +85,11 @@ class NewsListFragment : Fragment(), NewsListContract.View {
         presenter.detachView()
     }
 
-    override fun displayNews(news: List<NewsItem>) {
-        adapter.addItems(news)
-    }
-
-    override fun hideDataFailedToLoad() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun showProgressBar() {
-
-    }
-
-    override fun hideProgressBar() {
-
-    }
-
-    override fun reportThatSomethingWentWrong() {
-
-    }
+    override fun displayNews(news: List<NewsItem>) = adapter.addItems(news)
+    override fun showProgressBar() = adapter.showProgressBar()
+    override fun hideProgressBar() = adapter.hideProgressBar()
+    override fun reportThatSomethingWentWrong() = adapter.showError()
+    override fun hideDataFailedToLoad() = adapter.hideDataFailedToLoad()
 
     override fun showDetail(item: NewsItem) {
         val frag = childFragmentManager.findFragmentById(R.id.newsDetailsOverlay) as NewsDetailsFragment

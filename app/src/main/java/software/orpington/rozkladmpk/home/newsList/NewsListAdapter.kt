@@ -5,7 +5,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
+import kotlinx.android.synthetic.main.home_news_error.view.*
 import kotlinx.android.synthetic.main.home_news_item.view.*
 import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.model.NewsItem
@@ -16,7 +18,14 @@ class NewsListAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            //ITEM_TYPE_NEWS -> {
+            ITEM_TYPE_PROGRESS -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.home_news_progress, parent, false)
+                DummyViewHolder(view)
+            }
+            ITEM_TYPE_FAILED -> {
+                val view = LayoutInflater.from(context).inflate(R.layout.home_news_error, parent, false)
+                ErrorViewHolder(view, presenter)
+            }
             else -> {
                 val view = LayoutInflater.from(context).inflate(R.layout.home_news_item, parent, false)
                 NewsViewHolder(view, presenter) { isClickable }
@@ -28,15 +37,32 @@ class NewsListAdapter(
     override fun getItemCount(): Int = items.size
 
     fun addItems(data: List<NewsItem>) {
-        val position = items.lastIndex
-        items.addAll(data.map { it -> ViewModel.NewsModel(it) })
+        val position = items.size
+        items.addAll(data.map { it -> ViewModel.News(it) })
         notifyItemRangeInserted(position, data.size)
     }
+
+    private fun appendItem(item: ViewModel) {
+        val position = items.size
+        items.add(item)
+        notifyItemInserted(position)
+    }
+
+    private fun removeItem(item: ViewModel) {
+        val idx = items.indexOf(item)
+        items.remove(item)
+        notifyItemRemoved(idx)
+    }
+
+    fun showProgressBar() = appendItem(ViewModel.Progress)
+    fun hideProgressBar() = removeItem(ViewModel.Progress)
+    fun showError() = appendItem(ViewModel.Error)
+    fun hideDataFailedToLoad() = removeItem(ViewModel.Error)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = items[position]
         when (item) {
-            is ViewModel.NewsModel -> (holder as NewsViewHolder).apply {
+            is ViewModel.News -> (holder as NewsViewHolder).apply {
                 date.text = item.data.affectsDay
                 title.text = item.data.title
                 synopsis.text = item.data.synopsis
@@ -55,21 +81,24 @@ class NewsListAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
-            is ViewModel.NewsModel -> ITEM_TYPE_NEWS
-            is ViewModel.FailedToLoadModel -> ITEM_TYPE_FAILED
-            is ViewModel.EndModel -> ITEM_TYPE_END
+            is ViewModel.News -> ITEM_TYPE_NEWS
+            is ViewModel.Error -> ITEM_TYPE_FAILED
+            is ViewModel.End -> ITEM_TYPE_END
+            is ViewModel.Progress -> ITEM_TYPE_PROGRESS
         }
     }
 
     private val ITEM_TYPE_NEWS = 0
     private val ITEM_TYPE_FAILED = 1
     private val ITEM_TYPE_END = 2
+    private val ITEM_TYPE_PROGRESS = 2
     var isClickable: Boolean = true
 
     sealed class ViewModel {
-        data class NewsModel(val data: NewsItem) : ViewModel()
-        object FailedToLoadModel : ViewModel()
-        object EndModel : ViewModel()
+        data class News(val data: NewsItem) : ViewModel()
+        object Error : ViewModel()
+        object End : ViewModel()
+        object Progress: ViewModel()
     }
 
     internal class NewsViewHolder(
@@ -91,13 +120,20 @@ class NewsListAdapter(
         }
     }
 
-    internal class FailedViewHolder(
-        private val view: View
+    internal class ErrorViewHolder(
+        private val view: View,
+        private val presenter: NewsListPresenter
     ) : RecyclerView.ViewHolder(view) {
+        private val retry: Button = view.retryButton
 
+        init {
+            retry.setOnClickListener {
+                presenter.retryButtonClicked()
+            }
+        }
     }
 
-    internal class EndViewHolder(
+    internal class DummyViewHolder(
         view: View
     ) : RecyclerView.ViewHolder(view)
 }

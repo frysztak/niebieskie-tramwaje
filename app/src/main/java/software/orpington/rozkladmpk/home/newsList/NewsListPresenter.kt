@@ -16,18 +16,39 @@ class NewsListPresenter(
         this.view = null
     }
 
-    private val items : MutableList<NewsItem> = mutableListOf()
+    private val items: MutableList<NewsItem> = mutableListOf()
     private var lastPage = 0
+
+    @set:Synchronized
+    @get:Synchronized
+    private var requestInProgress = false
+
+    @set:Synchronized
+    @get:Synchronized
+    private var requestFailed = false
+
     override fun getNextPage() {
+        if (requestInProgress || requestFailed) return
+
+        requestInProgress = true
+        view?.showProgressBar()
         remoteDataSource.getNews(lastPage, object : IDataSource.LoadDataCallback<List<NewsItem>> {
             override fun onDataLoaded(data: List<NewsItem>) {
+                view?.hideProgressBar()
+
                 items += data
                 view?.displayNews(data)
                 lastPage++
+
+                requestInProgress = false
+                requestFailed = false
             }
 
             override fun onDataNotAvailable() {
-
+                view?.hideProgressBar()
+                view?.reportThatSomethingWentWrong()
+                requestInProgress = false
+                requestFailed = true
             }
         })
     }
@@ -35,5 +56,11 @@ class NewsListPresenter(
     override fun itemClicked(position: Int) {
         val item = items[position]
         view?.showDetail(item)
+    }
+
+    override fun retryButtonClicked() {
+        view?.hideDataFailedToLoad()
+        requestFailed = false
+        getNextPage()
     }
 }

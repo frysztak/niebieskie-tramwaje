@@ -10,6 +10,7 @@ interface NewsListContract {
 
         fun getNextPage()
         fun itemClicked(position: Int)
+        fun retryButtonClicked()
     }
 
     interface View : BaseView {
