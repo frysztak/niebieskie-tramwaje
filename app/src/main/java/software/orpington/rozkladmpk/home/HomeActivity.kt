@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_home.*
 import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.home.map.MapFragment
+import software.orpington.rozkladmpk.home.newsList.NewsListFragment
 
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +24,7 @@ class HomeActivity : AppCompatActivity() {
         return when (pageID) {
             R.id.navigation_home -> "HomeFragment"
             R.id.navigation_map -> "MapFragment"
-            R.id.navigation_notifications -> "NotificationsFragment"
+            R.id.navigation_news -> "NewsFragment"
             else -> "UnknownFragment"
         }
     }
@@ -32,7 +33,7 @@ class HomeActivity : AppCompatActivity() {
         return when (pageID) {
             R.id.navigation_home -> HomeFragment.newInstance()
             R.id.navigation_map -> MapFragment.newInstance()
-            else -> HomeFragment.newInstance()
+            else -> NewsListFragment.newInstance()
         }
     }
 

@@ -53,7 +53,7 @@
     <string name="failed_to_load_map_data">Nie udało się wczytać danych</string>
     <string name="you">Ty</string>
     <string name="title_home">Główna</string>
-    <string name="title_notifications">Powiadomienia</string>
+    <string name="title_news">Wiadomości</string>
     <string name="title_map">Mapa</string>
     <string name="more">więcej</string>
     <string name="departureIn">Za %s (%s)</string>
