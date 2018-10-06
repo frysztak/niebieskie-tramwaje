@@ -22,6 +22,7 @@ import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.locationmap.LocationMapCallbacks
 import software.orpington.rozkladmpk.locationmap.LocationMapFragment
 import software.orpington.rozkladmpk.routeDetails.RouteDetailsActivity
+import software.orpington.rozkladmpk.utils.afterMeasured
 
 
 class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
@@ -55,7 +56,7 @@ class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
             locationMapFragment.popDataFailedToLoad()
         }
 
-        mapSheet_header.post {
+        mapSheet_header.afterMeasured {
             val behaviour = BottomSheetBehavior.from(bottomSheet)
             behaviour.peekHeight = mapSheet_header.height
         }
