@@ -21,6 +21,9 @@ import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.locationmap.LocationMapCallbacks
 import software.orpington.rozkladmpk.locationmap.LocationMapFragment
 import software.orpington.rozkladmpk.routeDetails.RouteDetailsActivity
+import android.support.v4.view.ViewCompat
+
+
 
 
 class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
@@ -62,6 +65,11 @@ class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
         nearYouRecyclerView.apply {
             adapter = this@MapFragment.adapter
             layoutManager = LinearLayoutManager(context)
+        }
+
+        // workaround for bug on pre-5.0 (https://stackoverflow.com/a/40864288)
+        ViewCompat.postOnAnimation(mapCoordinator) {
+            ViewCompat.postInvalidateOnAnimation(mapCoordinator)
         }
     }
 
