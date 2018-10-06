@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.v4.app.Fragment
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -21,9 +22,6 @@ import software.orpington.rozkladmpk.data.source.ApiClient
 import software.orpington.rozkladmpk.locationmap.LocationMapCallbacks
 import software.orpington.rozkladmpk.locationmap.LocationMapFragment
 import software.orpington.rozkladmpk.routeDetails.RouteDetailsActivity
-import android.support.v4.view.ViewCompat
-
-
 
 
 class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
@@ -81,6 +79,17 @@ class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
     override fun onStop() {
         super.onStop()
         presenter.detachView()
+    }
+
+    override fun onDestroy() {
+        for (frag in childFragmentManager.fragments) {
+            childFragmentManager
+                .beginTransaction()
+                .remove(frag)
+                .commitAllowingStateLoss()
+        }
+
+        super.onDestroy()
     }
 
     override fun onLocationChanged(latitude: Double, longitude: Double) {

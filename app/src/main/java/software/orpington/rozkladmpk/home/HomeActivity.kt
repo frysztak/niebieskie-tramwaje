@@ -87,4 +87,16 @@ class HomeActivity : AppCompatActivity() {
             newsListFragment.showDetail(news)
         }
     }
+
+    override fun onDestroy() {
+        for (frag in supportFragmentManager.fragments) {
+            supportFragmentManager
+                .beginTransaction()
+                .remove(frag)
+                .commitAllowingStateLoss()
+        }
+
+        super.onDestroy()
+    }
+
 }
