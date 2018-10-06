@@ -11,6 +11,7 @@ import android.graphics.Typeface
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.support.design.widget.FloatingActionButton
@@ -19,7 +20,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -99,6 +99,8 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        MapsInitializer.initialize(context)
+
         presenter = LocationMapPresenter()
         adapter = MessagesAdapter(context!!, presenter)
 
@@ -107,37 +109,43 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.location_map_fragment_layout, null, false)
+        return inflater.inflate(R.layout.location_map_fragment_layout, null, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         // https://issuetracker.google.com/issues/66402372#comment4
-        lateinit var mapFragment: SupportMapFragment
         if (savedInstanceState != null) {
-            mapFragment = childFragmentManager.findFragmentByTag("map") as SupportMapFragment
+            val mapFragment = childFragmentManager.findFragmentByTag("map") as SupportMapFragment
+            mapFragment.getMapAsync(this)
         } else {
-            val opt = GoogleMapOptions().camera(
-                CameraPosition.fromLatLngZoom(initialLocation, initialZoom)
-            )
-            mapFragment = SupportMapFragment.newInstance(opt)
-            childFragmentManager
-                .beginTransaction()
-                .replace(R.id.mapContainer, mapFragment, "map")
-                .commit()
+            Handler().postDelayed({
+                if (isAdded) {
+                    val opt = GoogleMapOptions().camera(
+                        CameraPosition.fromLatLngZoom(initialLocation, initialZoom)
+                    )
+                    val mapFragment = SupportMapFragment.newInstance(opt)
+                    childFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.mapContainer, mapFragment, "map")
+                        .commit()
+                    mapFragment.getMapAsync(this)
+                }
+            }, 250)
         }
-        mapFragment.getMapAsync(this)
 
-        v.findViewById<RecyclerView>(R.id.messagesList).apply {
+        messagesList.apply {
             adapter = this@LocationMapFragment.adapter
             layoutManager = LinearLayoutManager(context!!)
             addItemDecoration(DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL))
         }
 
-        v.findViewById<FloatingActionButton>(R.id.myLocationFAB).setOnClickListener {
+        myLocationFAB.setOnClickListener {
             centerToUserLocation()
         }
 
         initStates()
-
-        return v
     }
 
     private fun initStates() {
