@@ -199,6 +199,7 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
             }
         })
 
+        updateUserMarker()
         locationMapCallbacks?.onMapReady(map!!)
     }
 
@@ -232,16 +233,11 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
 
     private var centeredToUserLocation = false
 
+    private var lastLocation: Location? = null
     private fun notifyLocationChanged(loc: Location) {
-        updateUserMarker(loc)
-        updateFABVisibility()
+        lastLocation = loc
+        updateUserMarker()
         locationMapCallbacks?.onLocationChanged(loc.latitude, loc.longitude)
-
-        // center to user location once, after first location comes in
-        if (!centeredToUserLocation) {
-            centerToUserLocation()
-            centeredToUserLocation = true
-        }
     }
 
     private fun initLocationManager() {
@@ -335,7 +331,9 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
     }
 
     private var userMarker: Marker? = null
-    private fun updateUserMarker(location: Location) {
+    private fun updateUserMarker() {
+        val location = lastLocation ?: return
+
         if (userMarker == null) {
             val specialMarkerView = LayoutInflater.from(context).inflate(R.layout.map_marker, null, false)
             val tv = specialMarkerView
@@ -353,14 +351,20 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
                 .position(LatLng(location.latitude, location.longitude))
                 .icon(icon)
             userMarker = map?.addMarker(opt)
+            updateFABVisibility()
         }
 
         userMarker?.position = LatLng(location.latitude, location.longitude)
+
+        // center to user location once, after first location comes in
+        if (!centeredToUserLocation) {
+            centeredToUserLocation = centerToUserLocation()
+        }
     }
 
     private val centerToUserLocationZoomLevel = 14f
-    private fun centerToUserLocation() {
-        val marker = userMarker ?: return
+    private fun centerToUserLocation(): Boolean {
+        val marker = userMarker ?: return false
 
         val currentZoom = map?.cameraPosition?.zoom ?: 10f
         val cameraUpdate = when {
@@ -368,6 +372,8 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
             else -> CameraUpdateFactory.newLatLngZoom(marker.position, centerToUserLocationZoomLevel)
         }
         map?.moveCamera(cameraUpdate)
+
+        return true
     }
 
     private var drawnShapes: MutableList<Polyline> = mutableListOf()
