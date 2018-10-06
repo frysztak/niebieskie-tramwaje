@@ -48,7 +48,7 @@ class HomeActivity : AppCompatActivity() {
 
     private fun createNewFragment(pageID: Int): Fragment {
         return when (pageID) {
-            R.id.navigation_home -> HomeFragment.newInstance(changePageCallback)
+            R.id.navigation_home -> HomeFragment.newInstance()
             R.id.navigation_map -> MapFragment.newInstance()
             else -> NewsListFragment.newInstance()
         }
@@ -81,22 +81,15 @@ class HomeActivity : AppCompatActivity() {
 
         currentPageIndex = pageID
 
+        if (pageID == R.id.navigation_home && fragment is HomeFragment) {
+            fragment.setChangePageCallback(changePageCallback)
+        }
+
         if (news != null && pageID == R.id.navigation_news) {
             val newsListFragment = fragment as NewsListFragment? ?: return
             supportFragmentManager.executePendingTransactions()
             newsListFragment.showDetail(news)
         }
-    }
-
-    override fun onDestroy() {
-        for (frag in supportFragmentManager.fragments) {
-            supportFragmentManager
-                .beginTransaction()
-                .remove(frag)
-                .commitAllowingStateLoss()
-        }
-
-        super.onDestroy()
     }
 
 }

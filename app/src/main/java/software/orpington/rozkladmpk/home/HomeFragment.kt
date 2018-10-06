@@ -169,7 +169,7 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
     }
 
     private var changePageCallback: ChangePageCallback? = null
-    fun setChangePageCallback(cb: ChangePageCallback) {
+    fun setChangePageCallback(cb: ChangePageCallback?) {
         changePageCallback = cb
     }
 
@@ -218,10 +218,8 @@ class HomeFragment : Fragment(), SearchContract.View, FavouritesContract.View {
     }
 
     companion object {
-        fun newInstance(changePageCallback: ChangePageCallback): HomeFragment {
-            val frag = HomeFragment()
-            frag.setChangePageCallback(changePageCallback)
-            return frag
+        fun newInstance(): HomeFragment {
+            return HomeFragment()
         }
     }
 }
