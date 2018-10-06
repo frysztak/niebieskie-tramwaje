@@ -2,18 +2,15 @@ package software.orpington.rozkladmpk.home.map
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
 import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
+import kotlinx.android.synthetic.main.home_map_layout.*
 import software.orpington.rozkladmpk.Injection
 import software.orpington.rozkladmpk.R
 import software.orpington.rozkladmpk.data.model.MapData
@@ -42,31 +39,30 @@ class MapFragment : Fragment(), LocationMapCallbacks, MapContract.View {
 
     private lateinit var locationMapFragment: LocationMapFragment
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.home_map_layout, container, false)
+        return inflater.inflate(R.layout.home_map_layout, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         locationMapFragment = childFragmentManager.findFragmentById(R.id.map) as LocationMapFragment
         locationMapFragment.setOnLocationMapCallbacks(this)
 
-        val fab = v.findViewById<FloatingActionButton>(R.id.fab)
         locationMapFragment.overrideFAB(fab)
         locationMapFragment.setRetryButtonAction {
             presenter.retryToLoadData()
             locationMapFragment.popDataFailedToLoad()
         }
 
-        val bottomSheetHeader = v.findViewById<TextView>(R.id.mapSheet_header)
-        bottomSheetHeader.post {
-            val bottomSheet = v.findViewById<ConstraintLayout>(R.id.bottomSheet)
+        mapSheet_header.post {
             val behaviour = BottomSheetBehavior.from(bottomSheet)
-            behaviour.peekHeight = bottomSheetHeader.height
+            behaviour.peekHeight = mapSheet_header.height
         }
 
-        v.findViewById<RecyclerView>(R.id.nearYouRecyclerView).apply {
+        nearYouRecyclerView.apply {
             adapter = this@MapFragment.adapter
             layoutManager = LinearLayoutManager(context)
         }
-
-        return v
     }
 
     override fun onResume() {
