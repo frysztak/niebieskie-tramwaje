@@ -14,11 +14,20 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        swapPageContent(R.id.navigation_home)
+        val pageID = when (savedInstanceState) {
+            null -> R.id.navigation_home
+            else -> savedInstanceState.getInt("pageID", R.id.navigation_home)
+        }
+        swapPageContent(pageID)
         navigation.setOnNavigationItemSelectedListener {
             swapPageContent(it.itemId)
             true
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putInt("pageID", navigation.selectedItemId)
     }
 
     private fun getFragmentTag(pageID: Int): String {
