@@ -132,7 +132,7 @@ class LocationMapFragment : Fragment(), OnMapReadyCallback, LocationMapContract.
                         .commit()
                     mapFragment.getMapAsync(this)
                 }
-            }, 250)
+            }, 500)
         }
 
         messagesList.apply {
